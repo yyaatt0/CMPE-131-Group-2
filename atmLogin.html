@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<head>
+    <title>ATM Login</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <header>
+        <div class="introduction">
+            <h1>ATM</h1>
+        </div>
+        <div class="introduction-text">
+            Welcome to PayPort,
+            enter credentials to begin
+        </div>
+    </header>
+
+    <main>   
+        <div class="login-form">
+            <form>
+
+                <div class="form-field">
+                    <div class="username">
+                        <label for="name">Name:</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    
+                    <div class="password">
+                        <label for="password">Password:</label>
+                        <input type="password" id="password" name="password" required>
+                    </div>
+
+                    <div class="submitBtn">
+                        <input type="submit", value=">">
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="numpad">
+            <button type="button" class="num">1</button>
+            <button type="button" class="num">2</button>
+            <button type="button" class="num">3</button>
+            <button type="button" class="num">4</button>
+            <button type="button" class="num">5</button>
+            <button type="button" class="num">6</button>
+            <button type="button" class="num">7</button>
+            <button type="button" class="num">8</button>
+            <button type="button" class="num">9</button>
+            <button type="button" class="num" style="grid-column: span 3; text-align: center;">0</button>
+        </div>
+    </main>
+
+    <div class="copyright">
+        @2024 Payport
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
