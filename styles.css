@@ -63,9 +63,9 @@ form {
     align-items: center; }
 
 .error_mesg {
-    color: red;
     text-align: center;
     margin-top: 10px;
+    color: red;
 }
 
 .logout {
