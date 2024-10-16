@@ -69,11 +69,11 @@ form {
 }
 
 .logout {
-    margin: 100px auto;
-    width: 300px;
         align-items: center;
         justify-content: center;
         background-color: white;
+      margin: 100px auto;
+    width: 300px;
 }
 
 buttton {
