@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel= "stylesheet" href= "styles.css">
+        <title> Admin Login Page </title>
+</head>
+
+<body>
+    <header>
+        <nav class ="navbar">
+            <h1> Bank of Banks </h1> </nav>
+        </header>
+    <div class= "login">
+
+        <h2> Admin LOGIN Page </h2>
+        <form id= "adminLogin" onsubmit= "return Login();">
+            <div class="input">
+                <label for = "username"> User name/Email: </label>
+                <input type= "text" id = "username" name = "username" required>
+            </div>
+            <div class="input">
+                <label for= "pw"> Password:</label>
+                <input type= "pw" id= "pw" name= "pw" required> </div>
+            <div id= "error.message" class= "error_mesg"> </div>
+            <button type= "submit"> Login </button>
+            <br> </br>
+            <a href = "password.html" class "forgot_pw" > Forgot Password? </a>
+        </form>
+    </div>
+    
+  
+    
+    <script>
+        function Login() {
+            const pw = document.getElementById('pw').value;
+            const username = document.getElementById('username').value;
+            const error_mssg = document.getElementById('error.message');
+            const valid_name = "adminName";
+            const valid_pw = "pw123";
+            if (username === valid_name && pw === valid_pw) {
+                window.location.href = 'admin_portal.html';
+                return false;}
+            else {
+                error_mssg.textContent = "Username/Password is incorrect. Please try again!";
+                return false; }
+        }
+
+       </script>
+</body>
+</html>
+
