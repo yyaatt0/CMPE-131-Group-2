@@ -98,3 +98,43 @@ buttton {
 
 
 }
+
+
+.container {
+    width: 80%;
+    margin: 20px auto;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.h1 {
+ color: #ffffff;
+    margin-top: 0;
+}
+
+.container h2 {
+    text-align: left;
+    color: #333333;
+    font-size: 1.5em;
+    margin: 0;
+    padding: 0;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+td {
+    padding: 7px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+th {
+    background-color: #465C81;
+    color: #ffffff;
+    text-align: left;
+    padding: 7px;
+
+}
