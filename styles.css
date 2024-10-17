@@ -153,6 +153,10 @@ main {
     font-weight: 900; 
 }
 
+.login-form input[type="submit"]:active {
+    transform: scale(0.95);
+}
+
 .numpad {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
