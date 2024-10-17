@@ -10,10 +10,13 @@ body {
         align-items: center;
         background-color: white;
         align-items: center;
+        box-shadow: 0 00 10px rgba(0, 0, 0, 0.1)
+        padding: 30px
+        border-radius: 5px;
 }
 
 .navbar {
-    background-color: #465C81;
+    background-color: #003459;
     background-color: #465C81;
         padding: 30px;
         color: white;
@@ -24,7 +27,10 @@ h2 {
     text-align: center;
     color: #333;
 }
-
+ 
+h4 {
+    text-align: center;
+}
 label {
     display: block;
     margin-bottom: 5px;
@@ -50,7 +56,7 @@ button {
 }
 
 button:hover {
-    background-color: #465C81;
+    background-color: #003459;
     opacity: 0.8;
     display: flex;
     justify-content: center;
@@ -63,17 +69,18 @@ form {
     align-items: center; }
 
 .error_mesg {
+    color: red;
     text-align: center;
     margin-top: 10px;
-    color: red;
 }
 
 .logout {
+   
         align-items: center;
         justify-content: center;
         background-color: white;
-      margin: 100px auto;
-    width: 300px;
+        margin: 100px auto;
+        width: 300px;
 }
 
 buttton {
