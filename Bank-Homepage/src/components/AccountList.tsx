@@ -1,33 +1,28 @@
-/*
-
-If account list is empty => Display start page content
-Else => Display account lists
-
-*/
-
 import AccountCard from "./AccountCard";
-import "./AccountList.css"
+import "./AccountList.css" // Temp styling [*Move all styling to single css later]
+
+type account = {id: number, name: string, balance: number, link: string};
 
 interface AccountListProps {
-  items: string[];
-  heading: string;
-  onSelectItem: (item: string) => void;
+  accounts: account[]; // List of accounts
+  heading: string; // Account List Heading
+  onSelectItem: (accLink: string) => void; // onClick Function to pass to AccountCard
 }
 
-function AccountList({items, heading, onSelectItem}: AccountListProps) {
+function AccountList({accounts, heading, onSelectItem}: AccountListProps) {
 
   return (
     <>
       <h1>{heading}</h1>
       <div className="account-list">
-        {items.length === 0 && <p>No existing accounts.</p>}
-        {items.map((item) => (
+        {accounts.length === 0 && <p>No existing accounts.</p>} {/*Display if no accounts have been created.*/}
+        {accounts.map((acc) => (
             <AccountCard
-                key={item} 
-                name={item}
-                balance=""
+                key={acc.id} 
+                name={acc.name}
+                balance={acc.balance}
                 onClick={() => {
-                  onSelectItem(item);
+                  onSelectItem(acc.link);
                 }}
             />
         ))}
