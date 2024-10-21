@@ -1,0 +1,29 @@
+.account-list{
+    background: white;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 10px;
+}
+
+.account-card{
+    background-color: white;
+    box-shadow: 3px 3px 7px;
+    cursor: pointer;
+    font-size: 24px;
+    height: 200px;
+    display: flex;
+    flex: 33%;
+    padding: 20px;
+    margin: 10px;
+}
+
+.account-card:hover {
+    scale: 101%;
+    transition-duration: 150ms;
+}
+
+.card-text{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
