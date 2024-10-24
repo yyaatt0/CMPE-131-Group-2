@@ -11,8 +11,11 @@ function CACText({heading, text}: CACProps) {
         <div className="acc-desc">
             <h2>{heading}</h2>
             <p>{text}</p>
-            <div className="cac-button">
-                <a href="https://github.com/yyaatt0/CMPE-131-Group-2">Create Account</a>
+            <div 
+                className="cac-button" 
+                onClick={() => location.href="https://github.com/yyaatt0/CMPE-131-Group-2"}
+                >
+                Create Account
             </div>
         </div>
     );
@@ -24,14 +27,14 @@ function CreateAccountCard({heading, text, direction}: CACProps) {
         return (
             <div className="no-accounts">
                 <CACText heading={heading} text={text} direction=""/>
-                <div className="desc-img">[Placeholder]</div>
+                <div className="desc-img">[Image Placeholder]</div>
             </div>
         );
     }
     
     return (
         <div className="no-accounts">
-            <div className="desc-img">[Placeholder]</div>
+            <div className="desc-img">[Image Placeholder]</div>
             <CACText heading={heading} text={text} direction=""/>
         </div>
     );

@@ -1,6 +1,8 @@
 import AccountList from "./components/AccountList";
-import CoverCard from "./components/CoverCard";
+import HeaderCard from "./components/HeaderCard";
 import FooterCard from "./components/FooterCard";
+import SettingsTab from "./components/SettingsTab";
+import { useState } from "react";
 
 /*
     Account data reqs:
@@ -28,14 +30,34 @@ function HomePage() {
     window.location.href = accLink; // Redirect to page specified by account
   };
 
+  const [loggedIn, setLoggedIn] = useState(0);
+
+  // Handle login/logout
+  const handleSelectOption = (setStatus: number) => {
+    setLoggedIn(setStatus);
+  }
+
   return (
     <div>
-      <CoverCard />
-      <AccountList
-        accounts={noAccounts}
-        heading="Accounts"
-        onSelectItem={handleSelectItem}
+      <SettingsTab 
+        loggedIn={loggedIn} 
+        onSelectOption={handleSelectOption}
       />
+      <HeaderCard />
+      {loggedIn === 1 && 
+        <AccountList
+          accounts={accounts}
+          heading="Accounts"
+          onSelectItem={handleSelectItem}
+        />
+      }
+      {loggedIn === 0 && 
+        <AccountList
+          accounts={noAccounts}
+          heading="Accounts"
+          onSelectItem={handleSelectItem}
+        />
+      }
       <FooterCard />
     </div>
   );

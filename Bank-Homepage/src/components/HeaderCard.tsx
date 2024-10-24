@@ -1,9 +1,9 @@
 
 
-function CoverCard() {
+function HeaderCard() {
     return (
         <header>Bank of Banks</header>
     );
 }
 
-export default CoverCard;
+export default HeaderCard;
