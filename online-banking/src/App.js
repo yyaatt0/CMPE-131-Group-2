@@ -1,103 +1,61 @@
-import React, { useState } from 'react';
-import './App.css'; 
-import { LockIcon, UserIcon } from 'lucide-react';
+import React, { useState } from "react";
+import { CornerUpLeft } from "lucide-react"; // Assuming you are still using this icon library
+import './App.css';
 
-function App() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [message, setMessage] = useState('');
+export default function App() {
+  const [selectedAccount, setSelectedAccount] = useState("Savings Account");
 
-  const handleNumpadClick = (num) => {
-    if (password.length < 4) {
-      setPassword(prev => prev + num);
-    }
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (username && password.length === 4) {
-      setMessage(`Welcome, ${username}!`);
-    } else {
-      setMessage('Invalid username or password.');
-    }
-  };
+  const accounts = ["Savings Account", "Checking Account"];
 
   return (
     <div className="container">
-      <header className="header">
-        <h1 className="title">Bank of Banks ATM</h1>
-        <p>Welcome to your secure banking experience</p>
-      </header>
+      <div className="navigation">
+        <div className="nav-header">
+          <h1>Welcome, John Doe</h1>
+          <nav>
+            {accounts.map((account) => (
+              <button
+                key={account}
+                className={`account-button ${
+                  selectedAccount === account ? "active" : ""
+                }`}
+                onClick={() => setSelectedAccount(account)}
+              >
+                {account}
+              </button>
+            ))}
+          </nav>
+        </div>
+        <button className="logout-button">
+            <CornerUpLeft className="icon" /> Logout
+          </button>
+      </div>
 
-      <main className="main">
-        <div className="atm-container-border"> 
-          <div className="atm-container">
-            <div className="atm-screen">
-              <div className="atm-content">
-                <h2 className="atm-title">Enter Your Credentials</h2>
-                <form onSubmit={handleSubmit} className="form">
-                  {message && (
-                    <p className="message">{message}</p>
-                  )}
-                  <div className="form-group">
-                    <div className="input-wrapper">
-                      <UserIcon className="icon" />
-                      <input
-                        type="text"
-                        placeholder="Username"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        className="input"
-                      />
-                    </div>
-                    <div className="input-wrapper">
-                      <LockIcon className="icon" />
-                      <input
-                        type="password"
-                        placeholder="Pin"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        maxLength={4}
-                        className="input"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="numpad">
-                    {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
-                      <button
-                        key={num}
-                        type="button"
-                        onClick={() => handleNumpadClick(num.toString())}
-                        className="numpad-button"
-                      >
-                        {num}
-                      </button>
-                    ))}
-                    <button
-                      type="button"
-                      onClick={() => handleNumpadClick('0')}
-                      className="numpad-button wide"
-                    >
-                      0
-                    </button>
-                  </div>
-
-                  <button type="submit" className="submit-button">
-                    Submit
-                  </button>
-                </form>
-              </div>
-            </div>
+      <div className="content">
+        <h2>{selectedAccount}</h2>
+        <div className="card-grid">
+          <div className="card">
+            <button className="card-button">Withdraw Cash</button>
+          </div>
+          <div className="card">
+            <button className="card-button">Fund Transfer</button>
+          </div>
+          <div className="card">
+            <button className="card-button">Deposit Cash</button>
+          </div>
+          <div className="card">
+            <button className="card-button">Deposit Check</button>
+          </div>
+          <div className="card wide">
+            <button className="card-button">View Transactions</button>
           </div>
         </div>
-      </main>
+      </div>
 
-      <footer className="footer">
-        <p>&copy; 2024 Bank of Banks. All rights reserved. | For assistance, call 1-800-BANK-BANK</p>
-      </footer>
+      <div className="balance">
+        <h1>Balance</h1>
+        <h2>$0.00</h2>
+      </div>
     </div>
   );
 }
-
-export default App;
