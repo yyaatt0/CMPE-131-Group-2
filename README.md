@@ -28,6 +28,5 @@
 
     - Link to Login/Logout & Registration
     - Replace temp links with actual page links
-    - Figure out how to open page w/o running terminal command
     - CSS touchups
     - Fill in placeholder info
