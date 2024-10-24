@@ -2,7 +2,7 @@
 
 function FooterCard() {
     return (
-        <footer>Footer</footer>
+        <footer>© 2024 Bank of Banks Corporation. All rights reserved.</footer>
     );
 }
 

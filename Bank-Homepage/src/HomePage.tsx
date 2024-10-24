@@ -3,23 +3,23 @@ import CoverCard from "./components/CoverCard";
 import FooterCard from "./components/FooterCard";
 
 /*
-
     Account data reqs:
 
-    id:         Specific number viewable only in database
+    id:         Specific id number
     name:       Name of account
-    balance:    Integer or decimal value representing balance stored in account
+    balance:    Numeric value representing balance stored in account
     link:       String holding link to the account's separate page
-
 */
+type account = {id: number, name: string, balance: number, link: string};
 
 // Temp hardcoded data
-let accounts = [
+let accounts: account[] = [
     { id: 0, name: "Personal Checking", balance: 1000, link: "https://github.com/yyaatt0/CMPE-131-Group-2" },
     { id: 1, name: "Personal Savings", balance: 10000, link: "https://docs.google.com/spreadsheets/d/1WRvQJEyPjevrso0SVSZM8QDFeyPlFV4ibF0aKqr-gvQ/edit?gid=0#gid=0" },
     { id: 2, name: "Business Checking", balance: 93758, link: "https://sjsu.edu/" },
     { id: 3, name: "Business Savings", balance: 500782, link: "https://www.youtube.com/"}
 ];
+let noAccounts: account[] = [];
 
 function HomePage() {
 
@@ -32,7 +32,7 @@ function HomePage() {
     <div>
       <CoverCard />
       <AccountList
-        accounts={accounts}
+        accounts={noAccounts}
         heading="Accounts"
         onSelectItem={handleSelectItem}
       />

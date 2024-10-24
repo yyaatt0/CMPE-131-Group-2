@@ -1,5 +1,6 @@
 import AccountCard from "./AccountCard";
 import "./AccountList.css" // Temp styling [*Move all styling to single css later]
+import NoAccounts from "./NoAccounts";
 
 type account = {id: number, name: string, balance: number, link: string};
 
@@ -15,7 +16,7 @@ function AccountList({accounts, heading, onSelectItem}: AccountListProps) {
     <>
       <h1>{heading}</h1>
       <div className="account-list">
-        {accounts.length === 0 && <p>No existing accounts.</p>} {/*Display if no accounts have been created.*/}
+        {accounts.length === 0 && <NoAccounts/>} {/*Display if no accounts have been created.*/}
         {accounts.map((acc) => (
             <AccountCard
                 key={acc.id} 

@@ -27,3 +27,49 @@
     flex-direction: column;
     width: 100%;
 }
+
+.no-accounts {
+    display: flex;
+    align-items: center;
+}
+
+.acc-desc {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+    background-color: #003459;
+    color: white;
+    box-shadow: 5px 5px 7px black;
+    padding: 15px;
+    margin: 30px;
+}
+
+.desc-img {
+    flex: 200%;
+    text-align: center;
+}
+
+.cac-button {
+    background-color: #003459;
+    border: 3px solid white;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    height: auto;
+    width: 150px;
+    padding: 15px;
+}
+
+.cac-button:hover {
+    background-color: #004c82;
+}
+
+.cac-button a:link {
+    text-decoration: none;
+}
+
+.cac-button a:visited {
+    color: white;
+}
