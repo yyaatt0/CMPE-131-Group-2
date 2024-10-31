@@ -9,6 +9,7 @@ import AdminLogin from './pages/AdminLogin';
 import Homepage from './pages/Homepage';
 import Registration from './pages/Registration';
 import UserLogin from './pages/UserLogin';
+import ForgotPassword from "./pages/ForgotPassword";
 
 const App = () => {
   return (
