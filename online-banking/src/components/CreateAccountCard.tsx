@@ -1,5 +1,3 @@
-import './AccountList.css'
-
 interface CACProps {
     heading: string;
     text: string;

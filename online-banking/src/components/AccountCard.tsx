@@ -1,5 +1,3 @@
-import "./AccountList.css" // temp styling [*move all styling to single css later]
-
 interface AccountCardProps {
     name: string;   // Account name
     balance: number; // Account balance

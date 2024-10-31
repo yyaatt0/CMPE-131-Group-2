@@ -24,7 +24,7 @@ let accounts: account[] = [
 ];
 let noAccounts: account[] = [];
 
-function HomePage() {
+function Homepage() {
 
   // Handle account selection
   const handleSelectItem = () => {
@@ -64,4 +64,4 @@ function HomePage() {
   );
 }
 
-export default HomePage;
+export default Homepage;

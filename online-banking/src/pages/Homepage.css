@@ -1,4 +1,4 @@
-:root {
+  body {
     font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
     line-height: 1.5;
     font-weight: 400;
@@ -6,15 +6,15 @@
     color-scheme: light dark;
     color: black;
     background-color: #003459;
+
+    display: block;
+    width: 100%;
+    margin: 0;
   
     font-synthesis: none;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-  }
-  
-  body {
-    margin: 0;
   }
 
   footer {
@@ -42,3 +42,95 @@
   footer {
     text-align: center;
   }
+
+.account-list{
+    background: white;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 10px;
+}
+
+.account-card{
+    background-color: white;
+    box-shadow: 3px 3px 7px;
+    cursor: pointer;
+    font-size: 24px;
+    height: 200px;
+    display: flex;
+    flex: 33%;
+    padding: 20px;
+    margin: 10px;
+}
+
+.account-card:hover {
+    scale: 101%;
+    transition-duration: 150ms;
+}
+
+.card-text{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.no-accounts {
+    display: flex;
+    align-items: center;
+}
+
+.acc-desc {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+    background-color: #003459;
+    color: white;
+    box-shadow: 5px 5px 7px black;
+    padding: 15px;
+    margin: 30px;
+}
+
+.desc-img {
+    flex: 100%;
+    text-align: center;
+}
+
+.cac-button {
+    background-color: #003459;
+    border: 3px solid white;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    height: auto;
+    width: 150px;
+    padding: 15px;
+}
+
+.cac-button:hover {
+    background-color: #004c82;
+}
+
+.settings-tab {
+    color: black;
+    position: fixed;
+    right: 0;
+    cursor: pointer;
+    height: auto;
+}
+
+.settings-option {
+    background-color: rgba(255, 255, 255, 0.85);
+    border-radius: 15px;
+    box-shadow: 0px 0px 5px;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    width: 100px;
+    padding: 10px;
+    margin: 10px;
+}
+
+.settings-option:hover {
+    background-color: white;
+}
