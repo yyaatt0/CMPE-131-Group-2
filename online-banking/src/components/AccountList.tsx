@@ -1,6 +1,6 @@
 import AccountCard from "./AccountCard";
-import "./AccountList.css" // Temp styling [*Move all styling to single css later]
 import NoAccounts from "./NoAccounts";
+import "../pages/Homepage.css"
 
 type account = {id: number, name: string, balance: number};
 
