@@ -9,29 +9,48 @@ const Registration = () => {
     const [Email, setEmail] = useState<string>('');
     const [Password, setPw] = useState<string>('');
     const [ConfirmPassword, setConfirmPw] = useState<string>('');
-    const [id, setID] = useState<string>('');
     const [errorMssg, setErrorMssg] = useState<string>('');
     const [successMssg, setSuccessMssg] = useState<string>('');
+
+    const validCharacters = /^[A-Za-z0-9!-\*]+$/;
 
     const submission = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
+        if (!validCharacters.test(Username) || !validCharacters.test(Password)) {
+            setErrorMssg('Invalid characters. Only A-Z, a-z, 0-9, and !-* are allowed.');
+            setSuccessMssg('');
+            return;
+        }
+
+        if (Password !== ConfirmPassword) {
+            setErrorMssg('Password and Confirm Password do not match.');
+            setSuccessMssg('');
+            return;
+        }
+
         try {
-            const response = await axios.post('http://localhost:3000', {
+            const emailCheckResponse = await axios.get(`http://localhost:3000/check-email?email=${Email}`);
+            
+            if (emailCheckResponse.data.exists) {
+                setErrorMssg('Email is already registered.');
+                setSuccessMssg('');
+                return;
+            }
+
+            await axios.post('http://localhost:3000/register', {
                 LastName,
-                FirstName, 
+                FirstName,
                 Username,
                 Email,
                 Password,
-                id,
             });
 
             setSuccessMssg('Registration successful!'); 
             setErrorMssg('');
-        } 
-        catch (error) { 
-            setErrorMssg('Please try again!');
-            setSuccessMssg(''); 
+        } catch (error) { 
+            setErrorMssg('Registration failed. Please try again.');
+            setSuccessMssg('');
         }
     };
 
@@ -40,14 +59,15 @@ const Registration = () => {
             <title>Registration Page</title>  
             <header>
                 <nav className="navbar">
-                    <h1> Bank of Banks</h1>
+                    <h1>Bank of Banks</h1>
                 </nav>
             </header>
             
-            <h2> Application</h2>
-            <h4> Welcome. Apply in just minutes.</h4>
+            <h2>Application</h2>
+            <h4>Welcome. Apply in just minutes.</h4>
 
             <form onSubmit={submission}>
+                {/* Form Fields */}
                 <div>
                     <label> Last Name:</label>
                     <input
@@ -102,18 +122,43 @@ const Registration = () => {
                         required />
                 </div>
 
-                <div>
-                    <label>ID:</label>
-                    <input
-                        type="text"
-                        value={id}
-                        onChange={(e) => setID(e.target.value)}
-                        required />
-                </div>
 
-                <button type="submit"> Submit</button>
-                
+                <div className="button" onClick={() => console.log('Button clicked!')}>
+                    Submit
+</div>
+
+                {errorMssg && <p style={{ color: 'red' }}>{errorMssg}</p>}
+                {successMssg && <p style={{ color: 'green' }}>{successMssg}</p>}
             </form>
+
+            {/* Cancel Link */}
+            <a 
+    href="/" 
+    style={{
+        display: 'block', 
+        textAlign: 'center', 
+        margin: '20px auto', 
+        color: 'blue', 
+        textDecoration: 'underline'
+    }}
+>
+    Cancel
+</a>
+        
+
+            {/* Save Link */}
+            <a 
+    href="/" 
+    style={{
+        display: 'block', 
+        textAlign: 'center', 
+        margin: '20px auto', 
+        color: 'blue', 
+        textDecoration: 'underline'
+    }}
+>
+    Save
+</a>
         </div>
     );
 };
