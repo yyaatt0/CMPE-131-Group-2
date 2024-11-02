@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import './Registration.css';
+import './styles.css';
+import { Link } from 'react-router-dom'; 
 
 const Registration = () => {
     const [LastName, setLastName] = useState<string>('');
@@ -30,7 +31,7 @@ const Registration = () => {
         }
 
         try {
-            const emailCheckResponse = await axios.get(`http://localhost:3000/check-email?email=${Email}`);
+            const emailCheckResponse = await axios.get(`http://localhost:3001`);
             
             if (emailCheckResponse.data.exists) {
                 setErrorMssg('Email is already registered.');
@@ -38,7 +39,7 @@ const Registration = () => {
                 return;
             }
 
-            await axios.post('http://localhost:3000/register', {
+            await axios.post('http://localhost:3000', {
                 LastName,
                 FirstName,
                 Username,
