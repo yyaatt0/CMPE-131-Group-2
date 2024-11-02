@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import './styles.css';
-import { Link } from 'react-router-dom'; 
 
 const Registration = () => {
     const [LastName, setLastName] = useState<string>('');
@@ -12,34 +12,47 @@ const Registration = () => {
     const [ConfirmPassword, setConfirmPw] = useState<string>('');
     const [errorMssg, setErrorMssg] = useState<string>('');
     const [successMssg, setSuccessMssg] = useState<string>('');
+    const navigate = useNavigate(); 
 
-    const validCharacters = /^[A-Za-z0-9!-\*]+$/;
+    const validateInput = () => {
+        // test email
+        if (!/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(Email)) {
+            setErrorMssg('Invalid email format.');
+            return false;
+        }
 
-    const submission = async (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-
-        if (!validCharacters.test(Username) || !validCharacters.test(Password)) {
-            setErrorMssg('Invalid characters. Only A-Z, a-z, 0-9, and !-* are allowed.');
-            setSuccessMssg('');
-            return;
+        // test username/password
+        const validChars = /^[A-Za-z0-9!*]*$/;
+        if (!validChars.test(Username) || !validChars.test(Password)) {
+            setErrorMssg('Username and password must contain only A-Z, a-z, 0-9, or !-* characters.');
+            return false;
         }
 
         if (Password !== ConfirmPassword) {
             setErrorMssg('Password and Confirm Password do not match.');
-            setSuccessMssg('');
-            return;
+            return false;
+        }
+
+        return true;
+    };
+
+    const submission = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+
+        if (!validateInput()) {
+            return; 
         }
 
         try {
-            const emailCheckResponse = await axios.get(`http://localhost:3001`);
+            const emailCheckResponse = await axios.get(`http://localhost:3000}`);
             
             if (emailCheckResponse.data.exists) {
-                setErrorMssg('Email is already registered.');
+                setErrorMssg('Email is already registered!');
                 setSuccessMssg('');
                 return;
             }
 
-            await axios.post('http://localhost:3000', {
+            await axios.post('http://localhost:3000/registration', {
                 LastName,
                 FirstName,
                 Username,
@@ -47,8 +60,10 @@ const Registration = () => {
                 Password,
             });
 
-            setSuccessMssg('Registration successful!'); 
+            setSuccessMssg('Congratulation! Registration successful!'); 
             setErrorMssg('');
+            
+            navigate('/Homepage'); 
         } catch (error) { 
             setErrorMssg('Registration failed. Please try again.');
             setSuccessMssg('');
@@ -71,94 +86,70 @@ const Registration = () => {
                 {/* Form Fields */}
                 <div>
                     <label> Last Name:</label>
-                    <input
-                        type="text"
-                        value={LastName}
-                        onChange={(e) => setLastName(e.target.value)}
-                        required />
+                    <input type="text" value={LastName} onChange={(e) => setLastName(e.target.value)} required />
                 </div>
 
                 <div>
                     <label> First Name:</label>
-                    <input
-                        type="text"
-                        value={FirstName}
-                        onChange={(e) => setFirstName(e.target.value)}
-                        required />
+                    <input type="text" value={FirstName} onChange={(e) => setFirstName(e.target.value)} required />
                 </div>
 
                 <div>
                     <label> Username:</label>
-                    <input
-                        type="text"
-                        value={Username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        required />
+                    <input type="text" value={Username} onChange={(e) => setUsername(e.target.value)} required />
                 </div>
 
                 <div>
                     <label>Email:</label>
-                    <input
-                        type="email"
-                        value={Email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required />
+                    <input type="email" value={Email} onChange={(e) => setEmail(e.target.value)} required />
                 </div>
          
                 <div>
                     <label>Password:</label>
-                    <input
-                        type="password"
-                        value={Password}
-                        onChange={(e) => setPw(e.target.value)}
-                        required />
+                    <input type="password" value={Password} onChange={(e) => setPw(e.target.value)} required />
                 </div>
                 
                 <div>
                     <label>Confirm Password:</label>
-                    <input
-                        type="password"
-                        value={ConfirmPassword}
-                        onChange={(e) => setConfirmPw(e.target.value)}
-                        required />
+                    <input type="password" value={ConfirmPassword} onChange={(e) => setConfirmPw(e.target.value)} required />
                 </div>
 
-
                 <div className="button" onClick={() => console.log('Button clicked!')}>
-                    Submit
+                   Submit
 </div>
 
-                {errorMssg && <p style={{ color: 'red' }}>{errorMssg}</p>}
-                {successMssg && <p style={{ color: 'green' }}>{successMssg}</p>}
-            </form>
 
-            {/* Cancel Link */}
-            <a 
-    href="/" 
-    style={{
-        display: 'block', 
-        textAlign: 'center', 
-        margin: '20px auto', 
-        color: 'blue', 
-        textDecoration: 'underline'
-    }}
+               {errorMssg && <p style={{ color: 'red' }}>{errorMssg}</p>}
+               {successMssg && <p style={{ color: 'green' }}>{successMssg}</p>}
+           </form>
+
+
+         
+           <a
+   href="/"
+   style={{
+       display: 'block', 
+       textAlign: 'center',
+       margin: '20px auto',
+       color: 'blue',
+       textDecoration: 'underline'
+      
+   }}
 >
-    Cancel
+   Cancel
 </a>
-        
-
-            {/* Save Link */}
-            <a 
-    href="/" 
-    style={{
-        display: 'block', 
-        textAlign: 'center', 
-        margin: '20px auto', 
-        color: 'blue', 
-        textDecoration: 'underline'
-    }}
+                <a
+   href="/"
+   style={{
+       display: 'block',
+       textAlign: 'center',
+       margin: '20px auto',
+       color: 'blue',
+       textDecoration: 'underline'
+      
+   }}
 >
-    Save
+   Save
 </a>
         </div>
     );
