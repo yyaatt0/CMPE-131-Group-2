@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-const userLogin = () => {
+const UserLogin = () => {
   const [username, setUsername] = useState<string>('');
   const [password, setPw] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
@@ -70,4 +70,4 @@ const userLogin = () => {
   );
 };
 
-export default userLogin;
+export default UserLogin;
