@@ -5,11 +5,11 @@ import NullPage from './pages/NullPage';
 import AtmFeature from './pages/AtmFeature';
 import AtmLogin from './pages/AtmLogin';
 import AccountPage from './pages/AccountPage';
-// import AdminLogin from './pages/AdminLogin';
+import AdminLogin from './pages/AdminLogin';
 // import Homepage from './pages/Homepage';
-// import Registration from './pages/Registration';
-// import UserLogin from "./pages/UserLogin";
-// import ForgotPassword from "./pages/ForgotPassword";
+import Registration from './pages/Registration';
+import UserLogin from "./pages/UserLogin";
+import ForgotPassword from "./pages/ForgotPassword";
 
 const App = () => {
   return (
@@ -21,11 +21,11 @@ const App = () => {
         <Route path="/atmlogin" element={<AtmLogin />} />
         <Route path="/atmfeature" element={<AtmFeature />} />
         <Route path="/accountpage" element={<AccountPage />} />
-        {/* <Route path="/adminlogin" element={<AdminLogin />} /> */}
+        <Route path="/adminlogin" element={<AdminLogin />} />
         {/* <Route path="/homepage" element={<Homepage />} /> */}
-        {/* <Route path="/registration" element={<Registration />} />
+        <Route path="/registration" element={<Registration />} />
         <Route path="/userlogin" element={<UserLogin />} />
-        <Route path="forgotpassword" element={<ForgotPassword />} /> */}
+        <Route path="forgotpassword" element={<ForgotPassword />} />
 
         {/* Any other url input that doesn't match the ones above will land to this null page */}
         <Route path="*" element={<NullPage/>} />
