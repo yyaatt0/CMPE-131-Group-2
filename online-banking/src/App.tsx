@@ -11,6 +11,9 @@ import Registration from './pages/Registration';
 import UserLogin from "./pages/UserLogin";
 import ForgotPassword from "./pages/ForgotPassword";
 
+import VerifyCode from './pages/VerifyCode';
+import ResetPassword from './pages/ResetPassword';
+
 const App = () => {
   return (
     <BrowserRouter>
@@ -25,7 +28,10 @@ const App = () => {
         <Route path="/homepage" element={<Homepage />} />
         <Route path="/registration" element={<Registration />} />
         <Route path="/userlogin" element={<UserLogin />} />
-        <Route path="forgotpassword" element={<ForgotPassword />} />
+
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/verify-code" element={<VerifyCode />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
 
         {/* Any other url input that doesn't match the ones above will land to this null page */}
         <Route path="*" element={<NullPage/>} />
