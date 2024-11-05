@@ -19,7 +19,7 @@ const VerifyCode = () => {
 
       if (response.data.success) {
         setSuccessMsg('Verification successful!');
-        navigate('/reset-password');
+        navigate('/resetPassword');
       } else {
         setErrorMsg('Invalid verification code. Please try again1');
       }
