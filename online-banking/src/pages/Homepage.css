@@ -29,9 +29,7 @@
     font-size: 8em;
     font-weight: bold;
     color: white;
-    text-align: center;
-    height: 500px;
-    line-height: 500px;;
+    text-shadow: 5px 5px 5px black;
   }
   
   h1 {
@@ -117,10 +115,11 @@
     right: 0;
     cursor: pointer;
     height: auto;
+    z-index: 1;
 }
 
 .settings-option {
-    background-color: rgba(255, 255, 255, 0.85);
+    background-color: white;
     border-radius: 15px;
     box-shadow: 0px 0px 5px;
     font-size: 18px;
@@ -129,8 +128,4 @@
     width: 100px;
     padding: 10px;
     margin: 10px;
-}
-
-.settings-option:hover {
-    background-color: white;
 }

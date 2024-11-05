@@ -1,9 +1,12 @@
 import AccountList from "../components/AccountList";
-import HeaderCard from "../components/HeaderCard";
+import WideImage from "../components/WideImage";
 import FooterCard from "../components/FooterCard";
 import SettingsTab from "../components/SettingsTab";
+
 import { useState } from "react";
 import './Homepage.css'
+
+import images from '../images'
 
 /*
     Account data reqs:
@@ -39,11 +42,16 @@ function Homepage() {
 
   return (
     <div>
+
       <SettingsTab 
         loggedIn={loggedIn} 
         onSelectOption={handleSelectOption}
       />
-      <HeaderCard />
+
+      <WideImage 
+        image={images.home_cover}
+        text="Bank of Banks"
+      />
 
       {/* If logged in, display account listings */}
       {loggedIn === 1 && 
@@ -62,6 +70,11 @@ function Homepage() {
           onSelectItem={handleSelectItem}
         />
       }
+
+      <WideImage
+        image={images.home_signing}
+      />
+
       <FooterCard />
     </div>
   );
