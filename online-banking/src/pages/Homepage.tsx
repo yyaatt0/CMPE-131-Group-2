@@ -1,9 +1,12 @@
 import AccountList from "../components/AccountList";
-import HeaderCard from "../components/HeaderCard";
+import WideImage from "../components/WideImage";
 import FooterCard from "../components/FooterCard";
 import SettingsTab from "../components/SettingsTab";
+
 import { useState } from "react";
 import './Homepage.css'
+
+import images from '../images'
 
 /*
     Account data reqs:
@@ -11,7 +14,6 @@ import './Homepage.css'
     id:         Specific id number
     name:       Name of account
     balance:    Numeric value representing balance stored in account
-    link:       String holding link to the account's separate page
 */
 type account = {id: number, name: string, balance: number};
 
@@ -40,11 +42,18 @@ function Homepage() {
 
   return (
     <div>
+
       <SettingsTab 
         loggedIn={loggedIn} 
         onSelectOption={handleSelectOption}
       />
-      <HeaderCard />
+
+      <WideImage 
+        image={images.home_cover}
+        text="Bank of Banks"
+      />
+
+      {/* If logged in, display account listings */}
       {loggedIn === 1 && 
         <AccountList
           accounts={accounts}
@@ -52,6 +61,8 @@ function Homepage() {
           onSelectItem={handleSelectItem}
         />
       }
+
+      {/* If not logged in, display links to go to account creation pages */}
       {loggedIn === 0 && 
         <AccountList
           accounts={noAccounts}
@@ -59,6 +70,11 @@ function Homepage() {
           onSelectItem={handleSelectItem}
         />
       }
+
+      <WideImage
+        image={images.home_signing}
+      />
+
       <FooterCard />
     </div>
   );
