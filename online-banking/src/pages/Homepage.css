@@ -1,131 +1,112 @@
-  body {
-    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-    line-height: 1.5;
-    font-weight: 400;
-  
-    color-scheme: light dark;
-    color: black;
-    background-color: #003459;
+.wide-image-text {
 
-    display: block;
-    width: 100%;
-    margin: 0;
-  
-    font-synthesis: none;
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
+  /* Text style */
+  font-size: 6em;
+  font-weight: bold;
+  color: white;
+  text-shadow: 5px 5px 5px black;
 
-  footer {
-    font-size: 1em;
-    font-weight: 500;
-    color: white;
-    height: 100px;
-    padding: 25px;
-  }
-  
-  header {
-    font-size: 8em;
-    font-weight: bold;
-    color: white;
-    text-shadow: 5px 5px 5px black;
-  }
-  
-  h1 {
-    color: white;
-    margin: 15px;
-  }
+  /* Text position - Do not change */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
 
-  footer {
-    text-align: center;
-  }
+}
+  
+.section-header {
+  background-color: #003459;
+  color: white;
+  padding: 15px;
+  margin: 0px;
+}
 
 .account-list{
-    background: white;
-    display: flex;
-    flex-wrap: wrap;
-    padding: 10px;
+  background: white;
+  display: flex;
+  flex-wrap: wrap;
+  padding: 10px;
 }
 
 .account-card{
-    background-color: white;
-    box-shadow: 3px 3px 7px;
-    cursor: pointer;
-    font-size: 24px;
-    height: 200px;
-    display: flex;
-    flex: 33%;
-    padding: 20px;
-    margin: 10px;
+  background-color: white;
+  box-shadow: 3px 3px 7px;
+  cursor: pointer;
+  font-size: 24px;
+  height: 200px;
+  display: flex;
+  flex: 33%;
+  padding: 20px;
+  margin: 10px;
 }
 
 .account-card:hover {
-    scale: 101%;
-    transition-duration: 150ms;
+  scale: 101%;
+  transition-duration: 150ms;
 }
 
 .card-text{
-    display: flex;
-    flex-direction: column;
-    width: 100%;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
 }
 
 .no-accounts {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .acc-desc {
-    display: flex;
-    flex-direction: column;
-    text-align: center;
-    align-items: center;
-    background-color: #003459;
-    color: white;
-    box-shadow: 5px 5px 7px black;
-    padding: 15px;
-    margin: 30px;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  align-items: center;
+  background-color: #003459;
+  color: white;
+  box-shadow: 5px 5px 7px black;
+  padding: 15px;
+  margin: 30px;
 }
 
 .desc-img {
-    flex: 100%;
-    text-align: center;
+  flex: 100%;
+  text-align: center;
 }
 
 .cac-button {
-    background-color: #003459;
-    border: 3px solid white;
-    border-radius: 10px;
-    font-size: 14px;
-    font-weight: bold;
-    cursor: pointer;
-    height: auto;
-    width: 150px;
-    padding: 15px;
+  background-color: #003459;
+  border: 3px solid white;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  height: auto;
+  width: 150px;
+  padding: 15px;
 }
 
 .cac-button:hover {
-    background-color: #004c82;
+  background-color: #004c82;
 }
 
 .settings-tab {
-    color: black;
-    position: fixed;
-    right: 0;
-    cursor: pointer;
-    height: auto;
-    z-index: 1;
+  color: black;
+  position: fixed;
+  right: 0;
+  cursor: pointer;
+  height: auto;
+  z-index: 1;
 }
 
 .settings-option {
-    background-color: white;
-    border-radius: 15px;
-    box-shadow: 0px 0px 5px;
-    font-size: 18px;
-    font-weight: bold;
-    text-align: center;
-    width: 100px;
-    padding: 10px;
-    margin: 10px;
+  background-color: white;
+  border-radius: 15px;
+  box-shadow: 0px 0px 5px;
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+  width: 100px;
+  padding: 10px;
+  margin: 10px;
 }
