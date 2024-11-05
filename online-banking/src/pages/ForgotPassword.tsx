@@ -10,7 +10,7 @@ const ForgotPassword = () => {
     e.preventDefault();
     if (email) {
       console.log('Sending verification code to:', email);
-      navigate('/verify-code');
+      navigate('/verifyCode');
     } else {
       setErrorMsg('Please enter your email address!');
     }
@@ -85,3 +85,4 @@ const ForgotPassword = () => {
 };
 
 export default ForgotPassword;
+
