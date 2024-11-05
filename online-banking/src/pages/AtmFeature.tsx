@@ -4,13 +4,18 @@ import { useState } from "react";
 // This package is for the icons used in this page
 import { CornerUpLeft } from "lucide-react"; 
 
+interface AccountBalance {
+  [key: string]: number;
+}
+
+
 const AtmFeature = () => {
   // For the side Nav bar to select accounts
-  const [selectedAccount, setSelectedAccount] = useState<string>("Savings Account"); // Hardcoded for now
+  const [selectedAccount, setSelectedAccount] = useState<string>("Savings Account"); // BACKEND: Change to whatever first account pops up
   const [hoveredAccount, setHoveredAccount] = useState<string | null>(null);
 
   // List of accounts
-  // Later, import whatever data from the backend into the this array where it will fill up
+  // BACKEND: Fill this array from the data base based on what account the user has 
   const accounts: string[] = ["Savings Account", "Checking Account"];
   
   // This is for the hover and active portion of the logout button
@@ -21,6 +26,9 @@ const AtmFeature = () => {
   const actions = ['Withdraw Cash', 'Fund Transfer', 'Deposit Cash', 'Deposit Check', 'View Transactions'];
   const [isActionBtnHovered, setActionBtnHovered] = useState<number | null>(null);
   const [isActionBtnActive, setActionBtnActive] = useState<number | null>(null);
+
+  const [activePopup, setActivePopup] = useState<string | null>(null);
+
 
   return (
     // The div below describes basic body style
