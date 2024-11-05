@@ -14,7 +14,7 @@ function AccountList({accounts, heading, onSelectItem}: AccountListProps) {
 
   return (
     <>
-      <h1>{heading}</h1>
+      <h1 className="section-header">{heading}</h1>
       <div className="account-list">
         {accounts.length === 0 && <NoAccounts/>} {/*Display if no accounts have been created.*/}
         {accounts.map((acc) => (

@@ -5,6 +5,7 @@ import SettingsTab from "../components/SettingsTab";
 
 import { useState } from "react";
 import './Homepage.css'
+import './styles.css'
 
 import images from '../images'
 

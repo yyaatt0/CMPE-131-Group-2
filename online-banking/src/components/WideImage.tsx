@@ -11,7 +11,7 @@ const opacity = '0.5'
 
 function WideImage({image, text}: WideImageProps) {
     return (
-        <div style={{position: 'relative', height: height}}>
+        <div style={{position: 'relative', height: height, backgroundColor: '#003459'}}>
             <img 
                 src={image} 
                 alt={text} 
@@ -23,16 +23,8 @@ function WideImage({image, text}: WideImageProps) {
                     opacity: opacity,
                 }}
             />
-            <header 
-                style={{
-                    position: 'absolute',
-                    top: '50%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    textAlign: 'center'
-                }}
-            >
-            {text}
+            <header className="wide-image-text">
+                {text}
             </header>
         </div>
     );
