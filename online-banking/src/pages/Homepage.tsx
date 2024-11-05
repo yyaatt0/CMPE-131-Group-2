@@ -11,7 +11,6 @@ import './Homepage.css'
     id:         Specific id number
     name:       Name of account
     balance:    Numeric value representing balance stored in account
-    link:       String holding link to the account's separate page
 */
 type account = {id: number, name: string, balance: number};
 
@@ -45,6 +44,8 @@ function Homepage() {
         onSelectOption={handleSelectOption}
       />
       <HeaderCard />
+
+      {/* If logged in, display account listings */}
       {loggedIn === 1 && 
         <AccountList
           accounts={accounts}
@@ -52,6 +53,8 @@ function Homepage() {
           onSelectItem={handleSelectItem}
         />
       }
+
+      {/* If not logged in, display links to go to account creation pages */}
       {loggedIn === 0 && 
         <AccountList
           accounts={noAccounts}
