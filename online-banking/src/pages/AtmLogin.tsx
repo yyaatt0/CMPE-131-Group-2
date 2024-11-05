@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { LockIcon, UserIcon } from 'lucide-react';
-import { useAsyncError, useFetcher } from 'react-router-dom';
+// import { useAsyncError, useFetcher } from 'react-router-dom';
 
 const AtmLogin = () => {
   const [username, setUsername] = useState<string>('');
@@ -42,7 +42,7 @@ const AtmLogin = () => {
 
   return (
     // The div below describes the basic body style
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', backgroundColor: '#f3f4f6', fontFamily: 'sans-serif' }}>
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', backgroundColor: '#f3f4f6', fontFamily: 'sans-serif'}}>
       
       {/* Header style */}
       <header style={{ backgroundColor: '#003459', color: 'white', padding: '24px', textAlign: 'center', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
@@ -186,7 +186,7 @@ const AtmLogin = () => {
         </div>
       </main>
 
-      {/* The copy right stuff down below */}
+      {/* The copyright stuff down below */}
       <footer style={{ backgroundColor: '#003459', color: 'white', textAlign: 'center', padding: '16px', fontSize: '0.875rem' }}>
         <p>&copy; 2024 Bank of Banks. All rights reserved. | For assistance, call 1-800-BANK-BANK</p>
       </footer>
