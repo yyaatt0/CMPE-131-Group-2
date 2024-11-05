@@ -29,9 +29,9 @@ const App = () => {
         <Route path="/registration" element={<Registration />} />
         <Route path="/userlogin" element={<UserLogin />} />
 
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/verify-code" element={<VerifyCode />} />
-        <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/forgotPassword" element={<ForgotPassword />} />
+        <Route path="/verifyCode" element={<VerifyCode />} />
+        <Route path="/resetPassword" element={<ResetPassword />} />
 
         {/* Any other url input that doesn't match the ones above will land to this null page */}
         <Route path="*" element={<NullPage/>} />
