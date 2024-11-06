@@ -19,7 +19,7 @@ function NavTab({name, path}: NavTabProps) {
                 style={{
                     display: 'table-cell',
                     verticalAlign: 'middle',
-                    transform: 'translate(15%, 5%)'
+                    transform: 'translate(25%, 5%)'
                 }}
             >
                 {(() => {
@@ -39,7 +39,6 @@ function NavTab({name, path}: NavTabProps) {
                 style={{
                     display: 'table-cell', 
                     verticalAlign: 'middle',
-                    width: '100px'
                 }}
             >
             {name}

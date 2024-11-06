@@ -31,7 +31,7 @@ footer {
 nav {
   background-color: #003459;
   display: flex;
-  height: 75px;
+  height: 65px;
 }
 
 .nav-tab {
@@ -47,7 +47,7 @@ nav {
   text-align: center;
   text-decoration: none;
 
-  width: 150px;
+  width: 200px;
   height: 100%;
 }
 
