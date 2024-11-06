@@ -1,7 +1,7 @@
 import AccountList from "../components/AccountList";
 import WideImage from "../components/WideImage";
 import FooterCard from "../components/FooterCard";
-import SettingsTab from "../components/SettingsTab";
+import DevTools from "../components/DevTools";
 
 import { useState } from "react";
 import './Homepage.css'
@@ -46,13 +46,13 @@ function Homepage() {
   return (
     <div>
 
-      <NavBar/>
-
       {/* Temp dev tools tab to test certain functionalities */}
-      <SettingsTab 
+      <DevTools 
         loggedIn={loggedIn} 
         onSelectOption={handleSelectOption}
       />
+
+      <NavBar/>
 
       <WideImage 
         image={images.home_cover}

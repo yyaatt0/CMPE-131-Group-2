@@ -1,24 +1,24 @@
 import { useState } from "react";
 
-interface SettingsTapProps {
+interface DevToolsProps {
     loggedIn: number;
     onSelectOption: (setStatus: number) => void;
 }
 
-interface DOProps {
+interface DisplayOptionsProps {
     loggedIn: number;
     onSelectOption: (setStatus: number) => void;
 }
 
-interface SOProps {
+interface DevToolProps {
     text: String;
     onClick?: () => void;
 }
 
-function SettingsOption({text, onClick}: SOProps){
+function DevTool({text, onClick}: DevToolProps){
     return(
         <div 
-            className="settings-option"
+            className="dev-tool"
             onClick={onClick}
             >
             {text}
@@ -26,12 +26,12 @@ function SettingsOption({text, onClick}: SOProps){
     )
 }
 
-function DisplayOptions({loggedIn, onSelectOption}: DOProps) {
+function DisplayOptions({loggedIn, onSelectOption}: DisplayOptionsProps) {
 
     if(loggedIn) {
         return (
             <>
-                <SettingsOption 
+                <DevTool 
                     text="Toggle Accounts" 
                     onClick={() => onSelectOption(0)} 
                 />
@@ -41,7 +41,7 @@ function DisplayOptions({loggedIn, onSelectOption}: DOProps) {
 
     return (
         <>
-            <SettingsOption 
+            <DevTool 
                 text="Toggle Accounts" 
                 onClick={() => onSelectOption(1)} 
             />
@@ -49,13 +49,13 @@ function DisplayOptions({loggedIn, onSelectOption}: DOProps) {
     );
 }
 
-function SettingsTab({loggedIn, onSelectOption}: SettingsTapProps) {
+function DevTools({loggedIn, onSelectOption}: DevToolsProps) {
 
     const [clicked, setClicked] = useState(0);
 
     return (
-        <div className="settings-tab">
-            <SettingsOption 
+        <div className="dev-tab">
+            <DevTool 
                 text="Dev Tools" 
                 onClick={() => 
                     clicked ? setClicked(0) : setClicked(1)}
@@ -65,4 +65,4 @@ function SettingsTab({loggedIn, onSelectOption}: SettingsTapProps) {
     );
 }
 
-export default SettingsTab;
+export default DevTools;
