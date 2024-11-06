@@ -1,3 +1,4 @@
+import ArrowButton from "./ArrowButton";
 
 
 /* ===== New Account Info Section ===== */
@@ -18,12 +19,7 @@ function AccountInfoCard({heading, text}: AccInfoProps) {
       <div className="acc-desc">
           <h2>{heading}</h2>
           <p>{text}</p>
-          <div 
-              className="cac-button" 
-              onClick={() => window.location.href="/userlogin"}
-              >
-              Create Account
-          </div>
+          <ArrowButton text="Create Account" path="/userlogin"/>
       </div>
   );
 }

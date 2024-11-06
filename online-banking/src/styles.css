@@ -15,7 +15,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-  
+
 footer {
   background-color: #003459;
 
@@ -53,4 +53,26 @@ nav {
 
 .nav-tab:hover {
   background-color: #004f88;
+}
+
+.arrow-button {
+  background-color: #003459;
+  border: 3px solid white;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-around;
+
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+
+  cursor: pointer;
+
+  height: auto;
+  width: auto;
+  padding: 15px;
+}
+
+.arrow-button:hover {
+  background-color: #004c82;
 }
