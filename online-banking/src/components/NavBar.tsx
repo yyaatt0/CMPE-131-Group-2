@@ -1,4 +1,4 @@
-import '../pages/styles.css'
+import '../styles.css'
 
 interface NavTabProps {
     name: string;

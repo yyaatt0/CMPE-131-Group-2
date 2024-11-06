@@ -5,10 +5,11 @@ import SettingsTab from "../components/SettingsTab";
 
 import { useState } from "react";
 import './Homepage.css'
-import './styles.css'
+import '../styles.css'
 
 import images from '../images'
 import NavBar from "../components/NavBar";
+import SectionHeader from "../components/SectionHeader";
 
 /*
     Account data reqs:
@@ -32,7 +33,7 @@ function Homepage() {
 
   // Handle account selection
   const handleSelectItem = () => {
-    window.location.href = "https://github.com/yyaatt0/CMPE-131-Group-2"; // Redirect to page specified by account
+    window.location.href = "/accountpage"; // Redirect to account page
   };
 
   const [loggedIn, setLoggedIn] = useState(0);
@@ -47,7 +48,7 @@ function Homepage() {
 
       <NavBar/>
 
-      {/* NavBar will replace this. Will remove once login can redirect back to homepage */}
+      {/* Temp dev tools tab to test certain functionalities */}
       <SettingsTab 
         loggedIn={loggedIn} 
         onSelectOption={handleSelectOption}
@@ -58,12 +59,13 @@ function Homepage() {
         text="Bank of Banks"
       />
 
+      <SectionHeader text="Accounts"/>
+
       {/* If logged in, display account listings */}
       {loggedIn === 1 && 
         <AccountList
           accounts={accounts}
-          heading="Accounts"
-          onSelectItem={handleSelectItem}
+          onSelectAccount={handleSelectItem}
         />
       }
 
@@ -71,8 +73,7 @@ function Homepage() {
       {loggedIn === 0 && 
         <AccountList
           accounts={noAccounts}
-          heading="Accounts"
-          onSelectItem={handleSelectItem}
+          onSelectAccount={handleSelectItem}
         />
       }
 
