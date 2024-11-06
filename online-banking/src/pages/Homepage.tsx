@@ -8,6 +8,7 @@ import './Homepage.css'
 import './styles.css'
 
 import images from '../images'
+import NavBar from "../components/NavBar";
 
 /*
     Account data reqs:
@@ -44,6 +45,9 @@ function Homepage() {
   return (
     <div>
 
+      <NavBar/>
+
+      {/* NavBar will replace this. Will remove once login can redirect back to homepage */}
       <SettingsTab 
         loggedIn={loggedIn} 
         onSelectOption={handleSelectOption}

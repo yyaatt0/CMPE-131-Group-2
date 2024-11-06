@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { LockIcon, UserIcon } from 'lucide-react';
+import FooterCard from '../components/FooterCard';
+import NavBar from '../components/NavBar';
 // import { useAsyncError, useFetcher } from 'react-router-dom';
 
 const AtmLogin = () => {
@@ -41,14 +43,18 @@ const AtmLogin = () => {
   };
 
   return (
+
     // The div below describes the basic body style
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', backgroundColor: '#f3f4f6', fontFamily: 'sans-serif'}}>
-      
+
       {/* Header style */}
       <header style={{ backgroundColor: '#003459', color: 'white', padding: '24px', textAlign: 'center', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
         <h1 style={{ fontSize: '2rem', fontWeight: 'bold' }}>Bank of Banks ATM</h1>
         <p style={{ fontSize: '1.125rem', marginTop: '8px' }}>Welcome to your secure banking experience</p>
       </header>
+
+      {/* Navigation Bar */}
+      <NavBar/>
 
       {/* The main below is describing the large center gray background portion */}
       <main style={{ flexGrow: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '16px', backgroundColor: '#e5e7eb' }}>
@@ -187,9 +193,7 @@ const AtmLogin = () => {
       </main>
 
       {/* The copyright stuff down below */}
-      <footer style={{ backgroundColor: '#003459', color: 'white', textAlign: 'center', padding: '16px', fontSize: '0.875rem' }}>
-        <p>&copy; 2024 Bank of Banks. All rights reserved. | For assistance, call 1-800-BANK-BANK</p>
-      </footer>
+      <FooterCard/>
     </div>
   );
 }

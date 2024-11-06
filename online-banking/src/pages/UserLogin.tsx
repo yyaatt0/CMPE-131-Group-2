@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import NavBar from '../components/NavBar';
 
 const UserLogin = () => {
   const [username, setUsername] = useState<string>('');
@@ -42,6 +43,9 @@ const UserLogin = () => {
           <h1>Bank of Banks</h1>
         </nav>
       </header>
+
+      {/* Navigation Bar */}
+      <NavBar/>
       
       {/* This div holds the login potion of the page, like the textbox for the password/username,
       some of the buttons, and titles */}
