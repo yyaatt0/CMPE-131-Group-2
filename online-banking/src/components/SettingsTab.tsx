@@ -32,7 +32,7 @@ function DisplayOptions({loggedIn, onSelectOption}: DOProps) {
         return (
             <>
                 <SettingsOption 
-                    text="Sign-out" 
+                    text="Toggle Accounts" 
                     onClick={() => onSelectOption(0)} 
                 />
             </>
@@ -42,7 +42,7 @@ function DisplayOptions({loggedIn, onSelectOption}: DOProps) {
     return (
         <>
             <SettingsOption 
-                text="Sign-In" 
+                text="Toggle Accounts" 
                 onClick={() => onSelectOption(1)} 
             />
         </>
@@ -56,7 +56,7 @@ function SettingsTab({loggedIn, onSelectOption}: SettingsTapProps) {
     return (
         <div className="settings-tab">
             <SettingsOption 
-                text="Options" 
+                text="Dev Tools" 
                 onClick={() => 
                     clicked ? setClicked(0) : setClicked(1)}
             />

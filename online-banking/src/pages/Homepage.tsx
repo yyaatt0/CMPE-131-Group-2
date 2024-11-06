@@ -47,6 +47,7 @@ function Homepage() {
 
       <NavBar/>
 
+      {/* NavBar will replace this. Will remove once login can redirect back to homepage */}
       <SettingsTab 
         loggedIn={loggedIn} 
         onSelectOption={handleSelectOption}

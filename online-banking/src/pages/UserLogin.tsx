@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import NavBar from '../components/NavBar';
 
 const UserLogin = () => {
   const [username, setUsername] = useState<string>('');
@@ -28,6 +29,9 @@ const UserLogin = () => {
 
   return (
     <div style={{ fontFamily: ' sans-serif' , flexDirection: 'column', minHeight: '100vh'}}>
+
+      {/* Navigation Bar */}
+      <NavBar/>
 
       {/* Holds the nav bar and heading  */}
       <header>
