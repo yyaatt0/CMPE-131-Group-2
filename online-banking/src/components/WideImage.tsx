@@ -1,8 +1,14 @@
+/*
+    Component Description:
 
+    Inserts an image onto the page that will cover the whole legnth of the page.
+    Image is partially opaque with a blue background and 500px tall. Text can be
+    added as an overlay to the image.
+*/
 
 interface WideImageProps {
-    image: string;
-    text?: string;
+    image: string;  // [Required]: path to image
+    text?: string;  // Text to display centered over image
 }
 
 // Vars to control modifiable attributes

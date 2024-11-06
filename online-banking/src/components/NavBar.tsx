@@ -1,3 +1,5 @@
+import {House, UserRound, DollarSign} from 'lucide-react'
+
 import '../styles.css'
 
 interface NavTabProps {
@@ -13,14 +15,35 @@ function NavTab({name, path}: NavTabProps) {
                 window.location.href=path
             }
         >
+            <div
+                style={{
+                    display: 'table-cell',
+                    verticalAlign: 'middle',
+                    transform: 'translate(25%, 5%)'
+                }}
+            >
+                {(() => {
+                    switch (name) {
+                        case "Home":
+                            return <House/>
+                        case "ATM":
+                            return <DollarSign/>
+                        case "Login":
+                            return <UserRound/>
+                        default:
+                            return
+                    }
+                })()}
+            </div>
             <p 
                 style={{
                     display: 'table-cell', 
-                    verticalAlign: 'middle'
+                    verticalAlign: 'middle',
                 }}
             >
             {name}
             </p>
+
         </div>
     );
 }

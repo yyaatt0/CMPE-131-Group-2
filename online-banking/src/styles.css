@@ -15,7 +15,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-  
+
 footer {
   background-color: #003459;
 
@@ -31,7 +31,7 @@ footer {
 nav {
   background-color: #003459;
   display: flex;
-  height: 75px;
+  height: 65px;
 }
 
 .nav-tab {
@@ -53,4 +53,34 @@ nav {
 
 .nav-tab:hover {
   background-color: #004f88;
+}
+
+.section-header {
+  background-color: #003459;
+  color: white;
+
+  padding: 15px;
+  margin: 0px;
+}
+
+.arrow-button {
+  background-color: #003459;
+  border-radius: 10px;
+  box-shadow: 0px 2px 3px black;
+  display: flex;
+  align-items: center;
+
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+
+  cursor: pointer;
+
+  height: auto;
+  width: auto;
+  padding: 15px;
+}
+
+.arrow-button:hover {
+  background-color: #03528a;
 }
