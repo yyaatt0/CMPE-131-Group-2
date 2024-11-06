@@ -1,18 +1,30 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
-const ForgotPassword = () => {
-  const [email, setEmail] = useState('');
+
+const VerifyCode = () => {
+  const [code, setCode] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
   const navigate = useNavigate();
+  const [successMsg, setSuccessMsg] = useState<string>('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email) {
-      console.log('Sending verification code to:', email);
-      navigate('/verifyCode');
-    } else {
-      setErrorMsg('Please enter your email address!');
+    try {
+      const response = await axios.post('https://backend/verify-code', {
+        code: code,
+      });
+
+      if (response.data.success) {
+        setSuccessMsg('Verification successful!');
+        navigate('/resetPassword');
+      } else {
+        setErrorMsg('Invalid verification code. Please try again1');
+      }
+    } catch (error) {
+      setErrorMsg('An error occurred!');
     }
   };
 
@@ -30,20 +42,21 @@ const ForgotPassword = () => {
     </header>
 
     <div 
-      style={{
-        width: '300px',
-        margin: '100px auto',
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'white',
-        boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
-        padding: '20px',
-        borderRadius: '10px',
-      }}>
-         <h2 style={{ textAlign: 'center', fontWeight: 'bold', fontSize: '25px', marginTop: '40px'}}>Forgot Password</h2>
+        style={{
+          width: '300px',
+          margin: '100px auto',
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: 'white',
+          boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
+          padding: '20px',
+          borderRadius: '10px',
+        }}>
+
+      <h2 style={{ textAlign: 'center', fontWeight: 'bold', fontSize: '25px', marginTop: '40px'}}>Verify Code</h2>
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
           <div style={{ width: '100%' }}>
-            <label style={{ display: 'block', marginBottom: '5px' , fontWeight: 'bold'}}>Email:</label>
+            <label style={{ display: 'block', marginBottom: '5px' , fontWeight: 'bold'}}>Enter your code:</label>
             <input
               style={{
                 padding: '10px',
@@ -54,16 +67,17 @@ const ForgotPassword = () => {
                 marginBottom: '15px',
                 width: '93%'
               }}
+            type="text"
+            value={code}
+            onChange={(e) => setCode(e.target.value)}
+            required
+          />
+        </div>
 
-              type="email"
-              name="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              id="email"
-              required
-            />
-          </div>
-          <button 
+
+
+
+        <button 
             style={{
               width: '100px',
               padding: '10px',
@@ -77,12 +91,17 @@ const ForgotPassword = () => {
               fontSize: '15px'
             }}>Submit</button>
           <br />
+          {successMsg && <div className="success-message">{successMsg}</div>}
           {errorMsg && <div className="error-message">{errorMsg}</div>}
-        </form>
-      </div>
+       
+
+
+
+
+      </form>
+    </div>
     </div>
   );
 };
 
-export default ForgotPassword;
-
+export default VerifyCode;
