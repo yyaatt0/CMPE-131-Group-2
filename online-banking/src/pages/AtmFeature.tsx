@@ -163,6 +163,10 @@ const AtmFeature = () => {
                   fontSize: '1.5rem',
                   borderRadius: '0.375rem',
                   borderWidth: '2px',
+                  borderStyle: 'solid',
+                  borderColor: 'black',
+                  backgroundColor: 'white',
+                  color: 'black',
                 }}
               />
             </div>
@@ -181,6 +185,7 @@ const AtmFeature = () => {
                     border: 'none',
                     cursor: 'pointer',
                     transition: 'background-color 0.2s',
+                    color: 'black',
                     // ':hover': { backgroundColor: '#d1d5db' }
                   }}
                 >
@@ -232,6 +237,10 @@ const AtmFeature = () => {
                       fontSize: '1.5rem',
                       borderRadius: '0.375rem',
                       borderWidth: '2px',
+                      borderStyle: 'solid',
+                      borderColor: 'black',
+                      backgroundColor: 'white',
+                      color: 'black',
                     }}
                   />
                 </div>
@@ -242,14 +251,14 @@ const AtmFeature = () => {
                     value={transferRecipient}
                     onChange={(e) => setTransferRecipient(e.target.value)}
                     style={{
-                      
-                      
                       width: '100%',
                       height: '50px',
                       fontSize: '15px',
                       paddingLeft: '10px',
                       border: '1px solid #ccc',
-                      borderRadius: '0.375rem'
+                      borderRadius: '0.375rem',
+                      backgroundColor: 'white',
+                      color: 'black',
                     }}
                   >
                     <option value="">Select recipient account</option>
@@ -273,6 +282,7 @@ const AtmFeature = () => {
                         border: 'none',
                         cursor: 'pointer',
                         transition: 'background-color 0.2s',
+                        color: 'black',
                         // ':hover': { backgroundColor: '#d1d5db' }
                       }}
                     >
@@ -313,8 +323,8 @@ const AtmFeature = () => {
                       width: '48%',
                       height: '50px',
                       padding: '0.5rem',
-                      backgroundColor: '#003459',
-                      color: 'white',
+                      backgroundColor: '#d1d5db',
+                      color: 'black',
                       borderRadius: '0.375rem',
                       fontSize: '1.25rem',
                       border: 'none',
@@ -394,12 +404,14 @@ const AtmFeature = () => {
                 onChange={(e) => setAmount(e.target.value)}
                 style={{
                   width: '95%',
-                  
                   padding: '0.5rem',
                   border: '1px solid #ccc',
                   borderRadius: '0.375rem',
                   height: '30px',
                   fontSize: '0.9rem',
+                  borderStyle: 'solid',
+                  backgroundColor: 'white',
+                  color: 'black',
                 }}
               />
             </div>
@@ -595,7 +607,8 @@ const AtmFeature = () => {
                   width: '100%', 
                   height: '100%', 
                   padding: '1.5rem', 
-                  background: 'none', 
+                  background: 'none',
+                  color: 'black', 
                   border: '1px solid #003459', 
                   fontSize: 'calc(0.5rem + 0.5vw)', 
                   cursor: 'pointer' 

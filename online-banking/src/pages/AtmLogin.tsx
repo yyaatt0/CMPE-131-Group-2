@@ -42,8 +42,8 @@ const AtmLogin = () => {
     }
   };
 
-  return (
 
+  return (
     // The div below describes the basic body style
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', backgroundColor: '#f3f4f6', fontFamily: 'sans-serif'}}>
 
@@ -87,8 +87,19 @@ const AtmLogin = () => {
                       placeholder="Username"
                       value={username}
                       onChange={(e) => setUsername(e.target.value)}
-                      style={{ paddingLeft: '40px', paddingRight: '12px', paddingTop: '10px', paddingBottom: '10px', fontSize: '18px', border: '2px solid #d1d5db', borderRadius: '8px', height: '25px', width: '80%' }}
-                    />
+                      style={{ 
+                        paddingLeft: '40px', 
+                        paddingRight: '12px', 
+                        paddingTop: '10px', 
+                        paddingBottom: '10px', 
+                        fontSize: '18px', 
+                        border: '2px solid #d1d5db', 
+                        borderRadius: '8px', 
+                        height: '25px', 
+                        width: '80%', 
+                        backgroundColor: 'white',
+                        color: 'black',
+                      }}/>
                   </div>
 
                   {/* This div is describing the password textbox */}
@@ -100,8 +111,19 @@ const AtmLogin = () => {
                       value={password}
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
                       maxLength={4}
-                      style={{ paddingLeft: '40px', paddingRight: '12px', paddingTop: '10px', paddingBottom: '10px', fontSize: '18px', border: '2px solid #d1d5db', borderRadius: '8px', height: '25px', width: '80%' }}
-                    />
+                      style={{ 
+                        paddingLeft: '40px', 
+                        paddingRight: '12px', 
+                        paddingTop: '10px', 
+                        paddingBottom: '10px', 
+                        fontSize: '18px', 
+                        border: '2px solid #d1d5db', 
+                        borderRadius: '8px', 
+                        height: '25px', 
+                        width: '80%',
+                        backgroundColor: 'white', 
+                        color: 'black',
+                      }}/>
                   </div>
                 </div>
 
@@ -124,6 +146,7 @@ const AtmLogin = () => {
                         padding: '16px', 
                         fontSize: '1.25rem', 
                         backgroundColor: isActionBtnHover === num ? '#cbd5e1' : '#d1d5db', 
+                        color: 'black',
                         border: 'none', 
                         borderRadius: '4px', 
                         cursor: 'pointer', 
@@ -149,6 +172,7 @@ const AtmLogin = () => {
                       padding: '16px', 
                       fontSize: '1.25rem', 
                       backgroundColor: zeroBtnHover ? '#cbd5e1' : '#d1d5db', 
+                      color: 'black',
                       border: 'none', 
                       borderRadius: '4px', 
                       cursor: 'pointer', 
