@@ -8,6 +8,7 @@ import './Homepage.css'
 import './styles.css'
 
 import images from '../images'
+import NavBar from "../components/NavBar";
 
 /*
     Account data reqs:
@@ -43,6 +44,8 @@ function Homepage() {
 
   return (
     <div>
+
+      <NavBar/>
 
       <SettingsTab 
         loggedIn={loggedIn} 
