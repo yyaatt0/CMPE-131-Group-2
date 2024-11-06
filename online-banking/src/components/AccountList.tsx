@@ -1,6 +1,5 @@
 import ArrowButton from "./ArrowButton";
 
-
 /* ===== New Account Info Section ===== */
 interface AccInfoProps {
   heading: string;
@@ -17,9 +16,21 @@ interface AccInfoProps {
 function AccountInfoCard({heading, text}: AccInfoProps) {
   return (
       <div className="acc-desc">
-          <h2>{heading}</h2>
-          <p>{text}</p>
-          <ArrowButton text="Create Account" path="/userlogin"/>
+          <h2 
+            style={{
+              fontSize: '40px', 
+              marginBottom: '0'
+            }}
+          >
+            {heading}
+          </h2>
+          <p style={{fontSize: '20px'}}>{text}</p>
+          <ArrowButton 
+            path="/userlogin" 
+            text="Create Account"
+            color="rgb(57, 184, 74)"
+            hColor="rgb(81, 226, 101)"
+          />
       </div>
   );
 }
@@ -51,6 +62,9 @@ function AccountInfoSection({heading, text, direction}: AccInfoProps) {
 
 // Placeholder text for account info cards
 let tempText = 
+  "This is placeholder text. Fill in later with information on the account listed above. " +
+  "This is placeholder text. Fill in later with information on the account listed above. " +
+  "This is placeholder text. Fill in later with information on the account listed above. " +
   "This is placeholder text. Fill in later with information on the account listed above. " +
   "This is placeholder text. Fill in later with information on the account listed above. " +
   "This is placeholder text. Fill in later with information on the account listed above. " +
@@ -124,6 +138,7 @@ function AccountList({accounts, onSelectAccount}: AccountListProps) {
                 }}
             />
         ))}
+        <ArrowButton path=""/>
       </div>
     </>
   );

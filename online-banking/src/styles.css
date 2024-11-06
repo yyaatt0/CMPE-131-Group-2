@@ -55,15 +55,23 @@ nav {
   background-color: #004f88;
 }
 
+.section-header {
+  background-color: #003459;
+  color: white;
+
+  padding: 15px;
+  margin: 0px;
+}
+
 .arrow-button {
   background-color: #003459;
-  border: 3px solid white;
   border-radius: 10px;
+  box-shadow: 0px 2px 3px black;
   display: flex;
-  justify-content: space-around;
+  align-items: center;
 
   color: white;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: bold;
 
   cursor: pointer;
@@ -74,5 +82,5 @@ nav {
 }
 
 .arrow-button:hover {
-  background-color: #004c82;
+  background-color: #03528a;
 }
