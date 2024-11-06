@@ -64,6 +64,7 @@ const AtmFeature = () => {
     setTransferRecipient("");
   };
 
+  // Edit this portion where we can only go to only 2 decimal places 
   const handleNumpadClick = (value: string) => {
     if (value === "." && amount.includes(".")) return;
     if (value === "." && amount === "") {
@@ -74,6 +75,7 @@ const AtmFeature = () => {
   };
 
   // Backend code that helps deal with the action features
+  // Also include amount limit for each transaction 
   const handleConfirm = () => {
     const amountNum = parseFloat(amount);
     if (isNaN(amountNum)) return;
@@ -93,7 +95,6 @@ const AtmFeature = () => {
         setActivePopup(null);
         break;
       case "Deposit Cash":
-      case "Deposit Check":
         setBalances(prev => ({
           ...prev,
           [selectedAccount]: prev[selectedAccount] + amountNum
@@ -101,6 +102,17 @@ const AtmFeature = () => {
         setTransactions(prev => ({
           ...prev,
           [selectedAccount]: [`Deposited $${amountNum}`, ...prev[selectedAccount]]
+        }));
+        setActivePopup(null);
+        break;
+      case "Deposit Check":
+        setBalances(prev => ({
+          ...prev,
+          [selectedAccount]: prev[selectedAccount] + amountNum
+        }));
+        setTransactions(prev => ({
+          ...prev,
+          [selectedAccount]: [`Deposited check $${amountNum}`, ...prev[selectedAccount]]
         }));
         setActivePopup(null);
         break;
@@ -129,26 +141,33 @@ const AtmFeature = () => {
 
     let popupContent;
     switch (activePopup) {
+
+      // The popup for "Withdraw Cash" and "Deposit Cash" are the same
       case "Withdraw Cash":
       case "Deposit Cash":
         popupContent = (
           <>
             <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1rem' }}>{activePopup}</h2>
+            
+            {/* This is the textbox where we enter the amount */}
             <div style={{ marginBottom: '1rem' }}>
               <input
                 type="text"
                 value={amount}
                 readOnly
                 style={{
-                  width: '100%',
+                  width: '95%',
+                  height: '40px',
                   padding: '0.5rem',
                   textAlign: 'right',
                   fontSize: '1.5rem',
-                  border: '1px solid #ccc',
-                  borderRadius: '0.375rem'
+                  borderRadius: '0.375rem',
+                  borderWidth: '2px',
                 }}
               />
             </div>
+
+            {/* This is the numpad portion */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.5rem' }}>
               {[1, 2, 3, 4, 5, 6, 7, 8, 9, ".", 0, "C"].map((num) => (
                 <button
@@ -157,8 +176,9 @@ const AtmFeature = () => {
                   style={{
                     padding: '1rem',
                     fontSize: '1.25rem',
-                    backgroundColor: '#e5e7eb',
+                    backgroundColor: '#d1d5db',
                     borderRadius: '0.375rem',
+                    border: 'none',
                     cursor: 'pointer',
                     transition: 'background-color 0.2s',
                     // ':hover': { backgroundColor: '#d1d5db' }
@@ -168,15 +188,20 @@ const AtmFeature = () => {
                 </button>
               ))}
             </div>
+
+            {/* The confirm button */}
             <button
               onClick={handleConfirm}
               style={{
                 marginTop: '1rem',
                 width: '100%',
+                height: '50px',
                 padding: '0.5rem',
-                backgroundColor: '#3b82f6',
+                backgroundColor: '#003459',
                 color: 'white',
                 borderRadius: '0.375rem',
+                fontSize: '1.25rem',
+                border: 'none',
                 cursor: 'pointer',
                 transition: 'background-color 0.2s',
                 // ':hover': { backgroundColor: '#2563eb' }
@@ -193,47 +218,36 @@ const AtmFeature = () => {
             <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1rem' }}>Fund Transfer</h2>
             {!transferConfirmation ? (
               <>
+                {/* This is the textbox where we enter the amount */}
                 <div style={{ marginBottom: '1rem' }}>
                   <input
                     type="text"
                     value={amount}
                     readOnly
                     style={{
-                      width: '100%',
+                      width: '95%',
+                      height: '40px',
                       padding: '0.5rem',
                       textAlign: 'right',
                       fontSize: '1.5rem',
-                      border: '1px solid #ccc',
-                      borderRadius: '0.375rem'
+                      borderRadius: '0.375rem',
+                      borderWidth: '2px',
                     }}
                   />
                 </div>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.5rem' }}>
-                  {[1, 2, 3, 4, 5, 6, 7, 8, 9, ".", 0, "C"].map((num) => (
-                    <button
-                      key={num}
-                      onClick={() => num === "C" ? setAmount("") : handleNumpadClick(num.toString())}
-                      style={{
-                        padding: '1rem',
-                        fontSize: '1.25rem',
-                        backgroundColor: '#e5e7eb',
-                        borderRadius: '0.375rem',
-                        cursor: 'pointer',
-                        transition: 'background-color 0.2s',
-                        // ':hover': { backgroundColor: '#d1d5db' }
-                      }}
-                    >
-                      {num}
-                    </button>
-                  ))}
-                </div>
-                <div style={{ marginTop: '1rem' }}>
+
+                {/* This is the selecting the recipient */}
+                <div style={{ marginTop: '1rem', marginBottom: '1rem' }}>
                   <select
                     value={transferRecipient}
                     onChange={(e) => setTransferRecipient(e.target.value)}
                     style={{
+                      
+                      
                       width: '100%',
-                      padding: '0.5rem',
+                      height: '50px',
+                      fontSize: '15px',
+                      paddingLeft: '10px',
                       border: '1px solid #ccc',
                       borderRadius: '0.375rem'
                     }}
@@ -244,15 +258,40 @@ const AtmFeature = () => {
                     ))}
                   </select>
                 </div>
+
+                {/* This is the numpad */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.5rem' }}>
+                  {[1, 2, 3, 4, 5, 6, 7, 8, 9, ".", 0, "C"].map((num) => (
+                    <button
+                      key={num}
+                      onClick={() => num === "C" ? setAmount("") : handleNumpadClick(num.toString())}
+                      style={{
+                        padding: '1rem',
+                        fontSize: '1.25rem',
+                        backgroundColor: '#d1d5db',
+                        borderRadius: '0.375rem',
+                        border: 'none',
+                        cursor: 'pointer',
+                        transition: 'background-color 0.2s',
+                        // ':hover': { backgroundColor: '#d1d5db' }
+                      }}
+                    >
+                      {num}
+                    </button>
+                  ))}
+                </div>
                 <button
                   onClick={handleConfirm}
                   style={{
                     marginTop: '1rem',
                     width: '100%',
+                    height: '50px',
                     padding: '0.5rem',
-                    backgroundColor: '#3b82f6',
+                    backgroundColor: '#003459',
                     color: 'white',
                     borderRadius: '0.375rem',
+                    fontSize: '1.25rem',
+                    border: 'none',
                     cursor: 'pointer',
                     transition: 'background-color 0.2s',
                     // ':hover': { backgroundColor: '#2563eb' }
@@ -270,11 +309,15 @@ const AtmFeature = () => {
                   <button
                     onClick={() => setTransferConfirmation(false)}
                     style={{
+                      marginTop: '1rem',
                       width: '48%',
+                      height: '50px',
                       padding: '0.5rem',
-                      backgroundColor: '#d1d5db',
-                      color: '#1f2937',
+                      backgroundColor: '#003459',
+                      color: 'white',
                       borderRadius: '0.375rem',
+                      fontSize: '1.25rem',
+                      border: 'none',
                       cursor: 'pointer',
                       transition: 'background-color 0.2s',
                       // ':hover': { backgroundColor: '#9ca3af' }
@@ -285,11 +328,15 @@ const AtmFeature = () => {
                   <button
                     onClick={handleConfirm}
                     style={{
+                      marginTop: '1rem',
                       width: '48%',
+                      height: '50px',
                       padding: '0.5rem',
-                      backgroundColor: '#3b82f6',
+                      backgroundColor: '#003459',
                       color: 'white',
                       borderRadius: '0.375rem',
+                      fontSize: '1.25rem',
+                      border: 'none',
                       cursor: 'pointer',
                       transition: 'background-color 0.2s',
                       // ':hover': { backgroundColor: '#2563eb' }
@@ -307,18 +354,38 @@ const AtmFeature = () => {
         popupContent = (
           <>
             <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1rem' }}>Deposit Check</h2>
+            
+            {/* Front of check image  */}
+            <h3 style={{ fontSize: '0.9rem', fontWeight: 'bold'}}>Upload Front of Check</h3>
             <div style={{ marginBottom: '1rem' }}>
               <input
                 type="file"
                 accept="image/*"
                 style={{
-                  width: '100%',
+                  width: '95%',
                   padding: '0.5rem',
                   border: '1px solid #ccc',
                   borderRadius: '0.375rem'
                 }}
               />
             </div>
+
+            {/* Back of check image */}
+            <h3 style={{ fontSize: '0.9rem', fontWeight: 'bold'}}>Upload Back of Check</h3>
+            <div style={{ marginBottom: '2rem' }}>
+              <input
+                type="file"
+                accept="image/*"
+                style={{
+                  width: '95%',
+                  padding: '0.5rem',
+                  border: '1px solid #ccc',
+                  borderRadius: '0.375rem'
+                }}
+              />
+            </div>
+
+            {/* The input textbox */}
             <div style={{ marginBottom: '1rem' }}>
               <input
                 type="number"
@@ -326,21 +393,30 @@ const AtmFeature = () => {
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
                 style={{
-                  width: '100%',
+                  width: '95%',
+                  
                   padding: '0.5rem',
                   border: '1px solid #ccc',
-                  borderRadius: '0.375rem'
+                  borderRadius: '0.375rem',
+                  height: '30px',
+                  fontSize: '0.9rem',
                 }}
               />
             </div>
+
+            {/* Confirmation Button */}
             <button
               onClick={handleConfirm}
               style={{
+                marginTop: '1rem',
                 width: '100%',
+                height: '50px',
                 padding: '0.5rem',
-                backgroundColor: '#3b82f6',
+                backgroundColor: '#003459',
                 color: 'white',
                 borderRadius: '0.375rem',
+                fontSize: '1.25rem',
+                border: 'none',
                 cursor: 'pointer',
                 transition: 'background-color 0.2s',
                 // ':hover': { backgroundColor: '#2563eb' }
@@ -365,6 +441,7 @@ const AtmFeature = () => {
         break;
     }
 
+    // This portion is for the 'x' button to escape the popup
     return (
       <div style={{
         position: 'fixed',
@@ -385,18 +462,20 @@ const AtmFeature = () => {
             onClick={() => setActivePopup(null)}
             style={{
               position: 'absolute',
-              top: '0.5rem',
-              right: '0.5rem',
+              top: '1rem',
+              right: '1rem',
+              width: '40px',
+              height: '40px',
               backgroundColor: '#d1d5db',
-              color: '#1f2937',
+              color: 'black',
               borderRadius: '0.375rem',
+              border: 'none',
               padding: '0.5rem',
               cursor: 'pointer',
               transition: 'background-color 0.2s',
               // ':hover': { backgroundColor: '#9ca3af' }
-            }}
-          >
-            X
+            }}>
+            <X></X>
           </button>
           {popupContent}
         </div>
