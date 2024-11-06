@@ -1,13 +1,14 @@
-import AccountList from "../components/AccountList";
-import WideImage from "../components/WideImage";
-import FooterCard from "../components/FooterCard";
-import DevTools from "../components/DevTools";
-
-import { useState } from "react";
 import './Homepage.css'
 import '../styles.css'
 
 import images from '../images'
+
+import { useState } from "react";
+
+import AccountList from "../components/AccountList";
+import WideImage from "../components/WideImage";
+import FooterCard from "../components/FooterCard";
+import DevTools from "../components/DevTools";
 import NavBar from "../components/NavBar";
 import SectionHeader from "../components/SectionHeader";
 

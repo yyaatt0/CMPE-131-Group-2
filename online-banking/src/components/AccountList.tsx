@@ -20,7 +20,7 @@ function AccountInfoCard({heading, text}: AccInfoProps) {
           <p>{text}</p>
           <div 
               className="cac-button" 
-              onClick={() => window.location.href="https://github.com/yyaatt0/CMPE-131-Group-2" /* Temp link */}
+              onClick={() => window.location.href="/userlogin"}
               >
               Create Account
           </div>
