@@ -138,7 +138,6 @@ function AccountList({accounts, onSelectAccount}: AccountListProps) {
                 }}
             />
         ))}
-        <ArrowButton path=""/>
       </div>
     </>
   );
