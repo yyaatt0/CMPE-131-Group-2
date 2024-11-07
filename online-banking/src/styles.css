@@ -84,3 +84,8 @@ nav {
 .arrow-button:hover {
   background-color: #03528a;
 }
+
+.circle-content {
+  height: 100%;
+  width: 100%;
+}

@@ -66,6 +66,8 @@
 }
 
 .desc-img {
+  display: flex;
+  justify-content: space-evenly;
   flex: 100%;
   text-align: center;
 }

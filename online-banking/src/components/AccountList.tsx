@@ -1,4 +1,9 @@
+import {CircleDollarSign} from 'lucide-react';
+
+import '../styles.css';
+
 import ArrowButton from "./ArrowButton";
+import CircleFrame from "./CircleFrame";
 
 /* ===== New Account Info Section ===== */
 interface AccInfoProps {
@@ -52,7 +57,17 @@ function AccountInfoSection({heading, text, direction}: AccInfoProps) {
   
   return (
       <div className="no-accounts">
-          <div className="desc-img">[Image Placeholder]</div>
+          <div className="desc-img">
+            <CircleFrame size="100px" vOffset='5' color="red">
+              <CircleDollarSign className="circle-content"/>
+            </CircleFrame>
+            <CircleFrame size="300px" color="blue">
+              <CircleDollarSign className="circle-content"/>
+            </CircleFrame>
+            <CircleFrame size="150px" hOffset='12' vOffset='150' color="green">
+              <CircleDollarSign className="circle-content"/>
+            </CircleFrame>
+          </div>
           <AccountInfoCard heading={heading} text={text} direction=""/>
       </div>
   );
@@ -77,8 +92,8 @@ let tempText =
 function NoAccounts() {
   return (
       <>
-      <AccountInfoSection heading="Savings" text={tempText} direction="right"/>
-      <AccountInfoSection heading="Checking" text={tempText} direction="left"/>
+      <AccountInfoSection heading="Checking" text={tempText} direction="right"/>
+      <AccountInfoSection heading="Savings" text={tempText} direction="left"/>
       </>
   );
 }
