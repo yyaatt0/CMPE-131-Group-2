@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 // the cmd line to install this is 
 // npm install lucide-react
 // This package is for the icons used in this page
 import { CornerUpLeft, X } from "lucide-react"; 
-import { useResolvedPath } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 // This will be used as a reference to associate the account type and the balance associated with it
 interface AccountBalance {
@@ -28,10 +28,27 @@ const AtmFeature = () => {
   const [isActionBtnHovered, setActionBtnHovered] = useState<number | null>(null);
   const [isActionBtnActive, setActionBtnActive] = useState<number | null>(null);
 
-
   const [activePopup, setActivePopup] = useState<string | null>(null);
   const [amount, setAmount] = useState<string>("");
   
+  // This is used for the numpad on the popup display
+  const [isNumpadHover, setNumpadHover] = useState<string | number | null>(null);
+  const [isNumpadActive, setNumpadActive] = useState<string | number | null>(null);
+
+  // This is for the confirm buttons in the popup 
+  const [isConfirmHover, setConfirmHover] = useState(false);
+  const [isConfirmActive, setConfirmActive] = useState(false);
+
+  // This is for the buttons on the fund transfer
+  const [isFundConfirmHover, setFundConfirmHover] = useState(false);
+  const [isFundCancelHover, setFundCancelHover] = useState(false);
+
+  // The logout redirect
+  const navigate = useNavigate();
+  const handleClick = () => {
+    navigate('/AtmLogin');
+  };
+
   // HARDCODED DATA
   // BACKEND: Import the data from the database into this format: account type and balance
   const [balance, setBalances] = useState<AccountBalance>({
@@ -54,6 +71,7 @@ const AtmFeature = () => {
   // Afterwards, we will get the full name of the account and confirm 
   const [transferConfirmation, setTransferConfirmation] = useState<boolean>(false);
   const [transferRecipient, setTransferRecipient] = useState<string>("");  
+  const [transferError, setTransferError] = useState<string>("");
 
 
 
@@ -62,15 +80,35 @@ const AtmFeature = () => {
     setAmount("");
     setTransferConfirmation(false);
     setTransferRecipient("");
+    setTransferError("");
   };
 
-  // Edit this portion where we can only go to only 2 decimal places 
+  // Input handling for the textbox
   const handleNumpadClick = (value: string) => {
+    if (value === "C") {
+      setAmount("");
+      return;
+    }
+    
     if (value === "." && amount.includes(".")) return;
-    if (value === "." && amount === "") {
-      setAmount("0.");
-    } else {
-      setAmount(prev => prev + value);
+    
+    let newAmount = amount + value;
+    const parts = newAmount.split('.');
+    if (parts.length > 1 && parts[1].length > 2) {
+      return; // Don't add more than 2 decimal places
+    }
+    
+    if (newAmount === ".") {
+      newAmount = "0.";
+    }
+    
+    setAmount(newAmount);
+  };
+
+  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (/^\d*\.?\d{0,2}$/.test(value) || value === '') {
+      setAmount(value);
     }
   };
 
@@ -89,22 +127,12 @@ const AtmFeature = () => {
           }));
           setTransactions(prev => ({
             ...prev,
-            [selectedAccount]: [`Withdrawn $${amountNum}`, ...prev[selectedAccount]]
+            [selectedAccount]: [`Withdrawn $${amountNum.toFixed(2)}`, ...prev[selectedAccount]]
           }));
         }
         setActivePopup(null);
         break;
       case "Deposit Cash":
-        setBalances(prev => ({
-          ...prev,
-          [selectedAccount]: prev[selectedAccount] + amountNum
-        }));
-        setTransactions(prev => ({
-          ...prev,
-          [selectedAccount]: [`Deposited $${amountNum}`, ...prev[selectedAccount]]
-        }));
-        setActivePopup(null);
-        break;
       case "Deposit Check":
         setBalances(prev => ({
           ...prev,
@@ -112,13 +140,18 @@ const AtmFeature = () => {
         }));
         setTransactions(prev => ({
           ...prev,
-          [selectedAccount]: [`Deposited check $${amountNum}`, ...prev[selectedAccount]]
+          [selectedAccount]: [`Deposited $${amountNum.toFixed(2)}`, ...prev[selectedAccount]]
         }));
         setActivePopup(null);
         break;
       case "Fund Transfer":
         if (!transferConfirmation) {
-          setTransferConfirmation(true);
+          if (transferRecipient) {
+            setTransferConfirmation(true);
+            setTransferError("");
+          } else {
+            setTransferError("Please select a recipient account");
+          }
         } else if (amountNum <= balance[selectedAccount]) {
           setBalances(prev => ({
             ...prev,
@@ -127,14 +160,25 @@ const AtmFeature = () => {
           }));
           setTransactions(prev => ({
             ...prev,
-            [selectedAccount]: [`Transferred $${amountNum} to ${transferRecipient}`, ...prev[selectedAccount]],
-            [transferRecipient]: [`Received $${amountNum} from ${selectedAccount}`, ...prev[transferRecipient]]
+            [selectedAccount]: [`Transferred $${amountNum.toFixed(2)} to ${transferRecipient}`, ...prev[selectedAccount]],
+            [transferRecipient]: [`Received $${amountNum.toFixed(2)} from ${selectedAccount}`, ...prev[transferRecipient]]
           }));
           setActivePopup(null);
         }
         break;
     }
   };
+
+  useEffect(() => {
+    switch(activePopup){
+      case "Withdraw Cash":
+      case "Deposit Cash":
+      case "Deposit Check":
+      case "Fund Transfer":
+        setConfirmHover(false);
+        break;
+    }
+  }, [activePopup]);
 
   const renderPopup = () => {
     if (!activePopup) return null;
@@ -154,6 +198,7 @@ const AtmFeature = () => {
               <input
                 type="text"
                 value={amount}
+                onChange={handleAmountChange}
                 readOnly
                 style={{
                   width: '95%',
@@ -176,17 +221,24 @@ const AtmFeature = () => {
               {[1, 2, 3, 4, 5, 6, 7, 8, 9, ".", 0, "C"].map((num) => (
                 <button
                   key={num}
-                  onClick={() => num === "C" ? setAmount("") : handleNumpadClick(num.toString())}
+                  // onClick={() => num === "C" ? setAmount("") : handleNumpadClick(num.toString())}
+                  onClick={() => handleNumpadClick(num.toString())}
+                  onMouseEnter={() => setNumpadHover(num)}
+                  onMouseLeave={() => setNumpadHover(null)}
+                  onMouseDown={() => setNumpadActive(num)}
+                  onMouseUp={() => setNumpadActive(null)}
+
+
                   style={{
                     padding: '1rem',
                     fontSize: '1.25rem',
-                    backgroundColor: '#d1d5db',
+                    backgroundColor: isNumpadHover === num ? '#cbd5e1' : '#d1d5db',
                     borderRadius: '0.375rem',
                     border: 'none',
                     cursor: 'pointer',
-                    transition: 'background-color 0.2s',
+                    transition: 'background-color 0.5s, transform 0.4s ease',
+                    transform: isNumpadActive === num ? 'scale(0.95)' : 'scale(1)',
                     color: 'black',
-                    // ':hover': { backgroundColor: '#d1d5db' }
                   }}
                 >
                   {num}
@@ -197,19 +249,25 @@ const AtmFeature = () => {
             {/* The confirm button */}
             <button
               onClick={handleConfirm}
+
+              onMouseDown={() => setConfirmActive(true)}
+              onMouseUp={() => setConfirmActive(false)}
+              onMouseEnter={() => setConfirmHover(true)}
+              onMouseLeave={() => setConfirmHover(false)}
+
               style={{
                 marginTop: '1rem',
                 width: '100%',
                 height: '50px',
                 padding: '0.5rem',
-                backgroundColor: '#003459',
+                backgroundColor: isConfirmHover ? '#00171F' : '#003459',
                 color: 'white',
                 borderRadius: '0.375rem',
                 fontSize: '1.25rem',
                 border: 'none',
                 cursor: 'pointer',
-                transition: 'background-color 0.2s',
-                // ':hover': { backgroundColor: '#2563eb' }
+                transition: 'background-color 0.5s, transform 0.4s ease',
+                transform: isConfirmActive ? 'scale(0.95)' : 'scale(1)',
               }}
             >
               Confirm
@@ -228,7 +286,8 @@ const AtmFeature = () => {
                   <input
                     type="text"
                     value={amount}
-                    readOnly
+                    // readOnly
+                    onChange={handleAmountChange}
                     style={{
                       width: '95%',
                       height: '40px',
@@ -249,7 +308,10 @@ const AtmFeature = () => {
                 <div style={{ marginTop: '1rem', marginBottom: '1rem' }}>
                   <select
                     value={transferRecipient}
-                    onChange={(e) => setTransferRecipient(e.target.value)}
+                    onChange={(e) => {
+                      setTransferRecipient(e.target.value);
+                      setTransferError("");
+                    }}
                     style={{
                       width: '100%',
                       height: '50px',
@@ -259,6 +321,7 @@ const AtmFeature = () => {
                       borderRadius: '0.375rem',
                       backgroundColor: 'white',
                       color: 'black',
+                      borderColor: transferError ? 'red' : 'gray',
                     }}
                   >
                     <option value="">Select recipient account</option>
@@ -266,6 +329,9 @@ const AtmFeature = () => {
                       <option key={account} value={account}>{account}</option>
                     ))}
                   </select>
+                    
+                  {transferError && (<p style={{color: 'red', fontSize: '15px'}}>{transferError}</p>)}
+
                 </div>
 
                 {/* This is the numpad */}
@@ -273,17 +339,24 @@ const AtmFeature = () => {
                   {[1, 2, 3, 4, 5, 6, 7, 8, 9, ".", 0, "C"].map((num) => (
                     <button
                       key={num}
-                      onClick={() => num === "C" ? setAmount("") : handleNumpadClick(num.toString())}
+                      // onClick={() => num === "C" ? setAmount("") : handleNumpadClick(num.toString())}
+                      onClick={() => handleNumpadClick(num.toString())}
+                      onMouseEnter={() => setNumpadHover(num)}
+                      onMouseLeave={() => setNumpadHover(null)}
+                      onMouseDown={() => setNumpadActive(num)}
+                      onMouseUp={() => setNumpadActive(null)}
+
+
                       style={{
                         padding: '1rem',
                         fontSize: '1.25rem',
-                        backgroundColor: '#d1d5db',
+                        backgroundColor: isNumpadHover === num ? '#cbd5e1' : '#d1d5db',
                         borderRadius: '0.375rem',
                         border: 'none',
                         cursor: 'pointer',
-                        transition: 'background-color 0.2s',
+                        transition: 'background-color 0.5s, transform 0.4s ease',
+                        transform: isNumpadActive === num ? 'scale(0.95)' : 'scale(1)',
                         color: 'black',
-                        // ':hover': { backgroundColor: '#d1d5db' }
                       }}
                     >
                       {num}
@@ -292,19 +365,25 @@ const AtmFeature = () => {
                 </div>
                 <button
                   onClick={handleConfirm}
+
+                  onMouseDown={() => setConfirmActive(true)}
+                  onMouseUp={() => setConfirmActive(false)}
+                  onMouseEnter={() => setConfirmHover(true)}
+                  onMouseLeave={() => setConfirmHover(false)}
+
                   style={{
                     marginTop: '1rem',
                     width: '100%',
                     height: '50px',
                     padding: '0.5rem',
-                    backgroundColor: '#003459',
+                    backgroundColor: isConfirmHover ? '#00171F' : '#003459',
                     color: 'white',
                     borderRadius: '0.375rem',
                     fontSize: '1.25rem',
                     border: 'none',
                     cursor: 'pointer',
-                    transition: 'background-color 0.2s',
-                    // ':hover': { backgroundColor: '#2563eb' }
+                    transition: 'background-color 0.3s, transform 0.4s ease',
+                    transform: isConfirmActive ? 'scale(0.95)' : 'scale(1)',
                   }}
                 >
                   Next
@@ -316,40 +395,50 @@ const AtmFeature = () => {
                   Are you sure you want to transfer ${amount} from {selectedAccount} to {transferRecipient}?
                 </p>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+
+                  {/* The cancel button portion  */}
                   <button
+
+                    onMouseEnter={() => setFundCancelHover(true)}
+                    onMouseLeave={() => setFundCancelHover(false)}
+
                     onClick={() => setTransferConfirmation(false)}
                     style={{
                       marginTop: '1rem',
                       width: '48%',
                       height: '50px',
                       padding: '0.5rem',
-                      backgroundColor: '#d1d5db',
+                      backgroundColor: isFundCancelHover ? 'darkgray' : '#d1d5db',
                       color: 'black',
                       borderRadius: '0.375rem',
                       fontSize: '1.25rem',
                       border: 'none',
                       cursor: 'pointer',
-                      transition: 'background-color 0.2s',
-                      // ':hover': { backgroundColor: '#9ca3af' }
+                      transition: 'background-color 0.5s',
                     }}
                   >
                     Cancel
                   </button>
+
+                  {/* The confirm button portion */}
                   <button
                     onClick={handleConfirm}
+                                        
+                    onMouseEnter={() => setFundConfirmHover(true)}
+                    onMouseLeave={() => setFundConfirmHover(false)}
+
                     style={{
                       marginTop: '1rem',
                       width: '48%',
                       height: '50px',
                       padding: '0.5rem',
-                      backgroundColor: '#003459',
+                      backgroundColor: isFundConfirmHover ? '#00171F' : '#003459',
                       color: 'white',
                       borderRadius: '0.375rem',
                       fontSize: '1.25rem',
                       border: 'none',
                       cursor: 'pointer',
-                      transition: 'background-color 0.2s',
-                      // ':hover': { backgroundColor: '#2563eb' }
+                      transition: 'background-color 0.5s',
                     }}
                   >
                     Confirm
@@ -401,7 +490,7 @@ const AtmFeature = () => {
                 type="number"
                 placeholder="Enter check amount"
                 value={amount}
-                onChange={(e) => setAmount(e.target.value)}
+                onChange={handleAmountChange}
                 style={{
                   width: '95%',
                   padding: '0.5rem',
@@ -419,19 +508,25 @@ const AtmFeature = () => {
             {/* Confirmation Button */}
             <button
               onClick={handleConfirm}
+
+              onMouseDown={() => setConfirmActive(true)}
+              onMouseUp={() => setConfirmActive(false)}
+              onMouseEnter={() => setConfirmHover(true)}
+              onMouseLeave={() => setConfirmHover(false)}
+
               style={{
                 marginTop: '1rem',
                 width: '100%',
                 height: '50px',
                 padding: '0.5rem',
-                backgroundColor: '#003459',
+                backgroundColor: isConfirmHover ? '#00171F' : '#003459',
                 color: 'white',
                 borderRadius: '0.375rem',
                 fontSize: '1.25rem',
                 border: 'none',
                 cursor: 'pointer',
-                transition: 'background-color 0.2s',
-                // ':hover': { backgroundColor: '#2563eb' }
+                transition: 'background-color 0.3s, transform 0.4s ease',
+                transform: isConfirmActive ? 'scale(0.95)' : 'scale(1)',
               }}
             >
               Deposit Check
@@ -544,6 +639,8 @@ const AtmFeature = () => {
 
         {/* Logout button portion */}
         <button 
+
+          onClick={handleClick}
 
           onMouseEnter={() => setLogoutIsHovered(true)}
           onMouseLeave={() => setLogoutIsHovered(false)}
