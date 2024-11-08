@@ -2,24 +2,29 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const ResetPassword = () => {
+  // Save new password
   const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [errorMsg, setErrorMsg] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');    // Save confirmation password
+  const [errorMsg, setErrorMsg] = useState('');   // Save error message 
   const [successMsg, setSuccessMsg] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
 
   const navigate = useNavigate();
 
+    // Function to handle when the user submits the form
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+      // Check if the new password and confirm password do not match
     if (newPassword !== confirmPassword) {
       setErrorMsg('Passwords do not match. Please try again.');
       return;
     }
 
+      // Call API to update new password
     console.log('Updating password to:', newPassword);
-    setSuccessMsg('Password has been successfully updated!');
-    setTimeout(() => navigate('/'), 2000);
+    setSuccessMsg('Password has been successfully updated!');     // Display success message
+    setTimeout(() => navigate('/'), 2000);     //Redirect to main page after 2 seconds
+
   };
 
   return (
