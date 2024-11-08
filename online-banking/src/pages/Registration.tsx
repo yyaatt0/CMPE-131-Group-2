@@ -3,35 +3,39 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 const Registration = () => {
-    const [LastName, setLastName] = useState<string>('');
-    const [FirstName, setFirstName] = useState<string>('');
-    const [Username, setUsername] = useState<string>('');
-    const [Email, setEmail] = useState<string>('');
-    const [Password, setPw] = useState<string>('');
-    const [ConfirmPassword, setConfirmPw] = useState<string>('');
-    const [Pin, setPin] = useState<string>('');
-    const [ConfirmPin, setConfirmPin] = useState<string>('');
-    const [errorMssg, setErrorMssg] = useState<string>('');
-    const [successMssg, setSuccessMssg] = useState<string>('');
+    // Declare states to store the values ​​of input fields
+    const [LastName, setLastName] = useState<string>(''); //user's Last name 
+    const [FirstName, setFirstName] = useState<string>(''); // First name
+    const [Username, setUsername] = useState<string>(''); // user login name
+    const [Email, setEmail] = useState<string>(''); //email
+    const [Password, setPw] = useState<string>(''); //password
+    const [ConfirmPassword, setConfirmPw] = useState<string>(''); //Confirm Password
+    const [Pin, setPin] = useState<string>(''); //Pin
+    const [ConfirmPin, setConfirmPin] = useState<string>(''); //Confirm PIN
+    const [errorMssg, setErrorMssg] = useState<string>(''); //Error messages
+    const [successMssg, setSuccessMssg] = useState<string>(''); //success messages
     const navigate = useNavigate(); 
 
+    // The validateInput function checks the validity of user input data
     const validateInput = () => {
+        // Check email format
         if (!/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(Email)) {
             setErrorMssg('Invalid email format.');
             return false;
         }
 
         const validChars = /^[A-Za-z0-9!*]*$/;
+        // Check valid characters in Username and Password
         if (!validChars.test(Username) || !validChars.test(Password)) {
             setErrorMssg('Username and password must contain only A-Z, a-z, 0-9, or !-* characters.');
             return false;
         }
-
+        // Check if Password and ConfirmPassword match
         if (Password !== ConfirmPassword) {
             setErrorMssg('Password and Confirm Password do not match.');
             return false;
         }
-
+        // Check if Pin and ConfirmPin match
         if (Pin !== ConfirmPin) {
             setErrorMssg('PIN and Confirm PIN do not match.');
             return false;
@@ -40,14 +44,16 @@ const Registration = () => {
         return true;
     };
 
+    // Function to handle when the user submits the form
     const submission = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-
+        // Stop if data is invalid
         if (!validateInput()) {
             return; 
         }
 
         try {
+            // Send a request to check if the email already exists
             const emailCheckResponse = await axios.get(`http://localhost:3000}`);
             
             if (emailCheckResponse.data.exists) {
@@ -55,7 +61,7 @@ const Registration = () => {
                 setSuccessMssg('');
                 return;
             }
-
+            // Send new account registration request
             await axios.post('http://localhost:3000/registration', {
                 LastName,
                 FirstName,
@@ -64,12 +70,13 @@ const Registration = () => {
                 Password,
                 Pin,
             });
-
+            // Successful registration notification and redirection to Hompage
             setSuccessMssg('Congratulations! Registration successful!'); 
             setErrorMssg('');
             
             navigate('/Homepage'); 
         } catch (error) { 
+            // Handle errors when registration fails
             setErrorMssg('Registration failed. Please try again.');
             setSuccessMssg('');
         }
