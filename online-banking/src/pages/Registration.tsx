@@ -309,10 +309,12 @@ const Registration = () => {
                         fontWeight: 'bold',
                         fontSize: '16px'
                     }}>
+                          {/* This is the "Cancel" button */}
                         Submit
                     </button>
                 </div>
 
+                  {/* for the error messages and success messages */}
                 {errorMssg && <p style={{ color: 'red', textAlign: 'center', gridColumn: '1 / 3' }}>{errorMssg}</p>}
                 {successMssg && <p style={{ color: 'green', textAlign: 'center', gridColumn: '1 / 3' }}>{successMssg}</p>}
             </form>
