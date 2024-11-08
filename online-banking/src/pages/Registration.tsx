@@ -108,6 +108,7 @@ const Registration = () => {
                     style={{
                         margin: 10
                     }}>
+                    //for the First Name
                     <label>First Name:</label>
                     <input
                         type="text"
@@ -130,6 +131,7 @@ const Registration = () => {
                     style={{
                         margin: 10
                     }}>
+                    //for the Last Name
                     <label>Last Name:</label>
                     <input
                         type="text"
@@ -147,7 +149,8 @@ const Registration = () => {
                         }}
                     />
                 </div>
-
+                
+                    //for the userName
                 <div style={{ gridColumn: '1 / 3', margin: 10 }}>
                     <label>Username:</label>
                     <input
@@ -167,6 +170,7 @@ const Registration = () => {
                     />
                 </div>
 
+               //for the Email 
                 <div style={{ gridColumn: '1 / 3', margin: 10 }}>
                     <label>Email:</label>
                     <input
@@ -186,6 +190,7 @@ const Registration = () => {
                     />
                 </div>
 
+        //for the password
                 <div
                     style={{
                         margin: 10
@@ -207,7 +212,8 @@ const Registration = () => {
                         }}
                     />
                 </div>
-                
+
+          //for the confirm password
                 <div
                     style={{
                         margin: 10
@@ -230,6 +236,7 @@ const Registration = () => {
                     />
                 </div>
 
+            //for the PIN
                 <div
                     style={{
                         margin: 10
@@ -252,6 +259,8 @@ const Registration = () => {
                         }}
                     />
                 </div>
+
+          //for the confirmPIN
 
                 <div
                     style={{
@@ -276,6 +285,7 @@ const Registration = () => {
                     />
                 </div>
 
+                //for the Submit button
                 <div style={{ gridColumn: '1 / 3', textAlign: 'center', marginTop: '20px' }}>
                     <button type="submit" style={{
                         width: '30%',
@@ -292,13 +302,17 @@ const Registration = () => {
                     </button>
                 </div>
 
+                //Error messages and success messages 
                 {errorMssg && <p style={{ color: 'red', textAlign: 'center', gridColumn: '1 / 3' }}>{errorMssg}</p>}
                 {successMssg && <p style={{ color: 'green', textAlign: 'center', gridColumn: '1 / 3' }}>{successMssg}</p>}
             </form>
 
             <div style={{ textAlign: 'center', margin: '20px auto' }}>
+
+                //Cancel button
                 <a href="/" style={{ color: 'blue', textDecoration: 'underline' }}>Cancel</a>
                 <span> | </span>
+                //Save buttton
                 <a href="/" style={{ color: 'blue', textDecoration: 'underline' }}>Save</a>
             </div>
         </div>
