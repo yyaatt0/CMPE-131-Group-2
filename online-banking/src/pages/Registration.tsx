@@ -104,11 +104,12 @@ const Registration = () => {
                 maxWidth: '600px',
                 margin: '20px auto'
             }}>
+                
+              //for the First Name
                 <div
                     style={{
                         margin: 10
                     }}>
-                    //for the First Name
                     <label>First Name:</label>
                     <input
                         type="text"
