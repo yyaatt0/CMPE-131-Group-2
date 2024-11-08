@@ -30,6 +30,9 @@ const UserLogin = () => {
   return (
     <div style={{ fontFamily: ' sans-serif' , flexDirection: 'column', minHeight: '100vh'}}>
 
+      {/* Navigation Bar */}
+      <NavBar/>
+
       {/* Holds the nav bar and heading  */}
       <header>
         {/* Upper portion of the page, later to include a functional nav bar so we can navigate through multiple pages
@@ -43,9 +46,6 @@ const UserLogin = () => {
           <h1>Bank of Banks</h1>
         </nav>
       </header>
-
-      {/* Navigation Bar */}
-      <NavBar/>
       
       {/* This div holds the login potion of the page, like the textbox for the password/username,
       some of the buttons, and titles */}
