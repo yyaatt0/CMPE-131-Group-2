@@ -214,7 +214,7 @@ const Registration = () => {
                     />
                 </div>
 
-          //for the confirm password
+          //for the confirmPassword
                 <div
                     style={{
                         margin: 10
