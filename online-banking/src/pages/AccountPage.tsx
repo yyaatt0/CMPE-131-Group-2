@@ -1,3 +1,15 @@
+function AccountPage() {
+  return(
+    <div>
+      Account Page
+    </div>
+  );
+}
+
+export default AccountPage;
+
+/*
+
 "use client"
 
 import { useState } from "react"
@@ -125,3 +137,4 @@ export default function AccountPage() {
     </div>
   )
 }
+*/
