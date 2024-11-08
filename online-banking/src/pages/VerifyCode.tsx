@@ -4,23 +4,26 @@ import axios from 'axios';
 
 
 const VerifyCode = () => {
-  const [code, setCode] = useState('');
-  const [errorMsg, setErrorMsg] = useState('');
+  const [code, setCode] = useState(''); // Store the confirmation code entered by the user
+  const [errorMsg, setErrorMsg] = useState('');     // Store error messages when errors occur
   const navigate = useNavigate();
-  const [successMsg, setSuccessMsg] = useState<string>('');
+  const [successMsg, setSuccessMsg] = useState<string>('');   // Store success message when confirmation is successful
 
-
+// Function to handle when the user submits the form
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      // Send HTTP POST request to backend with confirmation code
       const response = await axios.post('https://backend/verify-code', {
         code: code,
       });
 
       if (response.data.success) {
+         // If authentication is successful, display a success message
         setSuccessMsg('Verification successful!');
         navigate('/resetPassword');
       } else {
+        // If the authentication code is invalid, display an error message
         setErrorMsg('Invalid verification code. Please try again1');
       }
     } catch (error) {
