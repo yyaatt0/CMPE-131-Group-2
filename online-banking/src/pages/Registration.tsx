@@ -44,6 +44,8 @@ const Registration = () => {
         return true;
     };
 
+    
+
     // Function to handle when the user submits the form
     const submission = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -82,6 +84,11 @@ const Registration = () => {
         }
     };
 
+ const handleCancel = () => {
+     event.preventDefault();
+    navigate('/Homepage');  // return to homepage
+  };
+
     return (
         <div style={{ fontFamily: 'Arial, sans-serif', margin: 0 }}>
             <header>
@@ -105,13 +112,13 @@ const Registration = () => {
                 margin: '20px auto'
             }}>
                 
-              //for the First Name
                 <div
                     style={{
                         margin: 10
                     }}>
                     <label>First Name:</label>
                     <input
+                        //for the First Name
                         type="text"
                         value={FirstName}
                         onChange={(e) => setFirstName(e.target.value)}
@@ -132,9 +139,10 @@ const Registration = () => {
                     style={{
                         margin: 10
                     }}>
-                    //for the Last Name
+                    
                     <label>Last Name:</label>
                     <input
+                        //for the Last Name
                         type="text"
                         value={LastName}
                         onChange={(e) => setLastName(e.target.value)}
@@ -151,10 +159,10 @@ const Registration = () => {
                     />
                 </div>
                 
-                    //for the userName
                 <div style={{ gridColumn: '1 / 3', margin: 10 }}>
                     <label>Username:</label>
                     <input
+                        //for the username
                         type="text"
                         value={Username}
                         onChange={(e) => setUsername(e.target.value)}
@@ -171,10 +179,10 @@ const Registration = () => {
                     />
                 </div>
 
-               //for the Email 
                 <div style={{ gridColumn: '1 / 3', margin: 10 }}>
                     <label>Email:</label>
                     <input
+                       //for the Email 
                         type="email"
                         value={Email}
                         onChange={(e) => setEmail(e.target.value)}
@@ -191,13 +199,13 @@ const Registration = () => {
                     />
                 </div>
 
-        //for the password
                 <div
                     style={{
                         margin: 10
                     }}>
                     <label>Password:</label>
                     <input
+                        //for the password
                         type="password"
                         value={Password}
                         onChange={(e) => setPw(e.target.value)}
@@ -214,13 +222,13 @@ const Registration = () => {
                     />
                 </div>
 
-          //for the confirmPassword
                 <div
                     style={{
                         margin: 10
                     }}>
                     <label>Confirm Password:</label>
                     <input
+                        //for the confirmPassword
                         type="password"
                         value={ConfirmPassword}
                         onChange={(e) => setConfirmPw(e.target.value)}
@@ -237,13 +245,14 @@ const Registration = () => {
                     />
                 </div>
 
-            //for the PIN
+            
                 <div
                     style={{
                         margin: 10
                     }}>
                     <label>PIN:</label>
                     <input
+                        //for the PIN
                         type="password"
                         value={Pin}
                         onChange={(e) => setPin(e.target.value)}
@@ -261,7 +270,7 @@ const Registration = () => {
                     />
                 </div>
 
-          //for the confirmPIN
+          
 
                 <div
                     style={{
@@ -269,6 +278,7 @@ const Registration = () => {
                     }}>
                     <label>Confirm PIN:</label>
                     <input
+                        //for the confirmPIN
                         type="password"
                         value={ConfirmPin}
                         onChange={(e) => setConfirmPin(e.target.value)}
@@ -286,7 +296,7 @@ const Registration = () => {
                     />
                 </div>
 
-                //for the Submit button
+                
                 <div style={{ gridColumn: '1 / 3', textAlign: 'center', marginTop: '20px' }}>
                     <button type="submit" style={{
                         width: '30%',
@@ -303,18 +313,19 @@ const Registration = () => {
                     </button>
                 </div>
 
-                //Error messages and success messages 
                 {errorMssg && <p style={{ color: 'red', textAlign: 'center', gridColumn: '1 / 3' }}>{errorMssg}</p>}
                 {successMssg && <p style={{ color: 'green', textAlign: 'center', gridColumn: '1 / 3' }}>{successMssg}</p>}
             </form>
 
             <div style={{ textAlign: 'center', margin: '20px auto' }}>
 
-                //Cancel button
-                <a href="/" style={{ color: 'blue', textDecoration: 'underline' }}>Cancel</a>
+                
+                <a href="/" onClick={handleCancel} style={{ color: 'blue', textDecoration: 'underline' }}>Cancel
+                {/* This is the "Cancel" button */}
+                </a>
                 <span> | </span>
-                //Save buttton
-                <a href="/" style={{ color: 'blue', textDecoration: 'underline' }}>Save</a>
+               
+                //<a href="/" style={{ color: 'blue', textDecoration: 'underline' }}>Save</a>
             </div>
         </div>
     );
