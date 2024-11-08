@@ -85,7 +85,7 @@ const Registration = () => {
     };
 
  const handleCancel = () => {
-     event.preventDefault();
+
     navigate('/Homepage');  // return to homepage
   };
 
