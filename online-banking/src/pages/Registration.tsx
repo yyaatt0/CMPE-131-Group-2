@@ -309,7 +309,7 @@ const Registration = () => {
                         fontWeight: 'bold',
                         fontSize: '16px'
                     }}>
-                          {/* This is the "Cancel" button */}
+                          {/* This is the "Submit" button. */}
                         Submit
                     </button>
                 </div>
