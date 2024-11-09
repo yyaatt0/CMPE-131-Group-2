@@ -24,10 +24,10 @@ const Registration = () => {
             return false;
         }
 
-        const validChars = /^[A-Za-z0-9!*]*$/;
+      const validChars = /^[A-Za-z0-9!*]*$/;
         // Check valid characters in Username and Password
         if (!validChars.test(Username) || !validChars.test(Password)) {
-            setErrorMssg('Username and password must contain only A-Z, a-z, 0-9, or !-* characters.');
+            setErrorMssg('Please try again!');
             return false;
         }
         // Check if Password and ConfirmPassword match
@@ -56,13 +56,11 @@ const Registration = () => {
 
         try {
             // Send a request to check if the email already exists
-            const emailCheckResponse = await axios.get(`http://localhost:3000}`);
-            
-            if (emailCheckResponse.data.exists) {
-                setErrorMssg('Email is already registered!');
-                setSuccessMssg('');
-                return;
-            }
+            const emailCheckResponse = await axios.get('http://localhost:3000',
+            {
+                params: { email: Email },
+            });
+
             // Send new account registration request
             await axios.post('http://localhost:3000/registration', {
                 LastName,
@@ -75,8 +73,10 @@ const Registration = () => {
             // Successful registration notification and redirection to Hompage
             setSuccessMssg('Congratulations! Registration successful!'); 
             setErrorMssg('');
+
+      
             
-            navigate('/Homepage'); 
+           
         } catch (error) { 
             // Handle errors when registration fails
             setErrorMssg('Registration failed. Please try again.');
