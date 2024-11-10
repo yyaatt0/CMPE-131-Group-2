@@ -81,7 +81,7 @@ const ResetPassword = () => {
     
 
 
- {/* for the user to enter the new password to confirm it */}
+ {/* let the user enter the new password one more time to confirm the new password */}
         <div style={{ width: '100%' }}>
             <label style={{ display: 'block', marginBottom: '5px' , fontWeight: 'bold'}}>Confirm New Password:</label>
             <input
