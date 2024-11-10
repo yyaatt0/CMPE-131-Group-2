@@ -58,6 +58,8 @@ const ResetPassword = () => {
 <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
 <div style={{ width: '100%' }}>
             <label style={{ display: 'block', marginBottom: '5px' , fontWeight: 'bold'}}>New Password:</label>
+
+   {/* for the user to enter the new password */}
             <input
               style={{
                 padding: '10px',
@@ -79,7 +81,7 @@ const ResetPassword = () => {
     
 
 
-
+ {/* for the user to enter the new password to confirm it */}
         <div style={{ width: '100%' }}>
             <label style={{ display: 'block', marginBottom: '5px' , fontWeight: 'bold'}}>Confirm New Password:</label>
             <input
@@ -103,6 +105,7 @@ const ResetPassword = () => {
           </div>
 
 
+  {/* This is the "Submit" button */}
           <button 
             style={{
               width: '100px',
@@ -117,6 +120,8 @@ const ResetPassword = () => {
               fontSize: '15px'
             }}>Submit</button>
           <br />
+  
+    {/* for the error messages and success messages */}
           {successMsg && <div className="success-message">{successMsg}</div>}
           {errorMsg && <div className="error-message">{errorMsg}</div>}
         </form>
