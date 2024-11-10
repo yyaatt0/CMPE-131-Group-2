@@ -19,7 +19,7 @@ const VerifyCode = () => {
       });
 
       if (response.data.success) {
-         // If authentication is successful, display a success message
+         // If authentication is successful, display a success message and go to the resetPassword page.
         setSuccessMsg('Verification successful!');
         navigate('/resetPassword');
       } else {
@@ -56,10 +56,12 @@ const VerifyCode = () => {
           borderRadius: '10px',
         }}>
 
+       {/* ask the user to enter their verify code */}
       <h2 style={{ textAlign: 'center', fontWeight: 'bold', fontSize: '25px', marginTop: '40px'}}>Verify Code</h2>
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
           <div style={{ width: '100%' }}>
-            <label style={{ display: 'block', marginBottom: '5px' , fontWeight: 'bold'}}>Enter your code:</label>
+            <label style={{ display: 'block', marginBottom: '5px' , fontWeight: 'bold'}}>
+              Enter your code:</label>
             <input
               style={{
                 padding: '10px',
@@ -79,7 +81,7 @@ const VerifyCode = () => {
 
 
 
-
+{/* This is the "Submit" button */}
         <button 
             style={{
               width: '100px',
@@ -94,6 +96,8 @@ const VerifyCode = () => {
               fontSize: '15px'
             }}>Submit</button>
           <br />
+          
+          {/* for the error messages and success messages */}
           {successMsg && <div className="success-message">{successMsg}</div>}
           {errorMsg && <div className="error-message">{errorMsg}</div>}
        
