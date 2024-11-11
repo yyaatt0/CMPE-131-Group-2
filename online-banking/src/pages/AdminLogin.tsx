@@ -13,7 +13,7 @@ const AdminLogin = () => {
     e.preventDefault();
     try {
             // Send HTTP POST request to backend to authenticate login information
-      const response = await axios.post('https://www.sjsu.edu/', {
+      const response = await axios.post('http://localhost:3000/AdminLogin', {
         userid: username,  // Username is sent in the body of the request
         password: password, // password is sent in the body of the request
       });
