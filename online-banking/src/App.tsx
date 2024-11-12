@@ -13,6 +13,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 
 import VerifyCode from './pages/VerifyCode';
 import ResetPassword from './pages/ResetPassword';
+import AdminPortal from "./pages/AdminPortal";
 
 const App = () => {
   return (
@@ -24,7 +25,10 @@ const App = () => {
         <Route path="/atmlogin" element={<AtmLogin />} />
         <Route path="/atmfeature" element={<AtmFeature />} />
         <Route path="/accountpage" element={<AccountPage />} />
+
         <Route path="/adminlogin" element={<AdminLogin />} />
+        <Route path="/adminportal" element={<AdminPortal/>} />
+
         <Route path="/homepage" element={<Homepage />} />
         <Route path="/registration" element={<Registration />} />
         <Route path="/userlogin" element={<UserLogin />} />
