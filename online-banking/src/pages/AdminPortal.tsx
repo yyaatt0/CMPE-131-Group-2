@@ -6,15 +6,33 @@ import './AdminPortal.css';
 var username: string;
 var password: string;
 
+let userListSize = 50;
+let employeeListSize = 25;
+
 // Temp registered user list
 type user = {id: number, firstName: string, lastName: string}
 let users: user[] = []
-for(var i = 0; i < 20; i++){
+for(var i = 0; i < userListSize; i++){
     users.push(
         {id: i, firstName: `John`, lastName: `Doe ${i}`}
     )
 }
 
+// Temp employee list
+type employee = {info: user, admin: boolean}
+let employees: employee[] = [];
+for(var i = 0; i < employeeListSize; i++){
+    if(i % 3 === 0){
+        employees.push(
+            {info: {id: i, firstName: 'Jane', lastName: `Doe ${i}`}, admin: true}
+        )
+    }
+    else{
+        employees.push(
+            {info: {id: i, firstName: 'Jane', lastName: `Doe ${i}`}, admin: false}
+        )
+    }
+}
 
 function AdminPortal() {
 
@@ -22,7 +40,8 @@ function AdminPortal() {
 
     const maxListItems = 5;
     const [listStartIndex, setListStartIndex] = useState(10);
-    const displayedList = users.slice(listStartIndex, listStartIndex + maxListItems);
+    const shownUserList = users.slice(listStartIndex, listStartIndex + maxListItems);
+    const shownEmployeeList = employees.slice(listStartIndex, listStartIndex + maxListItems);
 
     return(
         <>
@@ -43,9 +62,16 @@ function AdminPortal() {
                         setListStartIndex(0);
                     }}
                 >
-                    Add new admin
+                    Add New Employee
                 </button>
-
+                <button
+                    onClick={() => {
+                        setActiveTab(2);
+                        setListStartIndex(0);
+                    }}
+                >
+                    Manage Admin Access
+                </button>
             </span>
 
             {(() => {
@@ -63,20 +89,47 @@ function AdminPortal() {
                                     <input type="password" value={password}/>
                                 </div>
                             </form>
-                        )
+                        );
+                    
+                    case 2:
+                        return(
+                            <div>
+                                <h3>Manage admin access here.</h3>
+                                <ol>
+                                    {shownEmployeeList.map((emp) => (
+                                        <li key={emp.info.id}>
+                                            ID: {emp.info.id} | Name: {emp.info.firstName} {emp.info.lastName} |
+                                            {emp.admin && " Admin"}
+                                        </li>
+                                    ))}
+                                </ol>
+                                <span>
+                                    {employees.filter((item, index) => index % maxListItems === 0).map((item, index) => (
+                                        <button 
+                                            key={index}
+                                            onClick={() =>
+                                                setListStartIndex(index * maxListItems)
+                                            }
+                                        >
+                                            {index}
+                                        </button>
+                                    ))}
+                                </span>
+                            </div>
+                        );
                     
                     default:
                         return(
                             <div>
                                 <ol>
-                                    {displayedList.map((user) => (
+                                    {shownUserList.map((user) => (
                                         <li key={user.id}>
                                             ID: {user.id} | Name: {user.firstName} {user.lastName}
                                         </li>
                                     ))}
                                 </ol>
                                 <span>
-                                    {users.filter((_, index) => index % maxListItems === 0).map((item, index) => (
+                                    {users.filter((item, index) => index % maxListItems === 0).map((item, index) => (
                                         <button 
                                             key={index}
                                             onClick={() =>
