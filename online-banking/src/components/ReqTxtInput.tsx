@@ -1,8 +1,8 @@
 interface Props {
-    type?: string;
-    text?: string;
-    value?: string;
-    setParam: (val: string) => void;
+    type?: string;                      // Input type. Text by default.
+    text?: string;                      // Placeholder text. Displays inside textbox.
+    value?: string;                     // Value that is displayed inside textbox. Can leave empty for most applications.
+    setParam: (val: string) => void;    // Handler function that is used to set string values input through the textbox.
 }
 
 ReqTxtInput.defaultProps = {

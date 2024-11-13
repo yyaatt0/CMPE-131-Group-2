@@ -3,11 +3,11 @@ import '../styles.css';
 import './AdminPortal.css';
 import ReqTxtInput from '../components/ReqTxtInput';
 
-let userCount = 50;
-let employeeCount = 25;
+// Basic user type definition. Will add more fields later (contact info, ssn, etc.)
+type user = {id: number, firstName: string, lastName: string}
 
 // Temp registered user list
-type user = {id: number, firstName: string, lastName: string}
+let userCount = 50;
 let users: user[] = []
 for(var i = 0; i < userCount; i++){
     users.push(
@@ -15,11 +15,14 @@ for(var i = 0; i < userCount; i++){
     )
 }
 
-// Temp employee list
+// Basic employee type definition.
 type employee = {info: user, admin: boolean}
+
+// Temp employee list
+let employeeCount = 25;
 let employees: employee[] = [];
 for(var i = 0; i < employeeCount; i++){
-    if(i % 3 === 0){
+    if(i % 3 === 0){    // Give every third employee admin access as a temp demonstration
         employees.push(
             {info: {id: i, firstName: 'Jane', lastName: `Doe ${i}`}, admin: true}
         )
@@ -33,13 +36,20 @@ for(var i = 0; i < employeeCount; i++){
 
 function AdminPortal() {
 
+    // Used to navigate between admin tabs
     const [activeTab, setActiveTab] = useState(0);
 
-    // List displays
+    // Used to display both user and employee lists
     const [maxListItems, setMaxListItems] = useState(5);
     const [listStartIndex, setListStartIndex] = useState(10);
-    const shownUserList = users.slice(listStartIndex, listStartIndex + maxListItems);
-    const shownEmployeeList = employees.slice(listStartIndex, listStartIndex + maxListItems);
+    const shownUserList = users.slice(listStartIndex, listStartIndex + maxListItems);   // Only show [maxListItems] number of users per page
+    const shownEmployeeList = employees.slice(listStartIndex, listStartIndex + maxListItems); // Only show [maxListItems] number of employees per page
+
+    /*
+
+    Need to add new user verification & new bank account verification
+    
+    */
 
     // Data value declarations for new employee creation
     const newEmpId = employees.length;
@@ -58,12 +68,12 @@ function AdminPortal() {
     return(
         <>
             <h1>Admin Portal</h1>
-            <h2>Welcome! [Admin Name]</h2>
-            <span>
+            <h2>Welcome! [Admin Name]</h2> {/* Will need to get name of current admin */}
+            <span>  {/* Admin navigation tabs | 0: User database, 1: Add new employwee, 2: Manage Admin Access*/}
                 <button
                     onClick={() => {
                         setActiveTab(0);
-                        setListStartIndex(0);
+                        setListStartIndex(0); {/* Reset list to page 0 when refreshing or switching tabs. */}
                     }}
                 >
                     View User Database
@@ -94,6 +104,8 @@ function AdminPortal() {
                             <form>
                                 <div>
                                     <h3>Name</h3>                                
+                                    {/* ReqTxtInput Component requrires setParam, which takes a handler function that sets a given value. */}
+                                    {/* Handler function can only set string values. See ReqTxtInput component for details. */}
                                     <ReqTxtInput text="First" setParam={setNewEmpFirst}/>
                                     <ReqTxtInput text="Last" setParam={setNewEmpLast}/>
                                 </div>
@@ -113,15 +125,18 @@ function AdminPortal() {
                                 <ol>
                                     {shownEmployeeList.map((emp) => (
                                         <div>
+                                            {/* Employee info display */}
                                             <li key={emp.info.id}>
                                                 ID: {emp.info.id} | Name: {emp.info.firstName} {emp.info.lastName}
                                             </li>
                                             <label>Admin? </label>
-                                            <input type="checkbox" checked={emp.admin}/>
+                                            {/* Employees with admin perms will have their checkbox marked. Functionality to modify perms needs to be added. */}
+                                            <input type="checkbox" checked={emp.admin}/> 
                                         </div>
                                     ))}
                                 </ol>
                                 <span>
+                                    {/* Places page buttons below employee list that will update which portion of the whole employee list will be displayed. */}
                                     {employees.filter((item, index) => index % maxListItems === 0).map((item, index) => (
                                         <button 
                                             key={index}
@@ -135,18 +150,20 @@ function AdminPortal() {
                                 </span>
                             </div>
                         );
-                    /* Admins can view list of all registered users and lookup their data */
+                    /* Admins can view list of all registered users and lookup their data. Displayed by default. */
                     default:
                         return(
                             <div>
                                 <ol>
                                     {shownUserList.map((user) => (
+                                        // User info display
                                         <li key={user.id}>
                                             ID: {user.id} | Name: {user.firstName} {user.lastName}
                                         </li>
                                     ))}
                                 </ol>
                                 <span>
+                                    {/* Places page buttons below user list that will updata which portion of the whole user list will be displayed. */}
                                     {users.filter((item, index) => index % maxListItems === 0).map((item, index) => (
                                         <button 
                                             key={index}
