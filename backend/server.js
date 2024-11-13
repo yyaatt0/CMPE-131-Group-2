@@ -3,10 +3,17 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const authRoutes = require('./routes/auth'); // Routes that use db.js
 
-
-
 const app = express();
 app.use(bodyParser.json());
+
+const session = require('express-session');
+
+app.use(session({
+  secret: 'your-secret-key',  // Replace with a strong secret key
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false }   // Set secure: true for production with HTTPS
+}));
 
 app.use(cors({
   origin: 'http://localhost:3000', // Frontend URL

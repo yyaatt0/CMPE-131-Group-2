@@ -13,8 +13,8 @@ const UserLogin = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      // Send HTTP POST request to backend to authenticate login information
-      const response = await axios.post('http://localhost:3000/auth/login', {
+      //Send HTTP POST request to backend to authenticate login information
+      const response = await axios.post('http://localhost:3001/auth/login', {
         username: username, // Username is sent in the body of the request
         password: password, // Password is sent in the body of the request
       }, { withCredentials: true }); // Include cookies for session management
@@ -23,7 +23,8 @@ const UserLogin = () => {
       if (response.data.success) {
         navigate('/userPortal'); // Redirect to the user portal
       } else {
-        setError(response.data.message || 'Invalid username or password');
+        setError('Invalid username or password');
+        //setError(response.data.message || 'Invalid username or password');
       }
     } catch (err) {
       setError('An error occurred. Please try again.');
