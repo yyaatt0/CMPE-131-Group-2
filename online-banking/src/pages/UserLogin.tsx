@@ -4,19 +4,22 @@ import axios from 'axios';
 import NavBar from '../components/NavBar';
 
 const UserLogin = () => {
-  const [username, setUsername] = useState<string>('');
-  const [password, setPw] = useState<string>('');
-  const [error, setError] = useState<string | null>(null);
+  const [username, setUsername] = useState<string>('');   // Store the entered username
+  const [password, setPw] = useState<string>('');   // Store the entered password
+  const [error, setError] = useState<string | null>(null);   // Store error messages 
   const navigate = useNavigate();
 
+    // Function to handle when the user submits the form
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await axios.post('https://www.sjsu.edu/', {
-        userid: username,
-        password: password,
+      // Send HTTP POST request to backend to authenticate login information
+      const response = await axios.post('http://localhost:3000/UserLogin', {
+        userid: username, // Username is sent in the body of the request
+        password: password, // password is sent in the body of the request
       });
 
+       // If authentication is successful, navigate to the user page  
       if (response.data.success) {
         navigate('/userPortal');
       } else {

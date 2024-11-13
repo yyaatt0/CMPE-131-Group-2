@@ -3,25 +3,29 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const AdminLogin = () => {
-  const [username, setUsername] = useState<string>('');
-  const [password, setPw] = useState<string>('');
+  const [username, setUsername] = useState<string>('');   // Store the entered username
+  const [password, setPw] = useState<string>('');   // Store the entered password
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
+    // Function to handle when the Admin submits form
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await axios.post('https://www.sjsu.edu/', {
-        userid: username,
-        password: password,
+            // Send HTTP POST request to backend to authenticate login information
+      const response = await axios.post('http://localhost:3000/AdminLogin', {
+        userid: username,  // Username is sent in the body of the request
+        password: password, // password is sent in the body of the request
       });
 
+      // If authentication is successful, navigate to the admin page  
       if (response.data.success) {
         navigate('/AdminPortal');
       } else {
         setError('Invalid username or password');
       }
     } catch (error) {
+      // Handle errors during HTTP request sending
       setError('An error occurred. Please try again.');
     }
   };

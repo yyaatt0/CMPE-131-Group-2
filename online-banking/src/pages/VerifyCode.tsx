@@ -4,23 +4,26 @@ import axios from 'axios';
 
 
 const VerifyCode = () => {
-  const [code, setCode] = useState('');
-  const [errorMsg, setErrorMsg] = useState('');
+  const [code, setCode] = useState(''); // Store the confirmation code entered by the user
+  const [errorMsg, setErrorMsg] = useState('');     // Store error messages when errors occur
   const navigate = useNavigate();
-  const [successMsg, setSuccessMsg] = useState<string>('');
+  const [successMsg, setSuccessMsg] = useState<string>('');   // Store success message when confirmation is successful
 
-
+// Function to handle when the user submits the form
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      // Send HTTP POST request to backend with confirmation code
       const response = await axios.post('https://backend/verify-code', {
         code: code,
       });
 
       if (response.data.success) {
+         // If authentication is successful, display a success message and go to the resetPassword page.
         setSuccessMsg('Verification successful!');
         navigate('/resetPassword');
       } else {
+        // If the authentication code is invalid, display an error message
         setErrorMsg('Invalid verification code. Please try again1');
       }
     } catch (error) {
@@ -53,10 +56,12 @@ const VerifyCode = () => {
           borderRadius: '10px',
         }}>
 
+       {/* ask the user to enter their verify code */}
       <h2 style={{ textAlign: 'center', fontWeight: 'bold', fontSize: '25px', marginTop: '40px'}}>Verify Code</h2>
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
           <div style={{ width: '100%' }}>
-            <label style={{ display: 'block', marginBottom: '5px' , fontWeight: 'bold'}}>Enter your code:</label>
+            <label style={{ display: 'block', marginBottom: '5px' , fontWeight: 'bold'}}>
+              Enter your code:</label>
             <input
               style={{
                 padding: '10px',
@@ -76,7 +81,7 @@ const VerifyCode = () => {
 
 
 
-
+{/* This is the "Submit" button */}
         <button 
             style={{
               width: '100px',
@@ -91,6 +96,8 @@ const VerifyCode = () => {
               fontSize: '15px'
             }}>Submit</button>
           <br />
+          
+          {/* for the error messages and success messages */}
           {successMsg && <div className="success-message">{successMsg}</div>}
           {errorMsg && <div className="error-message">{errorMsg}</div>}
        

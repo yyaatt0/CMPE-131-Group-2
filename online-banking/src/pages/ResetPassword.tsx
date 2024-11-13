@@ -2,24 +2,29 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const ResetPassword = () => {
+  // Save new password
   const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [errorMsg, setErrorMsg] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');    // Save confirmation password
+  const [errorMsg, setErrorMsg] = useState('');   // Save error message 
   const [successMsg, setSuccessMsg] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
 
   const navigate = useNavigate();
 
+    // Function to handle when the user submits the form
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+      // Check if the new password and confirm password do not match
     if (newPassword !== confirmPassword) {
       setErrorMsg('Passwords do not match. Please try again.');
       return;
     }
 
+      // Call API to update new password
     console.log('Updating password to:', newPassword);
-    setSuccessMsg('Password has been successfully updated!');
-    setTimeout(() => navigate('/'), 2000);
+    setSuccessMsg('Password has been successfully updated!');     // Display success message
+    setTimeout(() => navigate('/'), 2000);     //Redirect to main page after 2 seconds
+
   };
 
   return (
@@ -53,6 +58,8 @@ const ResetPassword = () => {
 <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
 <div style={{ width: '100%' }}>
             <label style={{ display: 'block', marginBottom: '5px' , fontWeight: 'bold'}}>New Password:</label>
+
+   {/* for the user to enter the new password */}
             <input
               style={{
                 padding: '10px',
@@ -74,7 +81,7 @@ const ResetPassword = () => {
     
 
 
-
+ {/* let the user enter the new password one more time to confirm the new password */}
         <div style={{ width: '100%' }}>
             <label style={{ display: 'block', marginBottom: '5px' , fontWeight: 'bold'}}>Confirm New Password:</label>
             <input
@@ -98,6 +105,7 @@ const ResetPassword = () => {
           </div>
 
 
+  {/* This is the "Submit" button */}
           <button 
             style={{
               width: '100px',
@@ -112,6 +120,8 @@ const ResetPassword = () => {
               fontSize: '15px'
             }}>Submit</button>
           <br />
+  
+    {/* for the error messages and success messages */}
           {successMsg && <div className="success-message">{successMsg}</div>}
           {errorMsg && <div className="error-message">{errorMsg}</div>}
         </form>

@@ -2,17 +2,23 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const ForgotPassword = () => {
+  //useState to manage the state of emails and error messages
+  //Initialize state for email, default value is empty string
   const [email, setEmail] = useState('');
-  const [errorMsg, setErrorMsg] = useState('');
+  const [errorMsg, setErrorMsg] = useState(''); //Initialize state for error message
   const navigate = useNavigate();
 
+    //Function to handle when the user submits the form
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (email) {
+      // Call API to send confirmation code via email
       console.log('Sending verification code to:', email);
+     //Navigate to the code confirmation page
       navigate('/verifyCode');
     } else {
-      setErrorMsg('Please enter your email address!');
+      setErrorMsg('Please enter your email address!'); // If the email is empty, display an error message 
+
     }
   };
 
