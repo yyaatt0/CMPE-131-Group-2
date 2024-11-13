@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import '../styles.css';
 import './AdminPortal.css';
-import ReqTxtInput from '../components/ReqTxtInput';
+import ReqTextInput from '../components/ReqTextInput';
+import TextInput from '../components/TextInput';
 
 // Basic user type definition. Will add more fields later (contact info, ssn, etc.)
 type user = {id: number, firstName: string, lastName: string}
@@ -55,8 +56,11 @@ function AdminPortal() {
     const newEmpId = employees.length;
     const [newEmpFirst, setNewEmpFirst] = useState("");
     const [newEmpLast, setNewEmpLast] = useState("");
-    const [newEmpPhone, setNewEmpPhone] = useState("");
+    const [newEmpCPhone, setNewEmpCPhone] = useState("");
+    const [newEmpHPhone, setNewEmpHPhone] = useState("");
     const [newEmpEmail, setNewEmpEmail] = useState("");
+    const [newEmpBdate, setNewEmpBdate] = useState("");
+    const [newEmpSSN, setNewEmpSSN] = useState("");
 
     // Admin access management
     const [isAdmin, setIsAdmin] = useState(false);
@@ -67,13 +71,12 @@ function AdminPortal() {
 
     return(
         <>
-            <h1>Admin Portal</h1>
-            <h2>Welcome! [Admin Name]</h2> {/* Will need to get name of current admin */}
-            <span>  {/* Admin navigation tabs | 0: User database, 1: Add new employwee, 2: Manage Admin Access*/}
+            <h1 className='section-header'>Admin Portal | Welcome, (Admin)</h1> {/* Will need to get name of current admin */}
+            <div className='admin-nav'>  {/* Admin navigation tabs | 0: User database, 1: Add new employwee, 2: Manage Admin Access*/}
                 <button
                     onClick={() => {
                         setActiveTab(0);
-                        setListStartIndex(0); {/* Reset list to page 0 when refreshing or switching tabs. */}
+                        setListStartIndex(0); // Reset list to page 0 when refreshing or switching tabs.
                     }}
                 >
                     View User Database
@@ -94,34 +97,43 @@ function AdminPortal() {
                 >
                     Manage Admin Access
                 </button>
-            </span>
+            </div>
 
             {(() => {
                 switch(activeTab){
                     /* Enter new employees into the employee database */
                     case 1:
                         return(
-                            <form>
-                                <div>
-                                    <h3>Name</h3>                                
-                                    {/* ReqTxtInput Component requrires setParam, which takes a handler function that sets a given value. */}
-                                    {/* Handler function can only set string values. See ReqTxtInput component for details. */}
-                                    <ReqTxtInput text="First" setParam={setNewEmpFirst}/>
-                                    <ReqTxtInput text="Last" setParam={setNewEmpLast}/>
-                                </div>
-                                <div>
-                                    <h3>Phone</h3>
-                                    <ReqTxtInput setParam={setNewEmpPhone}/>
-                                    <h3>Email</h3>
-                                    <ReqTxtInput setParam={setNewEmpEmail}/>
-                                </div>
-                            </form>
+                            <>
+                                <h3 className='section-subheader'>New Employee</h3>
+                                <form className='form-container'>
+                                    <label className="form-label">*Name</label>
+                                    <div className='input-line'>
+                                        {/* ReqTxtInput Component requrires setParam, which takes a handler function that sets a given value. */}
+                                        {/* Handler function can only set string values. See ReqTxtInput component for details. */}
+                                        <ReqTextInput text="First" value={newEmpFirst} setParam={setNewEmpFirst}/>
+                                        <ReqTextInput text="Last" value={newEmpLast} setParam={setNewEmpLast}/>
+                                    </div>
+                                    <label className="form-label">*Email</label>
+                                    <ReqTextInput value={newEmpEmail} setParam={setNewEmpEmail}/>
+                                    <label className="form-label">*Phone</label>
+                                    <div className='input-line'>
+                                        <ReqTextInput text="Cell" value={newEmpCPhone} setParam={setNewEmpCPhone}/>
+                                        <TextInput text="Home (Optional)" value={newEmpHPhone} setParam={setNewEmpHPhone}/>
+                                    </div>
+                                    <div className='input-line'>
+                                        <ReqTextInput label="*Birthdate" type="date" text="MM/DD/YYYY" value={newEmpBdate} setParam={setNewEmpBdate}/>
+                                        <ReqTextInput label="*SSN" value={newEmpSSN} setParam={setNewEmpSSN}/>
+                                    </div>
+                                    <button type='submit'>Submit</button>
+                                </form>
+                            </>
                         );
                     /* Manage which employees have admin access */
                     case 2:
                         return(
                             <div>
-                                <h3>Manage admin access here.</h3>
+                                <h3 className='section-subheader'>Manage admin access here.</h3>
                                 <ol>
                                     {shownEmployeeList.map((emp) => (
                                         <div>
@@ -135,7 +147,7 @@ function AdminPortal() {
                                         </div>
                                     ))}
                                 </ol>
-                                <span>
+                                <div>
                                     {/* Places page buttons below employee list that will update which portion of the whole employee list will be displayed. */}
                                     {employees.filter((item, index) => index % maxListItems === 0).map((item, index) => (
                                         <button 
@@ -147,13 +159,14 @@ function AdminPortal() {
                                             {index}
                                         </button>
                                     ))}
-                                </span>
+                                </div>
                             </div>
                         );
                     /* Admins can view list of all registered users and lookup their data. Displayed by default. */
                     default:
                         return(
                             <div>
+                                <h3 className='section-subheader'>Registered Users</h3>
                                 <ol>
                                     {shownUserList.map((user) => (
                                         // User info display
@@ -162,7 +175,7 @@ function AdminPortal() {
                                         </li>
                                     ))}
                                 </ol>
-                                <span>
+                                <div>
                                     {/* Places page buttons below user list that will updata which portion of the whole user list will be displayed. */}
                                     {users.filter((item, index) => index % maxListItems === 0).map((item, index) => (
                                         <button 
@@ -174,7 +187,7 @@ function AdminPortal() {
                                             {index}
                                         </button>
                                     ))}
-                                </span>
+                                </div>
                             </div>
                         );
                 }
