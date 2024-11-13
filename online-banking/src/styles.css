@@ -34,6 +34,14 @@ nav {
   height: 65px;
 }
 
+input {
+  color: black;
+}
+
+button {
+  cursor: pointer;
+}
+
 .nav-tab {
   background-color: #003459;
   border: 0;
@@ -63,10 +71,101 @@ nav {
   margin: 0px;
 }
 
+.section-subheader {
+  background-color: white;
+  color: black;
+
+  padding: 10px;
+  margin: 0px;
+}
+
+.form-label {
+  display: inline-block;
+
+  font-weight: bold;
+
+  margin: 5px;
+}
+
+.form-box {
+  background-color: #D3D3D3;
+  border: 1px solid #809AAC;
+  border-radius: 4px;
+  box-sizing: border-box;
+
+  font-size: 15px;
+
+  width: 100%;
+  height: 45px;
+  padding: 10px;
+  margin: 5px;
+}
+
+.list-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  position: absolute;
+  left: 25px;
+
+  width: 25%;
+}
+
+.list-container {
+  background-color: white;
+  border-radius: 5px;
+  box-shadow: 0px 0px 5px inset;
+  box-sizing: border-box;
+
+  width: 100%;
+  max-height: 400px;
+  padding: 20px;
+  margin: 10px;
+}
+
+.list-card {
+  border-radius: 5px;
+  box-shadow: 1px 1px 3px;
+
+  cursor: pointer;
+
+  padding: 10px;
+  margin: 10px;
+}
+
+.list-card:hover {
+  scale: 101%;
+}
+
+.list-content {
+  display: inline-block;
+  border-right: 1px solid #929292;
+
+  font-weight: 400;
+  font-size: 18px;
+
+  padding: 10px;
+}
+
+.page-select button{
+  background-color: #003459;
+  border: none;
+  border-radius: 4px;
+
+  width: 24px;
+  height: 24px;
+  padding: 4px;
+  margin: 2px;
+}
+
+.page-select button:hover {
+  background-color: #004f88;
+}
+
 .arrow-button {
   background-color: #003459;
   border-radius: 10px;
-  box-shadow: 0px 2px 3px black;
   display: flex;
   align-items: center;
 

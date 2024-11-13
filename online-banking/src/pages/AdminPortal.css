@@ -1,0 +1,33 @@
+.admin-nav {
+    background-color: white;
+}
+
+.admin-nav button {
+    height: 25px;
+    margin: 5px;
+}
+
+.form-container {
+    background-color: white;
+    border: 1px solid #809AAC;
+    border-radius: 10px;
+    box-sizing: border-box;
+
+    position: absolute;
+    left: 10px;
+
+    padding: 20px;
+}
+
+.input-line {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+
+    width: 100%;
+}
+
+.input-line div {
+    width: 100%;
+    margin: 5px;
+}
