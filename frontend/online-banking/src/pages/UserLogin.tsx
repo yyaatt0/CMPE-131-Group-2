@@ -3,29 +3,45 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import NavBar from '../components/NavBar';
 
+//LOGIN FUNCTION
 const UserLogin = () => {
-  const [username, setUsername] = useState<string>('');   // Store the entered username
-  const [password, setPw] = useState<string>('');   // Store the entered password
+  //USER CREDENTIALS
+  const [login, setLogin] = useState({
+    username: "",
+    pass: "",
+  })
+
+  //ERRORS
   const [error, setError] = useState<string | null>(null);   // Store error messages 
-  const navigate = useNavigate();
+
+  //USING NAVIGATE
+  const navigate = useNavigate()
+
+  //FUNCTION TO UPDATE STORED VAR FROM USER INPUT
+  const handleChange = (e: { target: { name: any; value: any; }; }) => {
+    setLogin((prev)=>({ ...prev, [e.target.name]: e.target.value }));
+  };
 
     // Function to handle when the user submits the form
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    try {
-      // Send HTTP POST request to backend to authenticate login information
-      const response = await axios.post('http://localhost:3000/UserLogin', {
-        userid: username, // Username is sent in the body of the request
-        password: password, // password is sent in the body of the request
-      });
 
-       // If authentication is successful, navigate to the user page  
-      if (response.data.success) {
-        navigate('/userPortal');
-      } else {
-        setError('Invalid username or password');
-      }
-    } catch (error) {
+    try {
+      
+      //AWAIT AXIOS POST REQUEST THEN SEND LOGIN DETAILS, THEN GET RESPONSE AS 'RESPONSE'
+      await axios.post("http://localhost:3000/users", login).then((response) => {
+
+        //IF RESPONSE DATA = TRUE, GO TO USER PORTAL; ELSE SET ERROR
+        if (response.data) {
+          navigate('/homepage');
+        } 
+        //USER NOT FOUND
+        else {
+          setError('Invalid username or password');
+        }
+      })
+    }
+    catch (error) {
       setError('An error occurred. Please try again.');
     }
   };
@@ -72,8 +88,9 @@ const UserLogin = () => {
             <label style={{ display: 'block', marginBottom: '5px' , fontWeight: 'bold'}}>Username:</label>
             <input
               type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              placeholder='username'
+              name='username'
+              onChange={handleChange}
               required
               style={{
                 padding: '10px',
@@ -91,8 +108,9 @@ const UserLogin = () => {
             <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Password:</label>
             <input
               type="password"
-              value={password}
-              onChange={(e) => setPw(e.target.value)}
+              placeholder='password'
+              name='pass'
+              onChange={handleChange}
               required
               style={{
                 padding: '10px',
