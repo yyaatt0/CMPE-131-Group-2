@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+/* import React, { useState } from 'react';
 
 const Password = () => {
   const [email, setEmail] = useState('');
@@ -160,7 +160,7 @@ if (error) {
      </form>
      
 </div>
-</div>
+</div> */
     
 
 
