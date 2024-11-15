@@ -327,7 +327,6 @@ const Registration = () => {
                 </a>
                 <span> | </span>
                
-                //<a href="/" style={{ color: 'blue', textDecoration: 'underline' }}>Save</a>
             </div>
         </div>
     );
