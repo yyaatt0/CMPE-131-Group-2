@@ -7,6 +7,48 @@
     margin: 5px;
 }
 
+.database-panel {
+    box-shadow: 0px 0px 5px inset;
+    border-radius: 5px;
+
+    display: flex;
+    flex-direction: row;
+
+    justify-self: center;
+    justify-content: space-between;
+    
+    height: 750px;
+    width: 95%;
+}
+
+.list-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    position: relative;
+    box-sizing: content-box;
+
+    height: auto;
+    min-width: 20%;
+    margin: 5px;
+}
+
+.info-area {
+    background-color: #f0f0f0;
+    border-radius: 10px;
+
+    height: auto;
+    width: 100%;
+    margin: 10px;
+    padding: 25px;
+}
+
+.page-num-center {
+    width: 20%;
+    margin: 10px;
+}
+
 .form-container {
     background-color: white;
     border: 1px solid #809AAC;

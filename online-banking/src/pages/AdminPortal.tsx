@@ -14,9 +14,21 @@ type user = {id: number, firstName: string, lastName: string};
 let userCount = 100;
 let users: user[] = []
 for(var i = 0; i < userCount; i++){
-    users.push(
-        {id: i + 100000, firstName: 'John', lastName: 'Doe'}
-    )
+    if(i % 5 == 0 && i % 3 != 0){
+        users.push(
+            {id: i + 100000, firstName: 'Barry', lastName: 'Allen'}
+        )
+    }
+    else if(i % 5 != 0 && i % 3 == 0){
+        users.push(
+            {id: i + 100000, firstName: 'Peter', lastName: 'Griffin'}
+        )
+    }
+    else{
+        users.push(
+            {id: i + 100000, firstName: 'John', lastName: 'Doe'}
+        )
+    }
 }
 
 // Basic employee type definition.
@@ -49,8 +61,10 @@ function AdminPortal() {
     const shownUserList = users.slice(listStartIndex, listStartIndex + maxListItems);   // Only show [maxListItems] number of users per page
     const shownEmployeeList = employees.slice(listStartIndex, listStartIndex + maxListItems); // Only show [maxListItems] number of employees per page
 
-    const handleUserSelect = () => {
-        console.log("clicked.");
+    const [selectedUser, setSelectedUser] = useState(0);
+
+    const handleUserSelect = (index: number) => {
+        setSelectedUser(index);
     }
 
     /*
@@ -141,22 +155,33 @@ function AdminPortal() {
                         return(
                             <>
                                 <h3 className='section-subheader'>Manage admin access here.</h3>
-                                <div className='list-area'>
-                                    <ScrollBox className='list-container'>
-                                        {shownEmployeeList.map((emp) => (
-                                            <>
-                                                {/* Employee info display */}
-                                                <ListCard info={emp.info} onClick={handleUserSelect}>
-                                                    <label> Admin? </label>
-                                                    {/* Employees with admin perms will have their checkbox marked. Functionality to modify perms needs to be added. */}
-                                                    <input type="checkbox" checked={emp.admin}/>
-                                                </ListCard>
-                                            </>
-                                        ))}
-                                    </ScrollBox>
-                                    {/* Places page buttons below employee list that will update which portion of the whole employee list will be displayed. */}
-                                    <PageButtons className='page-select' array={employees} max={maxListItems} handleClick={setListStartIndex}/>
+                                <div className='database-panel'>
+                                    <div className='list-area'>
+                                        <ScrollBox className='list-container'>
+                                            {shownEmployeeList.map((emp, index) => (
+                                                <>
+                                                    {/* Employee info display */}
+                                                    <ListCard className={selectedUser === index ? 'selected': ''} info={emp.info} onClick={() => handleUserSelect(index)}>
+
+                                                    </ListCard>
+                                                </>
+                                            ))}
+                                        </ScrollBox>
+                                    </div>
+                                    <div className='info-area'>
+                                        <h2>ID: {employees[selectedUser + listStartIndex].info.id}</h2>
+                                        <h2>Name: {employees[selectedUser + listStartIndex].info.lastName}, {employees[selectedUser + listStartIndex].info.firstName}</h2>
+                                        <h2>Phone: </h2>
+                                        <h2>Email: </h2>
+                                        <h2>Username: </h2>
+                                        <h2>Password: </h2>
+                                        <label className='section-subheader'> Admin? </label>
+                                        {/* Employees with admin perms will have their checkbox marked. Functionality to modify perms needs to be added. */}
+                                        <input type="checkbox" checked={employees[selectedUser + listStartIndex].admin}/>
+                                    </div>
                                 </div>
+                                {/* Places page buttons below employee list that will update which portion of the whole employee list will be displayed. */}
+                                <PageButtons array={employees} max={maxListItems} handleClick={setListStartIndex}/>
                             </>
                         );
                     /* Admins can view list of all registered users and lookup their data. Displayed by default. */
@@ -164,16 +189,30 @@ function AdminPortal() {
                         return(
                             <>
                                 <h3 className='section-subheader'>Registered Users</h3>
-                                <div className='list-area'>
-                                    <ScrollBox className='list-container'>
-                                        {shownUserList.map((user) => (
-                                            // User info display
-                                            <ListCard info={user} onClick={handleUserSelect}/>
-                                        ))}
-                                    </ScrollBox>
-                                    {/* Places page buttons below user list that will update which portion of the whole employee list will be displayed. */}
-                                    <PageButtons className='page-select' array={users} max={maxListItems} handleClick={setListStartIndex}/>
+                                <div className='database-panel'>
+                                    <div className='list-area'>
+                                        <ScrollBox className='list-container'>
+                                            {shownUserList.map((user, index) => (
+                                                // User info display
+                                                <ListCard className={selectedUser === index ? 'selected' : ''} info={user} onClick={() => handleUserSelect(index)}/>
+                                            ))}
+                                        </ScrollBox>
+                                    </div>
+                                    <div className='info-area'>
+                                        <h2>ID: {users[selectedUser + listStartIndex].id}</h2>
+                                        <h2>Name: {users[selectedUser + listStartIndex].lastName}, {users[selectedUser + listStartIndex].firstName}</h2>
+                                        <h2>Phone: </h2>
+                                        <h2>Email: </h2>
+                                        <h2>Username: </h2>
+                                        <h2>Password: </h2>
+                                        <h3 className='section-subheader'>Accounts</h3>
+                                        <ScrollBox className='list-container'>
+                                            {/* Account cards will go here */}
+                                        </ScrollBox>
+                                    </div>
                                 </div>
+                                {/* Places page buttons below user list that will update which portion of the whole employee list will be displayed. */}
+                                <PageButtons className='page-num-center' array={users} max={maxListItems} handleClick={setListStartIndex}/>
                             </>
                         );
                 }
