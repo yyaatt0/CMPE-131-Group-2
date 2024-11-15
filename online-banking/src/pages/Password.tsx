@@ -7,19 +7,23 @@ const Password = () => {
  const [confirmnewPassword, setconfirmnewPassword] = useState('');
  const [errorMss, setErrorMss] =useState ('');
 
-
+// Function to check password validity
  const Vpassword = (password: string): string | null => {
         const minLength = 9;
-        const uppercase = /[A-Z]/.test(password);
-        const lowercase = /[a-z]/.test(password);
-        const specialchar = /[$%^&|<>!@#*(),.?":{}]/.test(password);
-        const number = /\d/.test(password);
-    
         if (password.length < minLength) return 'minLength = 9'
-        if (!uppercase) return 'Need at least 1 uppercase';
-        if (!lowercase) return 'Need at least 1 lowecase ';
-        if (!specialchar) return 'Need at least 1 special character';
-        if (!number) return 'Need at least 1 number';
+
+        if (!/[A-Z]/.test(password))
+         return 'Need at least 1 uppercase';
+
+       if(!~/[a-z]/.test(password))
+       return 'Need at least 1 lowercase ';
+
+      if(!/[$%^&|<>!@#*(),.?":{}]/.test(password))
+     return 'Need at least 1 special character';
+
+       if(!/\d/.test(password))
+        return 'Need at least 1 number';
+    
         return null;
 
  };
@@ -27,13 +31,15 @@ const Password = () => {
 
  const handleResetPassword = (e: React.FormEvent<HTMLFormElement>) => {
   e.preventDefault();
- 
+
+   //check if newPassword = confirmnewPassword
   if (newPassword !== confirmnewPassword) {
     setErrorMss('incorrect password.');
   } else {
     
     setsuccessMss('Password reset successfully.');
   }
+   // Check the validity of the new password
   const error = Vpassword(newPassword);
 if (error) {
     setErrorMss(error);
