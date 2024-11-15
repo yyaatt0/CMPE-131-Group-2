@@ -7,6 +7,21 @@ const Password = () => {
  const [confirmnewPassword, setConfirmnewPassword] = useState('');
  const [errorMsg, setErrorMsg] =useState ('');
 
+//Function to check password strength
+ const validPassword = (password: string): string | null => {
+    const minLength = 9;
+    const UpperCase = /[A-Z]/.test(password);
+    const LowerCase = /[a-z]/.test(password);
+    const SpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+    const Number = /\d/.test(password);
+
+    if (password.length < minLength) return 'minLength = 9'
+    if (!UpperCase) return 'Need at least 1 uppercase';
+    if (!LowerCase) return 'Need at least 1 lowecase ';
+    if (!SpecialChar) return 'Need at least 1 special character';
+    if (!Number) return 'Need at least 1 number';
+    return null;
+  
  const handleResetPassword = (e: React.FormEvent<HTMLFormElement>) => {
   e.preventDefault();
 
@@ -16,6 +31,13 @@ const Password = () => {
   } else {
     
     setSuccessMsg('Password reset successfully.');
+  }
+
+    const error = validPassword(newPassword);
+if (error) {
+    setErrorMsg(error);
+    setSuccessMsg('');
+    return;
   }
 };
 
