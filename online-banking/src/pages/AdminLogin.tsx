@@ -128,7 +128,7 @@ const AdminLogin = () => {
         {/* Button going to the page to reset the password */}
         <br />
         <div style={{ textAlign: 'center' }}>
-          <a href="/forgotpassword" style={{ paddingBottom: '10px', display: 'inline-block' }} >Forgot Password?</a>
+          <a href="/forgotPassword" style={{ paddingBottom: '10px', display: 'inline-block' }} >Forgot Password?</a>
         </div>
       
       </div>
