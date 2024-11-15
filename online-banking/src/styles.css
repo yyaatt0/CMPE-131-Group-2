@@ -104,10 +104,11 @@ button {
 }
 
 .list-container {
-  background-color: white;
   border-radius: 5px;
+  box-sizing: border-box;
 
-  width: auto;
+  max-height: 100%;
+  width: 100%;
   padding: 20px;
 }
 

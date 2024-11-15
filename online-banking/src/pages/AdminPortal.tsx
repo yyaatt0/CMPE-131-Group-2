@@ -50,6 +50,26 @@ for(var i = 0; i < employeeCount; i++){
     }
 }
 
+// Basic account type definition.
+type account = {id: number, name: string, balance: number};
+
+// Temp account list
+let accountCount = 12;
+let accounts: account[] = [];
+for(var i = 0; i < accountCount; i++){
+    if(i % 3 === 0){
+        accounts.push(
+            {id: i, name: 'Checkings', balance: 999999}
+        )
+    }
+    else{
+        accounts.push(
+            {id: i, name: 'Savings', balance: 5}
+        )
+    }
+}
+
+
 function AdminPortal() {
 
     // Used to navigate between admin tabs
@@ -206,9 +226,17 @@ function AdminPortal() {
                                         <h2>Username: </h2>
                                         <h2>Password: </h2>
                                         <h3 className='section-subheader'>Accounts</h3>
-                                        <ScrollBox className='list-container'>
-                                            {/* Account cards will go here */}
-                                        </ScrollBox>
+                                        <div className='info-list-area'>
+                                            <ScrollBox className='list-container'>
+                                                {accounts.map((acc) => (
+                                                    <div className='list-card'>
+                                                        <label className="list-content">ID: {acc.id} </label>
+                                                        <label className="list-content">Name: {acc.name} </label>
+                                                        <label className="list-content">Balance: {acc.balance} </label>
+                                                    </div>
+                                                ))}
+                                            </ScrollBox>
+                                        </div>
                                     </div>
                                 </div>
                                 {/* Places page buttons below user list that will update which portion of the whole employee list will be displayed. */}
