@@ -160,10 +160,10 @@ if (error) {
      </form>
      
 </div>
-</div> */
+</div> 
     
 
 
  ); };
 
-export default Password;
+export default Password; */
