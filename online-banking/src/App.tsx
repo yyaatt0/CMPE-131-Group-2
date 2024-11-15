@@ -10,6 +10,8 @@ import Homepage from './pages/Homepage';
 import Registration from './pages/Registration';
 import UserLogin from "./pages/UserLogin";
 import ForgotPassword from "./pages/ForgotPassword";
+import Password from "./pages/Password";
+
 
 import VerifyCode from './pages/VerifyCode';
 import ResetPassword from './pages/ResetPassword';
@@ -32,6 +34,7 @@ const App = () => {
         <Route path="/homepage" element={<Homepage />} />
         <Route path="/registration" element={<Registration />} />
         <Route path="/userlogin" element={<UserLogin />} />
+        <Route path="/password" element={<Password />} />
 
         <Route path="/forgotPassword" element={<ForgotPassword />} />
         <Route path="/verifyCode" element={<VerifyCode />} />
