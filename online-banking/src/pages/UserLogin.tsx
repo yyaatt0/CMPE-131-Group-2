@@ -138,6 +138,12 @@ const UserLogin = () => {
           <a href="/registration" style={{ paddingTop: '10px', display: 'inline-block' }}> SIGN UP</a> 
 
         </div>
+
+        <div style={{ textAlign: 'center', margin: '20px auto' }}>
+
+          <a href="/adminlogin" style={{ paddingBottom: '10px', display: 'inline-block' }}> Admin'Login</a> 
+          </div>
+        
       </div>
 
     </div>
