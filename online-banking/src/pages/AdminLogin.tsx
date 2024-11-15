@@ -130,11 +130,7 @@ const AdminLogin = () => {
         <div style={{ textAlign: 'center' }}>
           <a href="/forgotPassword" style={{ paddingBottom: '10px', display: 'inline-block' }} >Forgot Password?</a>
         </div>
-         <div style={{ textAlign: 'center' }}>
-           
-          <a href="/registration" style={{ paddingTop: '10px', display: 'inline-block' }}> SIGN UP</a> 
-
-        </div>
+      
       </div>
 
     </div>
