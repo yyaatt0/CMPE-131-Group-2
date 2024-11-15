@@ -60,6 +60,10 @@ const AtmFeature = () => {
   // HARDCODED DATA
   // BACKEND: Fill this array from the data base based on what account the user has 
   const accounts: string[] = ["Savings Account", "Checking Account"];
+
+  // HARDCODED DATA
+  // BACKEND: Fill this with the name associated with the account logged in
+  const name = "John Doe";
  
   // HARDCODED DATA
   // BACKEND: Import the list of transaction into an list
@@ -517,7 +521,7 @@ const AtmFeature = () => {
 
           {/* There is a hardcoded name but later connect the backend to retrieve that data */}
           <h1 style={{ fontSize: '2rem', fontWeight: 'bold', marginBottom: '1rem' }}>
-            Welcome, John Doe
+            Welcome, {name}
           </h1>
 
           {/* Nav bar portion  */}
