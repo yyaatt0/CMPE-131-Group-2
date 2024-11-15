@@ -2,44 +2,46 @@ import React, { useState } from 'react';
 
 const Password = () => {
   const [email, setEmail] = useState('');
- const [SuccessMsg, setSuccessMsg] = useState ('');
- const [newPassword, setNewPassword] = useState('');
- const [confirmnewPassword, setConfirmnewPassword] = useState('');
- const [errorMsg, setErrorMsg] =useState ('');
+ const [SuccessMss, setsuccessMss] = useState ('');
+ const [newPassword, setnewPassword] = useState('');
+ const [confirmnewPassword, setconfirmnewPassword] = useState('');
+ const [errorMss, setErrorMss] =useState ('');
 
-//Function to check password strength
- const validPassword = (password: string): string | null => {
-    const minLength = 9;
-    const UpperCase = /[A-Z]/.test(password);
-    const LowerCase = /[a-z]/.test(password);
-    const SpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
-    const Number = /\d/.test(password);
 
-    if (password.length < minLength) return 'minLength = 9'
-    if (!UpperCase) return 'Need at least 1 uppercase';
-    if (!LowerCase) return 'Need at least 1 lowecase ';
-    if (!SpecialChar) return 'Need at least 1 special character';
-    if (!Number) return 'Need at least 1 number';
-    return null;
-  
+ const Vpassword = (password: string): string | null => {
+        const minLength = 9;
+        const uppercase = /[A-Z]/.test(password);
+        const lowercase = /[a-z]/.test(password);
+        const specialchar = /[$%^&|<>!@#*(),.?":{}]/.test(password);
+        const number = /\d/.test(password);
+    
+        if (password.length < minLength) return 'minLength = 9'
+        if (!uppercase) return 'Need at least 1 uppercase';
+        if (!lowercase) return 'Need at least 1 lowecase ';
+        if (!specialchar) return 'Need at least 1 special character';
+        if (!number) return 'Need at least 1 number';
+        return null;
+
+ };
+
+
  const handleResetPassword = (e: React.FormEvent<HTMLFormElement>) => {
   e.preventDefault();
-
-   //check if newPassword = confirmnewPassword
+ 
   if (newPassword !== confirmnewPassword) {
-    setErrorMsg('incorrect password.');
+    setErrorMss('incorrect password.');
   } else {
     
-    setSuccessMsg('Password reset successfully.');
+    setsuccessMss('Password reset successfully.');
   }
-
-    const error = validPassword(newPassword);
+  const error = Vpassword(newPassword);
 if (error) {
-    setErrorMsg(error);
-    setSuccessMsg('');
+    setErrorMss(error);
+    setsuccessMss('');
     return;
   }
 };
+
 
  return (
   <div style={{fontFamily: 'Arial, sans-serif', margin: 0 }}>
@@ -106,7 +108,7 @@ if (error) {
            type= "password"
            name= "password"
            value= {newPassword}
-           onChange= {(e) => setNewPassword(e.target.value)}
+           onChange= {(e) => setnewPassword(e.target.value)}
            id= "newpassword"
            required
          />
@@ -127,7 +129,7 @@ if (error) {
            type= "confirmpassword"
            name= "confirmpassword"
            value= {confirmnewPassword}
-           onChange= {(e) => setConfirmnewPassword(e.target.value)}
+           onChange= {(e) => setconfirmnewPassword(e.target.value)}
            id= "confirmPassword"
            required
          />
@@ -147,7 +149,7 @@ if (error) {
               fontSize: '15px'
             }}>Submit</button>
     <br></br>
-    {errorMsg && <div className="error-message">{errorMsg}</div>}
+    {errorMss && <div className="error-message">{errorMss}</div>}
 
      </form>
      
