@@ -91,3 +91,33 @@
     width: 100%;
     margin: 5px;
 }
+
+.search {
+    border: solid;
+    border-color: black;
+    border-radius: 20px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+}
+
+.search-bar {
+    margin-left: 0.5rem;
+    background-color: white;
+    height: 40px;
+    width: 85%;
+    font-size: 15px;
+    border: none;
+    border-radius: 20px;
+}
+
+.search-bar:focus {
+    outline: none;
+}
+
+.search-bar-icon {
+    margin-left: 10px;
+    width: 20px;
+    height: 100%;
+}
