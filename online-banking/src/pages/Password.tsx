@@ -1,3 +1,11 @@
+const Password = () => {
+  <>
+  </>
+}
+
+export default Password;
+
+
 /* import React, { useState } from 'react';
 
 const Password = () => {

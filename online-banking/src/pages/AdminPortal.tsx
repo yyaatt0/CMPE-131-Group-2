@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Search } from 'lucide-react';
 import '../styles.css';
 import './AdminPortal.css';
@@ -76,6 +76,21 @@ function AdminPortal() {
 
     // Used to navigate between admin tabs
     const [activeTab, setActiveTab] = useState(0);
+    const tabsRef = useRef<(HTMLButtonElement | null)[]>([]);
+    const [tabUnderlineWidth, setTabUnderlineWidth] = useState(0);
+    const [tabUnderlineLeft, setTabUnderlineLeft] = useState(0);
+
+    useEffect(() => {
+        const updateUnderlinePosition = () => {
+            const currentTab = tabsRef.current[activeTab];
+            if (currentTab) {
+                setTabUnderlineLeft(currentTab.offsetLeft);
+                setTabUnderlineWidth(currentTab.clientWidth);
+            }
+        };
+        updateUnderlinePosition();
+    }, [activeTab]);
+
 
     // Used to display both user and employee lists
     const [maxListItems, setMaxListItems] = useState(20);
@@ -148,7 +163,26 @@ function AdminPortal() {
         <>
             <h1 className='section-header'>Admin Portal | Welcome, (Admin)</h1> {/* Will need to get name of current admin */}
             <div className='admin-nav'>  {/* Admin navigation tabs | 0: User database, 1: Add new employwee, 2: Manage Admin Access*/}
-                <button
+
+                <span
+                    style={{
+                        left: `${tabUnderlineLeft}px`,
+                        width: `${tabUnderlineWidth}px`,
+                    }}
+                />
+                {['View User Database', 'Add New Employee', 'Manage Admin Access'].map((tabName, index) => (
+                    <button
+                        key={index}
+                        ref={(el) => (tabsRef.current[index] = el)}
+                        onClick={() => setActiveTab(index)}
+                    >
+                        {tabName}
+                    </button>
+                ))}
+                
+               
+
+                {/* <button
                     onClick={() => {
                         setActiveTab(0);
                         setListStartIndex(0); // Reset list to page 0 when refreshing or switching tabs.
@@ -171,7 +205,7 @@ function AdminPortal() {
                     }}
                 >
                     Manage Admin Access
-                </button>
+                </button> */}
             </div>
 
             {(() => {
