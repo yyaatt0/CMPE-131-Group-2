@@ -3,31 +3,47 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import NavBar from '../components/NavBar';
 
+//LOGIN FUNCTION
 const UserLogin = () => {
-  const [username, setUsername] = useState<string>('');   // Store the entered username
-  const [password, setPw] = useState<string>('');   // Store the entered password
+  //USER CREDENTIALS
+  const [login, setLogin] = useState({
+    username: "",
+    password: "",
+  })
+
+  //ERRORS
   const [error, setError] = useState<string | null>(null);   // Store error messages 
-  const navigate = useNavigate();
+
+  //USING NAVIGATE
+  const navigate = useNavigate()
+
+  //FUNCTION TO UPDATE STORED VAR FROM USER INPUT
+  const handleChange = (e: { target: { name: any; value: any; }; }) => {
+    setLogin((prev)=>({ ...prev, [e.target.name]: e.target.value }));
+  };
 
     // Function to handle when the user submits the form
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    
     try {
       // Send HTTP POST request to backend to authenticate login information
-      const response = await axios.post('http://localhost:3000/UserLogin', {
-        userid: username, // Username is sent in the body of the request
-        password: password, // password is sent in the body of the request
-      });
+      const response = await axios.post('http://localhost:3001/auth/login', {
+        username: login.username, // Use login.username
+        password: login.password,     // Use login.password
+      }); 
 
-       // If authentication is successful, navigate to the user page  
+      // If authentication is successful, navigate to the user page  
       if (response.data.success) {
-        navigate('/userPortal');
+        navigate('/userPortal'); // Redirect to the user portal
       } else {
         setError('Invalid username or password');
       }
-    } catch (error) {
+    } catch (err) {
       setError('An error occurred. Please try again.');
     }
+    
   };
 
   return (
@@ -72,8 +88,9 @@ const UserLogin = () => {
             <label style={{ display: 'block', marginBottom: '5px' , fontWeight: 'bold'}}>Username:</label>
             <input
               type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              placeholder='username'
+              name='username'
+              onChange={handleChange}
               required
               style={{
                 padding: '10px',
@@ -91,8 +108,9 @@ const UserLogin = () => {
             <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Password:</label>
             <input
               type="password"
-              value={password}
-              onChange={(e) => setPw(e.target.value)}
+              placeholder='password'
+              name='password'
+              onChange={handleChange}
               required
               style={{
                 padding: '10px',
@@ -131,19 +149,8 @@ const UserLogin = () => {
         {/* Button going to the forgot password page */}
         <br />
         <div style={{ textAlign: 'center' }}>
-          <a href="/forgotPassword"  style={{ paddingBottom: '10px', display: 'inline-block' }}>Forgot Password?</a>
-          </div>
-        <div style={{ textAlign: 'center' }}>
-           
-          <a href="/registration" style={{ paddingTop: '10px', display: 'inline-block' }}> SIGN UP</a> 
-
+          <a href="/ForgotPassword">Forgot Password?</a>
         </div>
-
-        <div style={{ textAlign: 'center', margin: '20px auto' }}>
-
-          <a href="/adminlogin" style={{ paddingBottom: '10px', display: 'inline-block' }}> Admin'Login</a> 
-          </div>
-        
       </div>
 
     </div>
