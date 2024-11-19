@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { LockIcon, UserIcon } from 'lucide-react';
 import FooterCard from '../components/FooterCard';
 import NavBar from '../components/NavBar';
+import { useNavigate } from 'react-router-dom';
 // import { useAsyncError, useFetcher } from 'react-router-dom';
 
 const AtmLogin = () => {
@@ -30,13 +31,15 @@ const AtmLogin = () => {
   };
 
   // Checks if there is at least a password length of 4 and a username 
-  // inputted then welcomes, other than that, then we will print out an
+  // inputed then redirects to AtmFeature page, other than that, then we will print out an
   // error
   // Wait for backend to deal with this
+
+  const navigate = useNavigate();
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (username && password.length === 4) {
-      setMessage(`Welcome, ${username}!`);
+      navigate('/AtmFeature');
     } else {
       setMessage('Invalid username or password.');
     }

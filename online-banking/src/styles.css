@@ -116,12 +116,19 @@ button {
   border-radius: 5px;
   box-shadow: 1px 1px 3px;
 
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: left;
+
   cursor: pointer;
 
   width: auto;
   height: 50px;
   padding: 10px;
   margin: 10px;
+  transition: 0.4s ease;
 }
 
 .list-card:hover {

@@ -8,7 +8,7 @@ const AdminLogin = () => {
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
-    // Function to handle when the Admin submits form
+    // Function to handle when the Admin submits the form
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -125,16 +125,12 @@ const AdminLogin = () => {
           </button>
         </form>
 
-        {/* Button going to the forgot password page */}
+        {/* Button going to the page to reset the password */}
         <br />
         <div style={{ textAlign: 'center' }}>
           <a href="/forgotPassword" style={{ paddingBottom: '10px', display: 'inline-block' }} >Forgot Password?</a>
         </div>
-         <div style={{ textAlign: 'center' }}>
-           
-          <a href="/registration" style={{ paddingTop: '10px', display: 'inline-block' }}> SIGN UP</a> 
-
-        </div>
+      
       </div>
 
     </div>
