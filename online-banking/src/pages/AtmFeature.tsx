@@ -39,6 +39,11 @@ const AtmFeature = () => {
   const [isFundConfirmHover, setFundConfirmHover] = useState(false);
   const [isFundCancelHover, setFundCancelHover] = useState(false);
 
+  // This is for showing a preview of the check images
+  const [selectedFrontImg, setSelectedFrontImg] = useState<string>();
+  const [selectedBackImg, setSelectedBackImg] = useState<string>();
+
+
   // The logout redirect
   const navigate = useNavigate();
   const handleClick = () => {
@@ -55,6 +60,10 @@ const AtmFeature = () => {
   // HARDCODED DATA
   // BACKEND: Fill this array from the data base based on what account the user has 
   const accounts: string[] = ["Savings Account", "Checking Account"];
+
+  // HARDCODED DATA
+  // BACKEND: Fill this with the name associated with the account logged in
+  const name = "John Doe";
  
   // HARDCODED DATA
   // BACKEND: Import the list of transaction into an list
@@ -209,6 +218,7 @@ const AtmFeature = () => {
                 type="text"
                 value={amount}
                 onChange={handleAmountChange}
+                placeholder="0.00"
                 readOnly
                 style={{width: '95%', height: '40px', padding: '0.5rem', textAlign: 'right', fontSize: '1.5rem', borderRadius: '0.375rem', borderWidth: '2px', borderStyle: 'solid', borderColor: 'black', backgroundColor: 'white', color: 'black',}}
               />
@@ -264,6 +274,7 @@ const AtmFeature = () => {
                   <input
                     type="text"
                     value={amount}
+                    placeholder="0.00"
                     // readOnly
                     onChange={handleAmountChange}
                     style={{width: '95%', height: '40px', padding: '0.5rem', textAlign: 'right', fontSize: '1.5rem', borderRadius: '0.375rem', borderWidth: '2px', borderStyle: 'solid', borderColor: 'black', backgroundColor: 'white', color: 'black',}}
@@ -315,7 +326,7 @@ const AtmFeature = () => {
 
                 {/* This is the next button  */}
                 <button
-                  onClick={handleConfirm}
+                  onClick={() => {handleConfirm(); setConfirmHover(false)}}
                   onMouseDown={() => setConfirmActive(true)}
                   onMouseUp={() => setConfirmActive(false)}
                   onMouseEnter={() => setConfirmHover(true)}
@@ -338,7 +349,7 @@ const AtmFeature = () => {
                   <button
                     onMouseEnter={() => setFundCancelHover(true)}
                     onMouseLeave={() => setFundCancelHover(false)}
-                    onClick={() => setTransferConfirmation(false)}
+                    onClick={() => {setTransferConfirmation(false); setFundCancelHover(false)}}
                     style={{marginTop: '1rem',width: '48%',height: '50px',padding: '0.5rem',backgroundColor: isFundCancelHover ? 'darkgray' : '#d1d5db',color: 'black',borderRadius: '0.375rem',fontSize: '1.25rem',border: 'none',cursor: 'pointer',transition: 'background-color 0.5s',}}
                   >
                     Cancel
@@ -346,7 +357,7 @@ const AtmFeature = () => {
 
                   {/* The confirm button portion */}
                   <button
-                    onClick={handleConfirm}             
+                    onClick={() => {handleConfirm(); setFundConfirmHover(false)}}             
                     onMouseEnter={() => setFundConfirmHover(true)}
                     onMouseLeave={() => setFundConfirmHover(false)}
                     style={{marginTop: '1rem',width: '48%',height: '50px',padding: '0.5rem',backgroundColor: isFundConfirmHover ? '#00171F' : '#003459',color: 'white',borderRadius: '0.375rem',fontSize: '1.25rem',border: 'none',cursor: 'pointer',transition: 'background-color 0.5s',}}
@@ -364,7 +375,7 @@ const AtmFeature = () => {
       case "Deposit Check":
         popupContent = (
           <>
-            <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1rem' }}>Deposit Check</h2>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1rem'}}>Deposit Check</h2>
             
             {/* Front of check image insert; having these pictures will do absolutely NOTHING*/}
             <h3 style={{ fontSize: '0.9rem', fontWeight: 'bold'}}>Upload Front of Check</h3>
@@ -372,9 +383,22 @@ const AtmFeature = () => {
               <input
                 type="file"
                 accept="image/*"
+                onChange ={(e) => {
+                  const file = e.target.files?.[0];
+                  setSelectedFrontImg(file ? URL.createObjectURL(file) : undefined);
+                }}
                 style={{width: '95%',padding: '0.5rem',border: '1px solid #ccc',borderRadius: '0.375rem'
                 }}
               />
+              {selectedFrontImg && (<p></p>)}
+              {selectedFrontImg && (
+                <img
+                src={selectedFrontImg}
+                width={382.5}
+                height={82.5}
+                alt="Selected Avatar"
+                />
+              )}
             </div>
 
             {/* Back of check image insertion; having these pictures will do absolutely NOTHING*/}
@@ -383,9 +407,23 @@ const AtmFeature = () => {
               <input
                 type="file"
                 accept="image/*"
+                onChange ={(e) => {
+                  const file = e.target.files?.[0];
+                  setSelectedBackImg(file ? URL.createObjectURL(file) : undefined);
+                }}
                 style={{width: '95%',padding: '0.5rem',border: '1px solid #ccc',borderRadius: '0.375rem'
                 }}
               />
+
+              {selectedBackImg && (<p></p>)}
+              {selectedBackImg && (
+                <img
+                src={selectedBackImg}
+                width={382.5}
+                height={82.5}
+                alt="Selected Avatar"
+                />
+              )}
             </div>
 
             {/* The input textbox */}
@@ -447,7 +485,7 @@ const AtmFeature = () => {
           position: 'relative'
         }}>
           <button
-            onClick={() => setActivePopup(null)}
+            onClick={() => {setActivePopup(null); setSelectedFrontImg(undefined); setSelectedBackImg(undefined); setConfirmHover(false)}}
             style={{
               position: 'absolute',
               top: '1rem',
@@ -483,7 +521,7 @@ const AtmFeature = () => {
 
           {/* There is a hardcoded name but later connect the backend to retrieve that data */}
           <h1 style={{ fontSize: '2rem', fontWeight: 'bold', marginBottom: '1rem' }}>
-            Welcome, John Doe
+            Welcome, {name}
           </h1>
 
           {/* Nav bar portion  */}
@@ -521,7 +559,6 @@ const AtmFeature = () => {
         <button 
 
           onClick={handleClick}
-
           onMouseEnter={() => setLogoutIsHovered(true)}
           onMouseLeave={() => setLogoutIsHovered(false)}
           onMouseDown={() => setLogoutIsActive(true)}

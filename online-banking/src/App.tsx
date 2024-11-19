@@ -11,6 +11,7 @@ import Registration from './pages/Registration';
 import UserLogin from "./pages/UserLogin";
 import ForgotPassword from "./pages/ForgotPassword";
 
+
 import VerifyCode from './pages/VerifyCode';
 import ResetPassword from './pages/ResetPassword';
 import AdminPortal from "./pages/AdminPortal";

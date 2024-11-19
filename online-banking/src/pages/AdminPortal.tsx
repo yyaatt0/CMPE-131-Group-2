@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
+import { Search } from 'lucide-react';
 import '../styles.css';
 import './AdminPortal.css';
 import ReqTextInput from '../components/ReqTextInput';
@@ -6,6 +7,7 @@ import TextInput from '../components/TextInput';
 import ListCard from '../components/ListCard';
 import ScrollBox from '../components/ScrollBox';
 import PageButtons from '../components/PageButtons';
+import { setTextRange } from 'typescript';
 
 // Basic user type definition. Will add more fields later (contact info, ssn, etc.)
 type user = {id: number, firstName: string, lastName: string};
@@ -45,7 +47,7 @@ for(var i = 0; i < employeeCount; i++){
     }
     else{
         employees.push(
-            {info: {id: i + 10000, firstName: 'Jane', lastName: 'Doe'}, admin: false}
+            {info: {id: i + 10000, firstName: 'John', lastName: 'Doe'}, admin: false}
         )
     }
 }
@@ -74,6 +76,21 @@ function AdminPortal() {
 
     // Used to navigate between admin tabs
     const [activeTab, setActiveTab] = useState(0);
+    const tabsRef = useRef<(HTMLButtonElement | null)[]>([]);
+    const [tabUnderlineWidth, setTabUnderlineWidth] = useState(0);
+    const [tabUnderlineLeft, setTabUnderlineLeft] = useState(0);
+
+    useEffect(() => {
+        const updateUnderlinePosition = () => {
+            const currentTab = tabsRef.current[activeTab];
+            if (currentTab) {
+                setTabUnderlineLeft(currentTab.offsetLeft);
+                setTabUnderlineWidth(currentTab.clientWidth);
+            }
+        };
+        updateUnderlinePosition();
+    }, [activeTab]);
+
 
     // Used to display both user and employee lists
     const [maxListItems, setMaxListItems] = useState(20);
@@ -86,6 +103,12 @@ function AdminPortal() {
     const handleUserSelect = (index: number) => {
         setSelectedUser(index);
     }
+
+    const [filterUser, setFilterUser] = useState(users);
+    const [filterEmployee, setFilterEmployee] = useState(employees);
+
+    const [filterUserEmpty, setFilterUserEmpty] = useState(false);
+    const [filterEmployeeEmpty, setFilterEmployeeEmpty] = useState(false);
 
     /*
 
@@ -102,6 +125,7 @@ function AdminPortal() {
     const [newEmpEmail, setNewEmpEmail] = useState("");
     const [newEmpBdate, setNewEmpBdate] = useState("");
     const [newEmpSSN, setNewEmpSSN] = useState("");
+    
 
     // Admin access management
     const [isAdmin, setIsAdmin] = useState(false);
@@ -110,11 +134,53 @@ function AdminPortal() {
         console.log("Admin status toggled.");
     }
 
+    const onSearchChange = (value: string) => {
+        switch(activeTab) {
+            case 2: {
+                // do something
+                const newData = employees.filter( (emp)=>
+                    emp.info.firstName.toLocaleLowerCase().includes(value.toLowerCase()) || 
+                    emp.info.lastName.toLocaleLowerCase().includes(value.toLowerCase()) || 
+                    emp.info.id.toString().includes(value)
+                    );
+                setFilterEmployee(newData);
+                break;
+            }
+            default: {
+                // do something
+                const newData = users.filter( (user)=>
+                    user.firstName.toLocaleLowerCase().includes(value.toLowerCase()) || 
+                    user.lastName.toLocaleLowerCase().includes(value.toLowerCase()) ||
+                    user.id.toString().includes(value)
+                );
+                setFilterUser(newData);
+                break;
+            }
+        }
+    };
+
     return(
         <>
             <h1 className='section-header'>Admin Portal | Welcome, (Admin)</h1> {/* Will need to get name of current admin */}
             <div className='admin-nav'>  {/* Admin navigation tabs | 0: User database, 1: Add new employwee, 2: Manage Admin Access*/}
-                <button
+
+                <span
+                    style={{
+                        left: `${tabUnderlineLeft}px`,
+                        width: `${tabUnderlineWidth}px`,
+                    }}
+                />
+                {['View User Database', 'Add New Employee', 'Manage Admin Access'].map((tabName, index) => (
+                    <button
+                        key={index}
+                        ref={(el) => (tabsRef.current[index] = el)}
+                        onClick={() => setActiveTab(index)}
+                    >
+                        {tabName}
+                    </button>
+                ))}
+                
+                {/* <button
                     onClick={() => {
                         setActiveTab(0);
                         setListStartIndex(0); // Reset list to page 0 when refreshing or switching tabs.
@@ -137,7 +203,7 @@ function AdminPortal() {
                     }}
                 >
                     Manage Admin Access
-                </button>
+                </button> */}
             </div>
 
             {(() => {
@@ -178,7 +244,17 @@ function AdminPortal() {
                                 <div className='database-panel'>
                                     <div className='list-area'>
                                         <ScrollBox className='list-container'>
-                                            {shownEmployeeList.map((emp, index) => (
+                                            {/* Adding the search bar here  */}
+                                            <div className='search'>
+                                                <Search className='search-bar-icon'/>
+                                                <input 
+                                                    className='search-bar'
+                                                    type="search"
+                                                    placeholder="Search for name"
+                                                    onChange={(e) => onSearchChange(e.target.value)}
+                                                />
+                                            </div>    
+                                            {filterEmployee.map((emp, index) => (
                                                 <>
                                                     {/* Employee info display */}
                                                     <ListCard className={selectedUser === index ? 'selected': ''} info={emp.info} onClick={() => handleUserSelect(index)}>
@@ -188,20 +264,27 @@ function AdminPortal() {
                                             ))}
                                         </ScrollBox>
                                     </div>
+                                    {filterEmployee.length === 0 ? 
+                                    (<>
                                     <div className='info-area'>
-                                        <h2>ID: {employees[selectedUser + listStartIndex].info.id}</h2>
-                                        <h2>Name: {employees[selectedUser + listStartIndex].info.lastName}, {employees[selectedUser + listStartIndex].info.firstName}</h2>
+                                        <h2>No results!</h2>
+                                    </div>
+                                    </>) : (<>
+                                    <div className='info-area'>
+                                        <h2>ID: {filterEmployee[selectedUser].info.id}</h2>
+                                        <h2>Name: {filterEmployee[selectedUser].info.lastName}, {filterEmployee[selectedUser].info.firstName}</h2>
                                         <h2>Phone: </h2>
                                         <h2>Email: </h2>
                                         <h2>Username: </h2>
                                         <h2>Password: </h2>
                                         <label className='section-subheader'> Admin? </label>
                                         {/* Employees with admin perms will have their checkbox marked. Functionality to modify perms needs to be added. */}
-                                        <input type="checkbox" checked={employees[selectedUser + listStartIndex].admin}/>
+                                        <input type="checkbox" checked={filterEmployee[selectedUser].admin}/>
                                     </div>
+                                    </>)}
                                 </div>
                                 {/* Places page buttons below employee list that will update which portion of the whole employee list will be displayed. */}
-                                <PageButtons array={employees} max={maxListItems} handleClick={setListStartIndex}/>
+                                {/* <PageButtons array={employees} max={maxListItems} handleClick={setListStartIndex}/> */}
                             </>
                         );
                     /* Admins can view list of all registered users and lookup their data. Displayed by default. */
@@ -212,35 +295,52 @@ function AdminPortal() {
                                 <div className='database-panel'>
                                     <div className='list-area'>
                                         <ScrollBox className='list-container'>
-                                            {shownUserList.map((user, index) => (
+
+                                        <div className='search'>
+                                            <Search className='search-bar-icon'/>
+                                            <input 
+                                                className='search-bar'
+                                                type="search"
+                                                placeholder="Search for name"
+                                                onChange={(e) => onSearchChange(e.target.value)}
+                                            />
+                                        </div>       
+                                            {filterUser.map((user, index) => (
                                                 // User info display
                                                 <ListCard className={selectedUser === index ? 'selected' : ''} info={user} onClick={() => handleUserSelect(index)}/>
                                             ))}
                                         </ScrollBox>
                                     </div>
-                                    <div className='info-area'>
-                                        <h2>ID: {users[selectedUser + listStartIndex].id}</h2>
-                                        <h2>Name: {users[selectedUser + listStartIndex].lastName}, {users[selectedUser + listStartIndex].firstName}</h2>
-                                        <h2>Phone: </h2>
-                                        <h2>Email: </h2>
-                                        <h2>Username: </h2>
-                                        <h2>Password: </h2>
-                                        <h3 className='section-subheader'>Accounts</h3>
-                                        <div className='info-list-area'>
-                                            <ScrollBox className='list-container'>
-                                                {accounts.map((acc) => (
-                                                    <div className='list-card'>
-                                                        <label className="list-content">ID: {acc.id} </label>
-                                                        <label className="list-content">Name: {acc.name} </label>
-                                                        <label className="list-content">Balance: {acc.balance} </label>
-                                                    </div>
-                                                ))}
-                                            </ScrollBox>
+
+                                    {filterUser.length === 0 ? (<>
+                                        <div className='info-area'>
+                                            <h2>No results!</h2>
                                         </div>
-                                    </div>
+                                    </>) : (<>
+                                        <div className='info-area'>
+                                            <h2>ID: {filterUser[selectedUser + listStartIndex].id}</h2>
+                                            <h2>Name: {filterUser[selectedUser + listStartIndex].lastName}, {filterUser[selectedUser + listStartIndex].firstName}</h2>
+                                            <h2>Phone: </h2>
+                                            <h2>Email: </h2>
+                                            <h2>Username: </h2>
+                                            <h2>Password: </h2>
+                                            <h3 className='section-subheader'>Accounts</h3>
+                                            <div className='info-list-area'>
+                                                <ScrollBox className='list-container'>
+                                                    {accounts.map((acc) => (
+                                                        <div className='list-card'>
+                                                            <label className="list-content">ID: {acc.id} </label>
+                                                            <label className="list-content">Name: {acc.name} </label>
+                                                            <label className="list-content">Balance: {acc.balance} </label>
+                                                        </div>
+                                                    ))}
+                                                </ScrollBox>
+                                            </div>
+                                        </div>
+                                    </>)}
                                 </div>
                                 {/* Places page buttons below user list that will update which portion of the whole employee list will be displayed. */}
-                                <PageButtons className='page-num-center' array={users} max={maxListItems} handleClick={setListStartIndex}/>
+                                {/* <PageButtons className='page-num-center' array={users} max={maxListItems} handleClick={setListStartIndex}/> */}
                             </>
                         );
                 }

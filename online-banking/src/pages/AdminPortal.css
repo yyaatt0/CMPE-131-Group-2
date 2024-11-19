@@ -1,10 +1,36 @@
 .admin-nav {
-    background-color: white;
+    position: relative;
+    display: flex;
+    border-bottom: 2px solid #ddd;
+    margin-bottom: 1rem;
 }
 
 .admin-nav button {
-    height: 25px;
-    margin: 5px;
+    flex: 1;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    color: #666;
+    transition: color 0.3s;
+}
+
+.admin-nav button:hover {
+    color: #007bff;
+}
+
+.admin-nav .active {
+    color: #007bff;
+    font-weight: bold;
+}
+
+.admin-nav span {
+    position: absolute;
+    bottom: 0;
+    height: 4px;
+    background-color: #007bff;
+    transition: left 0.3s ease, width 0.3s ease;
 }
 
 .database-panel {
@@ -90,4 +116,35 @@
 .input-line div {
     width: 100%;
     margin: 5px;
+}
+
+.search {
+    border: solid;
+    border-color: black;
+    border-radius: 20px;
+    border-width: 1px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+}
+
+.search-bar {
+    margin-left: 0.5rem;
+    background-color: white;
+    height: 40px;
+    width: 85%;
+    font-size: 15px;
+    border: none;
+    border-radius: 20px;
+}
+
+.search-bar:focus {
+    outline: none;
+}
+
+.search-bar-icon {
+    margin-left: 10px;
+    width: 20px;
+    height: 100%;
 }

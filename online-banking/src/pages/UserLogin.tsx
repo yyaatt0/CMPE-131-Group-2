@@ -131,8 +131,19 @@ const UserLogin = () => {
         {/* Button going to the forgot password page */}
         <br />
         <div style={{ textAlign: 'center' }}>
-          <a href="/ForgotPassword">Forgot Password?</a>
+          <a href="/forgotPassword"  style={{ paddingBottom: '10px', display: 'inline-block' }}>Forgot Password?</a>
+          </div>
+        <div style={{ textAlign: 'center' }}>
+           
+          <a href="/registration" style={{ paddingTop: '10px', display: 'inline-block' }}> SIGN UP</a> 
+
         </div>
+
+        <div style={{ textAlign: 'center', margin: '20px auto' }}>
+
+          <a href="/adminlogin" style={{ paddingBottom: '10px', display: 'inline-block' }}> Admin'Login</a> 
+          </div>
+        
       </div>
 
     </div>
