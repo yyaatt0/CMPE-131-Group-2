@@ -42,7 +42,20 @@ const AtmFeature = () => {
   // This is for showing a preview of the check images
   const [selectedFrontImg, setSelectedFrontImg] = useState<string>();
   const [selectedBackImg, setSelectedBackImg] = useState<string>();
+  const [imgError, setImgError] = useState<string>("");
 
+  // This is for the transfer fund portion of the ATM feature 
+  // Right now you can type whoever name you want to transfer and it will work
+  // Later I should add transfer balance between accounts
+  // When sending to another person, we need backend to confirm whoever email is typed is in the database
+  // Afterwards, we will get the full name of the account and confirm 
+  const [transferConfirmation, setTransferConfirmation] = useState<boolean>(false);
+  const [transferRecipient, setTransferRecipient] = useState<string>("");  
+  const [transferError, setTransferError] = useState<string>("");
+
+  // This will keep hold of the error bool if there is an error that occured when considering the input handling
+  const [error, setError] = useState<string>("");
+  const errorMsg = ["Cannot withdraw more than the current balance", "Cannot transfer more then the current balance", "Please enter an amount", "One or more check images have NOT been uploaded", "Please select a recieptient account", "Please input/select a value", "Amount cannot be $0.00!"];
 
   // The logout redirect
   const navigate = useNavigate();
@@ -72,16 +85,6 @@ const AtmFeature = () => {
     "Savings Account": [],
     "Checking Account": [],
   });
-  
-  // This is for the transfer fund portion of the ATM feature 
-  // Right now you can type whoever name you want to transfer and it will work
-  // Later I should add transfer balance between accounts
-  // When sending to another person, we need backend to confirm whoever email is typed is in the database
-  // Afterwards, we will get the full name of the account and confirm 
-  const [transferConfirmation, setTransferConfirmation] = useState<boolean>(false);
-  const [transferRecipient, setTransferRecipient] = useState<string>("");  
-  const [transferError, setTransferError] = useState<string>("");
-
 
   // Function to say if one of the feature buttons is clicked, therefore, display the popup window
   const handleActionClick = (action: string) => {
@@ -89,7 +92,9 @@ const AtmFeature = () => {
     setAmount("");
     setTransferConfirmation(false);
     setTransferRecipient("");
+    setError("");
     setTransferError("");
+    setImgError("");
   };
 
   // Input handling for the textbox
@@ -133,7 +138,9 @@ const AtmFeature = () => {
 
       // WITHDRAW
       case "Withdraw Cash":
-        if (amountNum <= balance[selectedAccount]) {
+        if (amountNum === 0) {
+          setError(errorMsg[6]);
+        } else if (amountNum <= balance[selectedAccount]) {
           setBalances(prev => ({
             ...prev,
             [selectedAccount]: prev[selectedAccount] - amountNum
@@ -142,33 +149,60 @@ const AtmFeature = () => {
             ...prev,
             [selectedAccount]: [`Withdrawn $${amountNum.toFixed(2)}`, ...prev[selectedAccount]]
           }));
+          setActivePopup(null);
+        } else {
+          setError(errorMsg[0]);
         }
-        setActivePopup(null);
         break;
 
-      // DEPOSIT (same for cash/check)
       case "Deposit Cash":
+        if(amountNum === 0) {
+          setError(errorMsg[6]);
+        } else {
+          setBalances(prev => ({
+            ...prev,
+            [selectedAccount]: prev[selectedAccount] + amountNum
+          }));
+          setTransactions(prev => ({
+            ...prev,
+            [selectedAccount]: [`Deposited $${amountNum.toFixed(2)}`, ...prev[selectedAccount]]
+          }));
+          setActivePopup(null);
+        }
+        break;
       case "Deposit Check":
-        setBalances(prev => ({
-          ...prev,
-          [selectedAccount]: prev[selectedAccount] + amountNum
-        }));
-        setTransactions(prev => ({
-          ...prev,
-          [selectedAccount]: [`Deposited $${amountNum.toFixed(2)}`, ...prev[selectedAccount]]
-        }));
-        setActivePopup(null);
+        if(amountNum === 0) {
+          setError(errorMsg[6]);
+        } else if (selectedFrontImg === undefined || selectedBackImg === undefined) {
+          setImgError(errorMsg[3]);
+        } else if (selectedFrontImg !== undefined && selectedBackImg !== undefined) {
+          setBalances(prev => ({
+            ...prev,
+            [selectedAccount]: prev[selectedAccount] + amountNum
+          }));
+          setTransactions(prev => ({
+            ...prev,
+            [selectedAccount]: [`Check amount deposited $${amountNum.toFixed(2)}`, ...prev[selectedAccount]]
+          }));
+          setActivePopup(null);
+        }
         break;
       
       // FUND TRANSFER
       case "Fund Transfer":
         if (!transferConfirmation) {
-          if (transferRecipient) {
+          if (amountNum === 0) {
+            setError(errorMsg[6]);
+          } else if (transferRecipient && amountNum <= balance[selectedAccount]) {
             setTransferConfirmation(true);
+            setError("");
             setTransferError("");
-          } else {
-            setTransferError("Please select a recipient account");
-          }
+          } else if (!transferRecipient){
+            setTransferError(errorMsg[4]);
+          } else if (amountNum > balance[selectedAccount]) {
+            setError(errorMsg[1]);
+          } 
+
         } else if (amountNum <= balance[selectedAccount]) {
           setBalances(prev => ({
             ...prev,
@@ -181,7 +215,7 @@ const AtmFeature = () => {
             [transferRecipient]: [`Received $${amountNum.toFixed(2)} from ${selectedAccount}`, ...prev[transferRecipient]]
           }));
           setActivePopup(null);
-        }
+        } 
         break;
     }
   };
@@ -214,12 +248,14 @@ const AtmFeature = () => {
             
             {/* This is the textbox where we enter the amount */}
             <div style={{ marginBottom: '1rem' }}>
+
+              {error && (<p style={{color: 'red', fontSize: '15px'}}>{error}</p>)}
+
               <input
                 type="text"
                 value={amount}
-                onChange={handleAmountChange}
+                onChange={(e) => {handleAmountChange(e); setError("")}}
                 placeholder="0.00"
-                readOnly
                 style={{width: '95%', height: '40px', padding: '0.5rem', textAlign: 'right', fontSize: '1.5rem', borderRadius: '0.375rem', borderWidth: '2px', borderStyle: 'solid', borderColor: 'black', backgroundColor: 'white', color: 'black',}}
               />
             </div>
@@ -271,12 +307,13 @@ const AtmFeature = () => {
               <>
                 {/* This is the textbox where we enter the amount */}
                 <div style={{ marginBottom: '1rem' }}>
+                  {error && (<p style={{color: 'red', fontSize: '15px'}}>{error}</p>)}
+
                   <input
                     type="text"
                     value={amount}
                     placeholder="0.00"
-                    // readOnly
-                    onChange={handleAmountChange}
+                    onChange={(e) => {handleAmountChange(e); setError("")}}
                     style={{width: '95%', height: '40px', padding: '0.5rem', textAlign: 'right', fontSize: '1.5rem', borderRadius: '0.375rem', borderWidth: '2px', borderStyle: 'solid', borderColor: 'black', backgroundColor: 'white', color: 'black',}}
                   />
                 </div>
@@ -378,6 +415,9 @@ const AtmFeature = () => {
             <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1rem'}}>Deposit Check</h2>
             
             {/* Front of check image insert; having these pictures will do absolutely NOTHING*/}
+
+            {imgError && (<p style={{color: 'red', fontSize: '15px'}}>{imgError}</p>)}
+
             <h3 style={{ fontSize: '0.9rem', fontWeight: 'bold'}}>Upload Front of Check</h3>
             <div style={{ marginBottom: '1rem' }}>
               <input
@@ -386,6 +426,7 @@ const AtmFeature = () => {
                 onChange ={(e) => {
                   const file = e.target.files?.[0];
                   setSelectedFrontImg(file ? URL.createObjectURL(file) : undefined);
+                  setImgError("");
                 }}
                 style={{width: '95%',padding: '0.5rem',border: '1px solid #ccc',borderRadius: '0.375rem'
                 }}
@@ -410,6 +451,7 @@ const AtmFeature = () => {
                 onChange ={(e) => {
                   const file = e.target.files?.[0];
                   setSelectedBackImg(file ? URL.createObjectURL(file) : undefined);
+                  setImgError("");
                 }}
                 style={{width: '95%',padding: '0.5rem',border: '1px solid #ccc',borderRadius: '0.375rem'
                 }}
@@ -428,11 +470,13 @@ const AtmFeature = () => {
 
             {/* The input textbox */}
             <div style={{ marginBottom: '1rem' }}>
+              {error && (<p style={{color: 'red', fontSize: '15px'}}>{error}</p>)}
+
               <input
-                type="number"
-                placeholder="Enter check amount"
+                type="text"
                 value={amount}
-                onChange={handleAmountChange}
+                placeholder="Enter check amount"
+                onChange={(e) => {handleAmountChange(e); setError("")}}
                 style={{width: '95%',padding: '0.5rem',border: '1px solid #ccc',borderRadius: '0.375rem',height: '30px',fontSize: '0.9rem',borderStyle: 'solid',backgroundColor: 'white',color: 'black',}}
               />
             </div>
