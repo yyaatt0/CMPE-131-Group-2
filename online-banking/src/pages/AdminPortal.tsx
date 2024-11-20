@@ -16,12 +16,12 @@ type user = {id: number, firstName: string, lastName: string};
 let userCount = 100;
 let users: user[] = []
 for(var i = 0; i < userCount; i++){
-    if(i % 5 == 0 && i % 3 != 0){
+    if(i % 5 === 0 && i % 3 !== 0){
         users.push(
             {id: i + 100000, firstName: 'Barry', lastName: 'Allen'}
         )
     }
-    else if(i % 5 != 0 && i % 3 == 0){
+    else if(i % 5 !== 0 && i % 3 === 0){
         users.push(
             {id: i + 100000, firstName: 'Peter', lastName: 'Griffin'}
         )
@@ -257,8 +257,9 @@ function AdminPortal() {
                                             {filterEmployee.map((emp, index) => (
                                                 <>
                                                     {/* Employee info display */}
-                                                    <ListCard className={selectedUser === index ? 'selected': ''} info={emp.info} onClick={() => handleUserSelect(index)}>
-
+                                                    <ListCard className={selectedUser === index ? 'selected': ''} onClick={() => handleUserSelect(index)}>
+                                                        <label className='list-content'> ID: {emp.info.id} </label>
+                                                        <label className='list-content'> Name: {emp.info.lastName}, {emp.info.firstName} </label>
                                                     </ListCard>
                                                 </>
                                             ))}
@@ -307,7 +308,10 @@ function AdminPortal() {
                                         </div>       
                                             {filterUser.map((user, index) => (
                                                 // User info display
-                                                <ListCard className={selectedUser === index ? 'selected' : ''} info={user} onClick={() => handleUserSelect(index)}/>
+                                                <ListCard className={selectedUser === index ? 'selected' : ''} onClick={() => handleUserSelect(index)}>
+                                                    <label className='list-content'> ID: {user.id} </label>
+                                                    <label className='list-content'> Name: {user.lastName}, {user.firstName} </label>
+                                                </ListCard>
                                             ))}
                                         </ScrollBox>
                                     </div>

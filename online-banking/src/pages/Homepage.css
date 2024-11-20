@@ -17,26 +17,13 @@
 
 .account-list{
   background: white;
+
   display: flex;
   flex-wrap: wrap;
-  padding: 10px;
-}
+  flex-direction: column;
+  justify-content: space-evenly;
 
-.account-card{
-  background-color: white;
-  box-shadow: 3px 3px 7px;
-  cursor: pointer;
-  font-size: 24px;
-  height: 200px;
-  display: flex;
-  flex: 33%;
-  padding: 20px;
-  margin: 10px;
-}
-
-.account-card:hover {
-  scale: 101%;
-  transition-duration: 150ms;
+  padding: 3% 15% 3% 15%;
 }
 
 .card-text{
@@ -47,48 +34,26 @@
 
 .no-accounts {
   display: flex;
+  flex-direction: row;
   align-items: center;
+  justify-content: space-evenly;
+
+  padding: 5% 0 5% 0;
 }
 
 .acc-desc {
   background-color: #003459;
-  box-shadow: 5px 5px 7px black;
+  
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: space-evenly;
 
   text-align: center;
   color: white;
 
-  width: 125%;
-  padding: 15px;
-  margin: 30px;
-}
+  padding: 2%;
 
-.desc-img {
-  display: flex;
-  justify-content: space-evenly;
-  flex: 100%;
-  text-align: center;
-}
-
-.dev-tab {
-  color: black;
-  position: fixed;
-  right: 0;
-  cursor: pointer;
-  height: auto;
-  z-index: 1;
-}
-
-.dev-tool {
-  background-color: white;
-  border-radius: 15px;
-  box-shadow: 0px 0px 5px;
-  font-size: 18px;
-  font-weight: bold;
-  text-align: center;
-  width: 100px;
-  padding: 10px;
-  margin: 10px;
+  width: 25%;
+  height: 100%;
 }

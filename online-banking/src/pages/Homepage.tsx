@@ -2,56 +2,49 @@ import './Homepage.css'
 import '../styles.css'
 
 import images from '../images'
+import { savings_desc, checkings_desc } from '../textdescriptions'
 
 import { useState } from "react";
+import { user, account } from '../types';
 
-import AccountList from "../components/AccountList";
 import WideImage from "../components/WideImage";
 import FooterCard from "../components/FooterCard";
-import DevTools from "../components/DevTools";
 import NavBar from "../components/NavBar";
-import SectionHeader from "../components/SectionHeader";
+import ListCard from '../components/ListCard';
+import ArrowButton from '../components/ArrowButton';
 
-/*
-    Account data reqs:
-
-    id:         Specific id number
-    name:       Name of account
-    balance:    Numeric value representing balance stored in account
-*/
-type account = {id: number, name: string, balance: number};
-
-// Temp hardcoded data
-let accounts: account[] = [
-    { id: 0, name: "Personal Checking", balance: 1000 },
-    { id: 1, name: "Personal Savings", balance: 10000 },
-    { id: 2, name: "Business Checking", balance: 93758 },
-    { id: 3, name: "Business Savings", balance: 500782 }
+// Temp hardcoded accounts list
+let temp_accounts: account[] = [
+    { ID: 0, name: "Personal Checking", balance: 1000 },
+    { ID: 1, name: "Personal Savings", balance: 10000 },
+    { ID: 2, name: "Business Checking", balance: 93758 },
+    { ID: 3, name: "Business Savings", balance: 500782 }
 ];
-let noAccounts: account[] = [];
+
+// Temp currently logged in user
+let currentUser: user = {
+  UID: 100524, 
+  
+  firstName: 'Jerry', 
+  lastName: 'Racecardriver', 
+  
+  phone_primary: '(123)456-7890', 
+  email: 'jerrydriver@gmail.com', 
+  
+  ssn: '123-45-6789', 
+  
+  accounts: null
+}
 
 function Homepage() {
 
   // Handle account selection
-  const handleSelectItem = () => {
+  const handleSelectAccount = () => {
     window.location.href = "/accountpage"; // Redirect to account page
   };
 
-  const [loggedIn, setLoggedIn] = useState(0);
-
-  // Handle login/logout
-  const handleSelectOption = (setStatus: number) => {
-    setLoggedIn(setStatus);
-  }
-
   return (
     <div>
-
-      {/* Temp dev tools tab to test certain functionalities */}
-      <DevTools 
-        loggedIn={loggedIn} 
-        onSelectOption={handleSelectOption}
-      />
 
       <NavBar/>
 
@@ -60,22 +53,60 @@ function Homepage() {
         text="Bank of Banks"
       />
 
-      <SectionHeader text="Accounts"/>
+      <h1 className='section-header'>Accounts</h1>
 
-      {/* If logged in, display account listings */}
-      {loggedIn === 1 && 
-        <AccountList
-          accounts={accounts}
-          onSelectAccount={handleSelectItem}
-        />
+      {currentUser.accounts && 
+
+        <div className="account-list">
+        {currentUser.accounts.map((acc) => (
+            <ListCard key={acc.ID} onClick={handleSelectAccount}>
+              <h3> {acc.name}: </h3>
+              <label className='list-content'> {acc.balance} </label>
+            </ListCard>
+        ))}
+      </div>
+
       }
 
-      {/* If not logged in, display links to go to account creation pages */}
-      {loggedIn === 0 && 
-        <AccountList
-          accounts={noAccounts}
-          onSelectAccount={handleSelectItem}
-        />
+      {!currentUser.accounts &&
+        
+        <div className="no-accounts">
+          <div className="acc-desc">
+            <h2 
+              style={{
+                fontSize: '40px', 
+                marginBottom: '0'
+              }}
+            >
+              Savings
+            </h2>
+            <p style={{fontSize: '20px'}}>{savings_desc}</p>
+            <ArrowButton 
+              path="/userlogin" 
+              text="Create Account"
+              color="rgb(57, 184, 74)"
+              hColor="rgb(81, 226, 101)"
+            />
+          </div>
+          <div className="acc-desc">
+            <h2 
+              style={{
+                fontSize: '40px', 
+                marginBottom: '0'
+              }}
+            >
+              Checking
+            </h2>
+            <p style={{fontSize: '20px'}}>{checkings_desc}</p>
+            <ArrowButton 
+              path="/userlogin" 
+              text="Create Account"
+              color="rgb(57, 184, 74)"
+              hColor="rgb(81, 226, 101)"
+            />
+          </div>
+        </div>
+
       }
 
       <WideImage
