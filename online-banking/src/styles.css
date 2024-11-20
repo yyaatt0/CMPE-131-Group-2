@@ -174,11 +174,14 @@ button {
 .arrow-button {
   background-color: #003459;
   border-radius: 10px;
+  transition-duration: 500ms;
+
   display: flex;
   align-items: center;
+  justify-content: space-evenly;
 
   color: white;
-  font-size: 16px;
+  font-size: 1em;
   font-weight: bold;
 
   cursor: pointer;
@@ -190,6 +193,7 @@ button {
 
 .arrow-button:hover {
   background-color: #03528a;
+  transition-duration: 500ms;
 }
 
 .circle-content {

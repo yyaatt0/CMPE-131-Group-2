@@ -1,15 +1,5 @@
 export const savings_desc = 
-    " Placeholder text description for savings account." +
-    " Placeholder text description for savings account." +
-    " Placeholder text description for savings account." +
-    " Placeholder text description for savings account." +
-    " Placeholder text description for savings account." +
-    " Placeholder text description for savings account."
+    "Start saving smarter with the Bank of Banks Savings Account, designed to help you achieve your financial goals. "
 
 export const checkings_desc = 
-" Placeholder text description for checkings account." +
-" Placeholder text description for checkings account." +
-" Placeholder text description for checkings account." +
-" Placeholder text description for checkings account." +
-" Placeholder text description for checkings account." +
-" Placeholder text description for checkings account."
+    "Simplify your finances with the Bank of Banks Checking Account, designed for convenience, flexibility, and control over your money."

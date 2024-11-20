@@ -4,7 +4,7 @@ import '../styles.css'
 import images from '../images'
 import { savings_desc, checkings_desc } from '../textdescriptions'
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { user, account } from '../types';
 
 import WideImage from "../components/WideImage";
@@ -12,6 +12,8 @@ import FooterCard from "../components/FooterCard";
 import NavBar from "../components/NavBar";
 import ListCard from '../components/ListCard';
 import ArrowButton from '../components/ArrowButton';
+import { useNavigate } from 'react-router-dom';
+import ScrollBox from '../components/ScrollBox';
 
 // Temp hardcoded accounts list
 let temp_accounts: account[] = [
@@ -33,85 +35,80 @@ let currentUser: user = {
   
   ssn: '123-45-6789', 
   
-  accounts: null
+  accounts: temp_accounts
 }
 
 function Homepage() {
 
+  const navigate = useNavigate();
+
   // Handle account selection
   const handleSelectAccount = () => {
-    window.location.href = "/accountpage"; // Redirect to account page
+    navigate('/accountpage'); // Redirect to account page
   };
+
+  const handleCreateAccount = () => {
+    if(currentUser){
+      console.log("Redirect to account creation page.")
+    }
+    else
+      navigate('/userlogin');
+  }
 
   return (
     <div>
 
       <NavBar/>
 
-      <WideImage 
-        image={images.home_cover}
-        text="Bank of Banks"
-      />
+      <WideImage src={images.home_cover}>
+        <header className='wide-image-text'>Bank of Banks</header>
+      </WideImage>
 
       <h1 className='section-header'>Accounts</h1>
 
-      {currentUser.accounts && 
+        {currentUser.accounts &&
 
-        <div className="account-list">
-        {currentUser.accounts.map((acc) => (
-            <ListCard key={acc.ID} onClick={handleSelectAccount}>
-              <h3> {acc.name}: </h3>
-              <label className='list-content'> {acc.balance} </label>
-            </ListCard>
-        ))}
-      </div>
+          <div className='account-list-section'>
+            <ScrollBox className='account-list'>
+              {currentUser.accounts.map((acc) => (
+                  <ListCard key={acc.ID} onClick={handleSelectAccount} className='account-card'>
+                    <h3> {acc.name}: </h3>
+                    <p> ${acc.balance} </p>
+                  </ListCard>
+              ))}
+            </ScrollBox>
+            <ArrowButton className='account-list-button' onClick={handleCreateAccount}>Open Account</ArrowButton>
+          </div>
 
-      }
-
-      {!currentUser.accounts &&
+        }
+        {!currentUser.accounts &&
         
-        <div className="no-accounts">
-          <div className="acc-desc">
-            <h2 
-              style={{
-                fontSize: '40px', 
-                marginBottom: '0'
-              }}
-            >
-              Savings
-            </h2>
-            <p style={{fontSize: '20px'}}>{savings_desc}</p>
-            <ArrowButton 
-              path="/userlogin" 
-              text="Create Account"
-              color="rgb(57, 184, 74)"
-              hColor="rgb(81, 226, 101)"
-            />
+          <div className='account-info-section'>
+            <div className="account-description">
+              <div className='text-area'>
+                <h2>Savings</h2>
+                <p>{savings_desc}</p>
+                <ArrowButton className='green-button' onClick={handleCreateAccount}>Open Account</ArrowButton>
+              </div>
+              <div className='image-area'>
+                <img src={images.saving}/>
+              </div>
+            </div>
+            <div className="account-description">
+              <div className='image-area'>
+                <img src={images.checking}/>
+              </div>
+              <div className='text-area'>
+                <h2>Checking</h2>
+                <p>{checkings_desc}</p>
+                <ArrowButton className='green-button' onClick={handleCreateAccount}>Open Account</ArrowButton>
+              </div>
+            </div>
           </div>
-          <div className="acc-desc">
-            <h2 
-              style={{
-                fontSize: '40px', 
-                marginBottom: '0'
-              }}
-            >
-              Checking
-            </h2>
-            <p style={{fontSize: '20px'}}>{checkings_desc}</p>
-            <ArrowButton 
-              path="/userlogin" 
-              text="Create Account"
-              color="rgb(57, 184, 74)"
-              hColor="rgb(81, 226, 101)"
-            />
-          </div>
-        </div>
+        
+        }
 
-      }
-
-      <WideImage
-        image={images.home_signing}
-      />
+      <WideImage src={images.home_signing} />
 
       <FooterCard />
     </div>

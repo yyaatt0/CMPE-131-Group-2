@@ -26,6 +26,6 @@ export type account = {
     
     ID: string | number, 
     name: string, 
-    balance: number
+    balance: number | string
 
 };
