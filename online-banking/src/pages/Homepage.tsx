@@ -35,7 +35,7 @@ let currentUser: user = {
   
   ssn: '123-45-6789', 
   
-  accounts: temp_accounts
+  accounts: null
 }
 
 function Homepage() {
