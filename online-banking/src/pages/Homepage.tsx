@@ -14,6 +14,7 @@ import ListCard from '../components/ListCard';
 import ArrowButton from '../components/ArrowButton';
 import { useNavigate } from 'react-router-dom';
 import ScrollBox from '../components/ScrollBox';
+import InfoCardSmall from '../components/InfoCardSmall';
 
 // Temp hardcoded accounts list
 let temp_accounts: account[] = [
@@ -107,6 +108,20 @@ function Homepage() {
           </div>
         
         }
+
+      <h1 className='section-header'>What We Offer</h1>
+
+      <div className='offers-section'>
+        <InfoCardSmall heading='Credit Card'>
+          <p>Info about the credit card</p>
+        </InfoCardSmall>
+        <InfoCardSmall heading='Auto Insurance' className='blue-1'>
+          <p>Info about auto insurance</p>
+        </InfoCardSmall>
+        <InfoCardSmall heading='Business Accounts' className='blue-2'>
+          <p>Info about business accounts.</p>
+        </InfoCardSmall>
+      </div>
 
       <WideImage src={images.home_signing} />
 
