@@ -320,6 +320,8 @@ const AtmFeature = () => {
 
                 {/* This is the selecting the recipient */}
                 <div style={{ marginTop: '1rem', marginBottom: '1rem' }}>
+                   {/* This says if there is no account selected, and the is some amount enter, prompt an error   */}
+                   {transferError && (<p style={{color: 'red', fontSize: '15px'}}>{transferError}</p>)}
                   <select
 
                     // This portion hold variables for the transfer reciepient (only between accounts)
@@ -329,7 +331,7 @@ const AtmFeature = () => {
                       setTransferRecipient(e.target.value);
                       setTransferError("");
                     }}
-                    style={{width: '100%', height: '50px', fontSize: '15px', paddingLeft: '10px',border: '1px solid #ccc',borderRadius: '0.375rem',backgroundColor: 'white',color: 'black',borderColor: transferError ? 'red' : 'gray',}}
+                    style={{width: '100%', height: '50px', fontSize: '15px', paddingLeft: '10px',border: '1px solid #ccc',borderRadius: '0.375rem',backgroundColor: 'white',color: 'black',borderColor: transferError ? 'red' : 'gray', backgroundImage: 'linear-gradient(45deg, transparent 50%, gray 50%), linear-gradient(135deg, gray 50%, transparent 50%), linear-gradient(to right, #ccc, #ccc)',backgroundPosition: 'calc(100% - 20px) calc(1em + 8px), calc(100% - 15px) calc(1em + 8px), calc(100% - 2.5em) 0.8em', backgroundSize: '5px 5px, 5px 5px, 1px 1.5rem', backgroundRepeat: 'no-repeat', appearance: 'none',}}
                   >
 
                     {/* Drop down box to select an account  */}
@@ -338,9 +340,6 @@ const AtmFeature = () => {
                       <option key={account} value={account}>{account}</option>
                     ))}
                   </select>
-
-                  {/* This says if there is no account selected, and the is some amount enter, prompt an error   */}
-                  {transferError && (<p style={{color: 'red', fontSize: '15px'}}>{transferError}</p>)}
                 </div>
 
                 {/* This is the numpad */}
