@@ -5,7 +5,7 @@ import { CreditCard, DollarSign, FileText, PiggyBank, Send } from "lucide-react"
 import { Button } from "../components/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/card"
 import { ScrollArea } from "../components/scroll-area"
-//import "./Component.css" // Import the CSS file
+import "./AccountPage.css" // Import the CSS file
 
 // Mock data for account details and transactions
 const accountDetails = {
