@@ -31,6 +31,9 @@ footer {
 nav {
   background-color: #003459;
   display: flex;
+
+  position: relative;
+
   height: 65px;
 }
 
@@ -42,7 +45,7 @@ button {
   cursor: pointer;
 }
 
-.nav-tab {
+.nav-tab, .login {
   background-color: #003459;
   border: 0;
   display: table;
@@ -59,8 +62,22 @@ button {
   height: 100%;
 }
 
-.nav-tab:hover {
+.nav-tab:hover, .login:hover {
   background-color: #004f88;
+}
+
+.login {
+  
+  border: 1px solid white;
+  border-radius: 5px;
+
+  position: absolute;
+  right: 1%;
+  top: 10%;
+
+  width: 150px;
+  height: 75%;
+
 }
 
 .section-header {
