@@ -111,9 +111,7 @@ function Homepage() {
 
       <div className='offers-section'>
           <InfoCardSmall heading='Platinum Rewards'>
-            <>
-              <p>{credit_desc}</p>
-            </>
+            <p>{credit_desc}</p>
           </InfoCardSmall>
           <InfoCardSmall heading='Insurance' className='blue-1'>
             <p>{insurance_desc}</p>
