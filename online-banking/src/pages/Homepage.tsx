@@ -2,7 +2,7 @@ import './Homepage.css'
 import '../styles.css'
 
 import images from '../images'
-import { savings_desc, checkings_desc } from '../textdescriptions'
+import { savings_desc, checkings_desc, credit_desc, insurance_desc, business_desc } from '../textdescriptions'
 
 import { useEffect, useState } from "react";
 import { user, account } from '../types';
@@ -109,21 +109,22 @@ function Homepage() {
         
         }
 
-      <h1 className='section-header'>What We Offer</h1>
-
       <div className='offers-section'>
-        <InfoCardSmall heading='Credit Card'>
-          <p>Info about the credit card</p>
-        </InfoCardSmall>
-        <InfoCardSmall heading='Auto Insurance' className='blue-1'>
-          <p>Info about auto insurance</p>
-        </InfoCardSmall>
-        <InfoCardSmall heading='Business Accounts' className='blue-2'>
-          <p>Info about business accounts.</p>
-        </InfoCardSmall>
+          <InfoCardSmall heading='Platinum Rewards'>
+            <>
+              <p>{credit_desc}</p>
+            </>
+          </InfoCardSmall>
+          <InfoCardSmall heading='Insurance' className='blue-1'>
+            <p>{insurance_desc}</p>
+          </InfoCardSmall>
+          <InfoCardSmall heading='Business Accounts' className='blue-2'>
+            <p>{business_desc}</p>
+          </InfoCardSmall>
       </div>
 
-      <WideImage src={images.home_signing} />
+      <h1 className='section-header'></h1>
+      <WideImage src={images.home_signing}/>
 
       <FooterCard />
     </div>

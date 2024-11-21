@@ -8,14 +8,14 @@ interface Props {
 
 export default function InfoCardSmall({heading, children, className}: Props) {
 
-    const classes = `small-info-card ${className}`;
+    const classes = `circle-heading ${className}`;
 
     return(
-        <div className={classes}>
-            <div>
+        <div className='small-info-card'>
+            <div className={classes}>
                 <h1>{heading}</h1>
             </div>
-            {children}
+            <div className='circle-text'>{children}</div>
         </div>
     );
 }
