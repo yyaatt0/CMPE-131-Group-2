@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { FileText, Send, DollarSign, PiggyBank } from "lucide-react";
 import "./AccountPage.css"; 
+import NavBar from "../components/NavBar";
 
 // Mock data for account details and transactions
 const accountDetails = {
@@ -20,6 +21,10 @@ export default function Component() {
 
   return (
     <div className="app-container">
+
+      {/* Navigation Bar */}
+      <NavBar/>
+
       {/* Account Overview */}
       <div className="card">
         <h1 className="card-title">Account Overview</h1>
