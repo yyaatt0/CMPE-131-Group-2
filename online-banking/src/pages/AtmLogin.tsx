@@ -3,6 +3,7 @@ import { LockIcon, UserIcon } from 'lucide-react';
 import FooterCard from '../components/FooterCard';
 import NavBar from '../components/NavBar';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 // import { useAsyncError, useFetcher } from 'react-router-dom';
 
 const AtmLogin = () => {
@@ -36,12 +37,34 @@ const AtmLogin = () => {
   // Wait for backend to deal with this
 
   const navigate = useNavigate();
-  const handleSubmit = (e: React.FormEvent) => {
+  // const handleSubmit = (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   if (username && password.length === 4) {
+  //     navigate('/AtmFeature');
+  //   } else {
+  //     setMessage('Invalid username or password.');
+  //   }
+  // };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (username && password.length === 4) {
-      navigate('/AtmFeature');
+      try {
+        const response = await axios.post('http://localhost:3001/auth/atm-login', {
+          username: username,
+          pin: password,
+        });
+
+        if (response.data.success) {
+          navigate('/AtmFeature');
+        } else {
+          setMessage(response.data.message || 'Invalid username or pin.');
+        }
+      } catch (err) {
+        setMessage('An error occurred. Please try again.');
+      }
     } else {
-      setMessage('Invalid username or password.');
+      setMessage('Please enter both username and a valid 4-digit PIN.');
     }
   };
 
