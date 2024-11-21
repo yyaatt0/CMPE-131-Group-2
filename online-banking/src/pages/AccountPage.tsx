@@ -1,23 +1,11 @@
-function AccountPage() {
-  return(
-    <div>
-      Account Page
-    </div>
-  );
-}
-
-export default AccountPage;
-
-/*
-
 "use client"
 
 import { useState } from "react"
 import { CreditCard, DollarSign, FileText, PiggyBank, Send } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import "./Component.css" // Import the CSS file
+import { Button } from "../components/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/card"
+import { ScrollArea } from "../components/scroll-area"
+//import "./Component.css" // Import the CSS file
 
 // Mock data for account details and transactions
 const accountDetails = {
@@ -137,4 +125,3 @@ export default function AccountPage() {
     </div>
   )
 }
-*/
