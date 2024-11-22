@@ -6,9 +6,9 @@ const Registration = () => {
     // Declare states to store the values ​​of input fields
     const [LastName, setLastName] = useState<string>(''); //user's Last name 
     const [FirstName, setFirstName] = useState<string>(''); // First name
-    const [Username, setUsername] = useState<string>(''); // user login name
+    const [username, setUsername] = useState<string>(''); // user login name
     const [Email, setEmail] = useState<string>(''); //email
-    const [Password, setPw] = useState<string>(''); //password
+    const [password, setPw] = useState<string>(''); //password
     const [ConfirmPassword, setConfirmPw] = useState<string>(''); //Confirm Password
     const [Pin, setPin] = useState<string>(''); //Pin
     const [ConfirmPin, setConfirmPin] = useState<string>(''); //Confirm PIN
@@ -26,12 +26,12 @@ const Registration = () => {
 
       const validChars = /^[A-Za-z0-9!*]*$/;
         // Check valid characters in Username and Password
-        if (!validChars.test(Username) || !validChars.test(Password)) {
+        if (!validChars.test(username) || !validChars.test(password)) {
             setErrorMssg('Please try again!');
             return false;
         }
         // Check if Password and ConfirmPassword match
-        if (Password !== ConfirmPassword) {
+        if (password !== ConfirmPassword) {
             setErrorMssg('Password and Confirm Password do not match.');
             return false;
         }
@@ -65,9 +65,9 @@ const Registration = () => {
             await axios.post('http://localhost:3000/registration', {
                 LastName,
                 FirstName,
-                Username,
+                username,
                 Email,
-                Password,
+                password,
                 Pin,
             });
             // Successful registration notification and redirection to Hompage
@@ -164,7 +164,7 @@ const Registration = () => {
                     <input
                         //for the username
                         type="text"
-                        value={Username}
+                        value={username}
                         onChange={(e) => setUsername(e.target.value)}
                         required
                         style={{
@@ -207,7 +207,7 @@ const Registration = () => {
                     <input
                         //for the password
                         type="password"
-                        value={Password}
+                        value={password}
                         onChange={(e) => setPw(e.target.value)}
                         required
                         style={{
