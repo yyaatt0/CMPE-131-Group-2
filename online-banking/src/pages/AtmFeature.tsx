@@ -55,7 +55,11 @@ const AtmFeature = () => {
 
   // This will keep hold of the error bool if there is an error that occured when considering the input handling
   const [error, setError] = useState<string>("");
-  const errorMsg = ["Cannot withdraw more than the current balance", "Cannot transfer more then the current balance", "Please enter an amount", "One or more check images have NOT been uploaded", "Please select a recieptient account", "Please input/select a value", "Amount cannot be $0.00!"];
+  const errorMsg = ["Cannot withdraw more than the current balance", "Cannot transfer more then the current balance", "Please enter an amount", "One or more check images have NOT been uploaded", "Please select a recieptient account", "Please input/select a value", "Amount cannot be $0.00", "Ammount limit exceeded"];
+
+
+  const AMOUNT_LIMIT = 2500;
+  const CHECK_LIMIT = 25000;
 
   // The logout redirect
   const navigate = useNavigate();
@@ -140,7 +144,9 @@ const AtmFeature = () => {
       case "Withdraw Cash":
         if (amountNum === 0) {
           setError(errorMsg[6]);
-        } else if (amountNum <= balance[selectedAccount]) {
+        } else if (amountNum > AMOUNT_LIMIT) {
+          setError(errorMsg[7]);
+        } else if (amountNum <= balance[selectedAccount] && amountNum <= AMOUNT_LIMIT) {
           setBalances(prev => ({
             ...prev,
             [selectedAccount]: prev[selectedAccount] - amountNum
@@ -158,6 +164,8 @@ const AtmFeature = () => {
       case "Deposit Cash":
         if(amountNum === 0) {
           setError(errorMsg[6]);
+        } else if (amountNum > AMOUNT_LIMIT) {
+          setError(errorMsg[7]);
         } else {
           setBalances(prev => ({
             ...prev,
@@ -173,9 +181,11 @@ const AtmFeature = () => {
       case "Deposit Check":
         if(amountNum === 0) {
           setError(errorMsg[6]);
+        }  else if (amountNum > CHECK_LIMIT) {
+          setError(errorMsg[7]);
         } else if (selectedFrontImg === undefined || selectedBackImg === undefined) {
           setImgError(errorMsg[3]);
-        } else if (selectedFrontImg !== undefined && selectedBackImg !== undefined) {
+        } else if (selectedFrontImg !== undefined && selectedBackImg !== undefined && amountNum <= CHECK_LIMIT) {
           setBalances(prev => ({
             ...prev,
             [selectedAccount]: prev[selectedAccount] + amountNum
@@ -191,19 +201,20 @@ const AtmFeature = () => {
       // FUND TRANSFER
       case "Fund Transfer":
         if (!transferConfirmation) {
-          if (amountNum === 0) {
+          if (transferRecipient && amountNum === 0) {
             setError(errorMsg[6]);
-          } else if (transferRecipient && amountNum <= balance[selectedAccount]) {
-            setTransferConfirmation(true);
-            setError("");
-            setTransferError("");
           } else if (!transferRecipient){
             setTransferError(errorMsg[4]);
           } else if (amountNum > balance[selectedAccount]) {
             setError(errorMsg[1]);
-          } 
-
-        } else if (amountNum <= balance[selectedAccount]) {
+          } else if (amountNum > AMOUNT_LIMIT) {
+            setError(errorMsg[7]);
+          } else if (transferRecipient && amountNum <= balance[selectedAccount] && amountNum <= AMOUNT_LIMIT) {
+            setTransferConfirmation(true);
+            setError("");
+            setTransferError("");
+          }
+        } else if (amountNum <= balance[selectedAccount] && amountNum <= AMOUNT_LIMIT) {
           setBalances(prev => ({
             ...prev,
             [selectedAccount]: prev[selectedAccount] - amountNum,
@@ -255,7 +266,7 @@ const AtmFeature = () => {
                 type="text"
                 value={amount}
                 onChange={(e) => {handleAmountChange(e); setError("")}}
-                placeholder="0.00"
+                placeholder="0 - 2500"
                 style={{width: '95%', height: '40px', padding: '0.5rem', textAlign: 'right', fontSize: '1.5rem', borderRadius: '0.375rem', borderWidth: '2px', borderStyle: 'solid', borderColor: 'black', backgroundColor: 'white', color: 'black',}}
               />
             </div>
@@ -312,7 +323,7 @@ const AtmFeature = () => {
                   <input
                     type="text"
                     value={amount}
-                    placeholder="0.00"
+                    placeholder="0 - 2500"
                     onChange={(e) => {handleAmountChange(e); setError("")}}
                     style={{width: '95%', height: '40px', padding: '0.5rem', textAlign: 'right', fontSize: '1.5rem', borderRadius: '0.375rem', borderWidth: '2px', borderStyle: 'solid', borderColor: 'black', backgroundColor: 'white', color: 'black',}}
                   />
@@ -474,7 +485,7 @@ const AtmFeature = () => {
               <input
                 type="text"
                 value={amount}
-                placeholder="Enter check amount"
+                placeholder="Enter check amount: 0 - 25000"
                 onChange={(e) => {handleAmountChange(e); setError("")}}
                 style={{width: '95%',padding: '0.5rem',border: '1px solid #ccc',borderRadius: '0.375rem',height: '30px',fontSize: '0.9rem',borderStyle: 'solid',backgroundColor: 'white',color: 'black',}}
               />
