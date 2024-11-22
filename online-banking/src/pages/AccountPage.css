@@ -3,7 +3,6 @@
   font-family: Arial, sans-serif;
   background-color: #f9f9f9;
   min-height: 100vh;
-  padding: 16px;
 }
 
 /* Card Styles */
@@ -12,7 +11,7 @@
   border-radius: 8px;
   padding: 16px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin-bottom: 16px;
+  margin: 16px;
 }
 
 .card-title {
@@ -37,13 +36,14 @@
 .tabs-container {
   display: flex;
   gap: 8px;
-  margin-bottom: 16px;
+  margin: 16px;
 }
 
 .tab-button {
   padding: 8px 16px;
   border: 1px solid #ddd;
   background: white;
+  color: black;
   border-radius: 4px;
   display: flex;
   align-items: center;
