@@ -36,7 +36,7 @@ let currentUser: user = {
   
   ssn: '123-45-6789', 
   
-  accounts: temp_accounts
+  accounts: null
 }
 
 function Homepage() {
@@ -50,7 +50,8 @@ function Homepage() {
 
   const handleCreateAccount = () => {
     if(currentUser){
-      console.log("Redirect to account creation page.")
+      console.log("Redirect to account creation page.");
+      navigate('/accountpage');
     }
     else
       navigate('/userlogin');
