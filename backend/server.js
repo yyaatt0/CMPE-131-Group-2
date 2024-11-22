@@ -4,8 +4,9 @@ import cors from "cors"
 import authRoutes from './routes/auth.js'; // Import Routes that use db.js
 // import session from 'express-session';     // Import session
 
+
 //USING EXPRESS
-const app = express()
+const app = express();
 
 //ALLOWS ANY USE OF JSON SENT BY POST METHOD
 app.use(express.json())
@@ -28,6 +29,7 @@ app.use(cors({
 
 // Routes
 app.use('/auth', authRoutes);
+
 
 
 const PORT = process.env.PORT || 3001; // Use port 3001 for backend

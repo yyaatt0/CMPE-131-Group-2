@@ -41,6 +41,25 @@ router.post("/login", (req, res) => {
     return res.json({ success: true, message: 'Login successful' });
   });
 });
+
+router.get("/balance/:userID", (req, res) => {
+  const userID = req.params.userID;
+  console.log("Received userID:", userID); // Debug log
+
+  const qry = "SELECT balance FROM accounts WHERE userID = ?";
+  db.query(qry, [userID], (err, data) => {
+      if (err) {
+          console.error("Database error details:", err); // Log full error details
+          return res.json({ success: false, message: "Database error", error: err });
+      }
+
+      if (data.length === 0) {
+          return res.json({ success: false, message: "User not found" });
+      }
+
+      return res.json({ success: true, balance: data[0].balance });
+  });
+});
   
 
 // // ATM LOGIN METHOD, REQUEST USERNAME & PIN
