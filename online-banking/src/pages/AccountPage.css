@@ -1,87 +1,109 @@
-/* Component.css */
+/* Global Styles */
+.app-container {
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+  min-height: 100vh;
+}
 
-/* Main container */
-.container {
-    min-height: 100vh;
-    background-color: #f7fafc;
-    padding: 2rem 1rem;
-  }
-  
-  /* Account overview card */
-  .card-overview {
-    margin-bottom: 2rem;
-  }
-  
-  .card-title {
-    font-size: 1.875rem;
-    font-weight: bold;
-    margin-bottom: 0.5rem;
-  }
-  
-  .card-description {
-    font-size: 1rem;
-    color: #6b7280; /* Muted gray */
-  }
-  
-  .balance {
-    font-size: 2.25rem;
-    font-weight: bold;
-  }
-  
-  .available-balance {
-    font-size: 0.875rem;
-    color: #6b7280;
-  }
-  
-  /* Tab navigation */
-  .tab-nav {
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    background-color: white;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  .tab-button {
-    display: flex;
-    gap: 0.5rem;
-    padding: 0.5rem;
-  }
-  
-  /* Scroll area */
-  .scroll-area {
-    height: calc(100vh - 300px);
-    border-radius: 0.5rem;
-    border: 1px solid #e5e7eb;
-    overflow-y: auto;
-  }
-  
-  /* Transaction card */
-  .transaction-card {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem;
-  }
-  
-  .transaction-type {
-    font-weight: 600;
-  }
-  
-  .transaction-info,
-  .transaction-date {
-    font-size: 0.875rem;
-    color: #6b7280;
-  }
-  
-  .transaction-amount-positive {
-    font-size: 1.125rem;
-    font-weight: bold;
-    color: #10b981; /* Green for positive amounts */
-  }
-  
-  .transaction-amount-negative {
-    font-size: 1.125rem;
-    font-weight: bold;
-    color: #ef4444; /* Red for negative amounts */
-  }
+/* Card Styles */
+.card {
+  background: white;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin: 16px;
+}
+
+.card-title {
+  font-size: 24px;
+  margin: 0 0 8px;
+}
+
+.card-description {
+  color: #666;
+}
+
+.balance {
+  font-size: 32px;
+  font-weight: bold;
+}
+
+.balance-label {
+  color: #888;
+}
+
+/* Tabs Styles */
+.tabs-container {
+  display: flex;
+  gap: 8px;
+  margin: 16px;
+}
+
+.tab-button {
+  padding: 8px 16px;
+  border: 1px solid #ddd;
+  background: white;
+  color: black;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.tab-button.active {
+  background: #007bff;
+  color: white;
+}
+
+.tab-button .icon {
+  width: 16px;
+  height: 16px;
+}
+
+/* Content Area */
+.content-area {
+  background: white;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.transactions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.transaction-card {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background: #fff;
+}
+
+.transaction-type {
+  font-weight: bold;
+}
+
+.transaction-info,
+.transaction-date {
+  color: #666;
+  font-size: 12px;
+}
+
+.transaction-amount {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.transaction-amount.positive {
+  color: green;
+}
+
+.transaction-amount.negative {
+  color: red;
+}
