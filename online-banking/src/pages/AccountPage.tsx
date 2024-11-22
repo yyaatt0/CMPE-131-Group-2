@@ -23,7 +23,7 @@ export default function Component() {
     <div className="app-container">
 
       {/* Navigation Bar */}
-      <NavBar/>
+      {/* <NavBar/> */}
 
       {/* Account Overview */}
       <div className="card">
