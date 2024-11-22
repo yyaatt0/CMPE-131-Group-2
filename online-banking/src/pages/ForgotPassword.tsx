@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
-const ForgotPassword = () => {
+
+/* const ForgotPassword = () => {
   //useState to manage the state of emails and error messages
   //Initialize state for email, default value is empty string
   const [email, setEmail] = useState('');
@@ -20,7 +22,48 @@ const ForgotPassword = () => {
       setErrorMsg('Please enter your email address!'); // If the email is empty, display an error message 
 
     }
-  };
+  }; */
+
+ const ForgotPassword = () => {
+    const [email, setEmail] = useState<string>(''); // State to store email
+    const [errorMsg, setErrorMsg] = useState<string>(''); // State for error message
+    const [loading, setLoading] = useState<boolean>(false); // State to handle loading state
+    const navigate = useNavigate(); // Hook for navigation
+  
+    // Function to handle form submission
+    const handleSubmit = async (e: React.FormEvent) => {
+      e.preventDefault();
+  
+// Check email format (regex to check valid email)
+      const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+      if (!email || !emailRegex.test(email)) {
+        setErrorMsg('Please enter a valid email address!');
+        return;
+      }
+  
+      setLoading(true); // Start loading
+      setErrorMsg(''); // Clear previous errors
+  
+      try {
+// Send request to back-end to send confirmation code via email
+        const response = await axios.post('https://backend-api.com/api/auth/forgot-password', { email });
+  
+        if (response.data.success) {
+// If code sent successfully, go to code verification page
+          console.log('Verification code sent to:', email);
+          navigate('/verifyCode');
+        } else {
+          
+          setErrorMsg('Failed to send verification code. Please try again later.');
+        }
+      } catch (error) {
+// Handle errors if there is a problem while sending the request
+        console.error('Error during sending verification code:', error);
+        setErrorMsg('An error occurred. Please try again.');
+      } finally {
+        setLoading(false); // stop loading
+      }
+    };
 
   return (
     <div style={{fontFamily: 'Arial, sans-serif', margin: 0 }}>
