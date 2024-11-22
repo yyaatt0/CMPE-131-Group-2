@@ -51,7 +51,7 @@ import axios from 'axios';
         if (response.data.success) {
 // If code sent successfully, go to code verification page
           console.log('Verification code sent to:', email);
-          navigate('/verifyCode');
+          navigate('/VerifyCode');
         } else {
           
           setErrorMsg('Failed to send verification code. Please try again later.');
