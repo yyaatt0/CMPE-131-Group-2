@@ -25,9 +25,9 @@ import axios from 'axios';
   }; */
 
  const ForgotPassword = () => {
-    const [email, setEmail] = useState<string>(''); // State to store email
-    const [errorMsg, setErrorMsg] = useState<string>(''); // State for error message
-    const [loading, setLoading] = useState<boolean>(false); // State to handle loading state
+    const [email, setEmail] = useState(''); // State to store email
+    const [errorMsg, setErrorMsg] = useState(''); // State for error message
+    const [loading, setLoading] = useState(false); // State to handle loading state
     const navigate = useNavigate(); // Hook for navigation
   
     // Function to handle form submission
