@@ -27,7 +27,7 @@ const AdminLogin = () => {
       });
 
       // If authentication is successful, navigate to the admin page  
-      if (response.data.success) {
+      if (response.data.success response.data.isAdmin) {
         navigate('/AdminPortal');
       } else {
         setError('Invalid username or password');
