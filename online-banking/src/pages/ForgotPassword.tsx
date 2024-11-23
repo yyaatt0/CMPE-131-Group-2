@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-
+import FooterCard from '../components/FooterCard';
+import NavBar from '../components/NavBar';
 
 /* const ForgotPassword = () => {
   //useState to manage the state of emails and error messages
@@ -66,7 +67,7 @@ import axios from 'axios';
     };
 
   return (
-    <div style={{fontFamily: 'Arial, sans-serif', margin: 0 }}>
+ /*    <div style={{fontFamily: 'Arial, sans-serif', margin: 0 }}>
     <header>
       <nav style={{
                   backgroundColor: '#003459',
@@ -76,7 +77,27 @@ import axios from 'axios';
               }}>
         <h1 style={{fontWeight: 'bold', fontSize: '30px'}}>Bank of Banks</h1>
       </nav>
-    </header>
+    </header> */
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', backgroundColor: '#f3f4f6', fontFamily: 'sans-serif'}}>
+
+{/* Navigation Bar */}
+<NavBar/>
+
+{/* Holds the nav bar and heading  */}
+
+  {/* Upper portion of the page, later to include a functional nav bar so we can navigate through multiple pages
+  Have this navbar as a component  */}
+  {/* <nav style={{
+    backgroundColor: '#003459',
+    padding: '30px',
+    color: 'white',
+    textAlign: 'center'
+  }}> */}
+<header style={{ backgroundColor: '#003459', color: 'white', padding: '24px', textAlign: 'center', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
+
+  <h1 style={{ fontSize: '2rem', fontWeight: 'bold' }}>Bank of Banks </h1>
+  
+</header>
 
     <div 
       style={{
@@ -129,6 +150,7 @@ import axios from 'axios';
           {errorMsg && <div className="error-message">{errorMsg}</div>}
         </form>
       </div>
+            <FooterCard/>
     </div>
   );
 };
