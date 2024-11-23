@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import NavBar from '../components/NavBar';
+import FooterCard from '../components/FooterCard';
 
 const AdminLogin = () => {
   const [username, setUsername] = useState<string>('');   // Store the entered username
@@ -141,6 +142,7 @@ const AdminLogin = () => {
         </div>
       
       </div>
+      <FooterCard/>
 
     </div>
   );
