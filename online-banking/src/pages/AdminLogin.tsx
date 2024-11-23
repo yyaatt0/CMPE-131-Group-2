@@ -13,6 +13,12 @@ const AdminLogin = () => {
     // Function to handle when the Admin submits the form
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    //Check default account login conditions
+     if (username === 'admin' && password === 'admin1') {
+        navigate('/AdminPortal'); //redirected to adminportal page
+        return;
+      }
     try {
             // Send HTTP POST request to backend to authenticate login information
       const response = await axios.post('http://localhost:3000/AdminLogin', {
