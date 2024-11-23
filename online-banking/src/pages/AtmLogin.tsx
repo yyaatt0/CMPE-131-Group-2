@@ -131,7 +131,7 @@ const AtmLogin = () => {
                 </div>
 
                 {/* This div will hold the numpad portion of the screen */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px', width: 'fit-content', margin: 'auto', }}>
                   
                   {/* Numpad from 1-9 */}
                   {actions.map((num) => (
@@ -154,7 +154,9 @@ const AtmLogin = () => {
                         borderRadius: '4px', 
                         cursor: 'pointer', 
                         transition: isActionBtnHover === num ? 'background-color 0.5s, transform 0.4s ease' : 'background-color 0.5s',
-                        transform: isActionBtnActive === num ? 'scale(0.95)' : 'scale(1)'
+                        transform: isActionBtnActive === num ? 'scale(0.95)' : 'scale(1)',
+                        width: '160px', 
+                        height: '65px',
                       }}
                     >
                       {num}
@@ -181,7 +183,10 @@ const AtmLogin = () => {
                       cursor: 'pointer', 
                       transition: zeroBtnHover  ? 'background-color 0.5s, transform 0.4s ease' : 'background-color 0.5s',
                       transform: zeroBtnActive  ? 'scale(0.95)' : 'scale(1)',
-                      gridColumn: 'span 3' 
+                      gridColumn: 'span 3', 
+                      width: '160px',
+                      height:'65px',
+                      justifySelf: 'center',
                   }}
                   >
                     0
@@ -198,8 +203,11 @@ const AtmLogin = () => {
                     onMouseUp={() => setSubmitBtnActive(false)}
 
                   style={{ 
-                    width: '100%', 
+                    width: '496px', 
+                    height: '50px',
+                    position: 'relative',
                     padding: '12px',
+                    margin: 'auto',
                     backgroundColor: submitBtnHover ? '#00171F' : '#003459', 
                     color: 'white', 
                     fontSize: '16px', 
