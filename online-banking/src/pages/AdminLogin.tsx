@@ -5,9 +5,9 @@ import NavBar from '../components/NavBar';
 import FooterCard from '../components/FooterCard';
 
 const AdminLogin = () => {
-  const [username, setUsername] = useState<string>('');   // Store the entered username
-  const [password, setPw] = useState<string>('');   // Store the entered password
-  const [error, setError] = useState<string | null>(null);
+  const [username, setUsername] = useState('');   // Store the entered username
+  const [password, setPw] = useState('');   // Store the entered password
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
     // Function to handle when the Admin submits the form
