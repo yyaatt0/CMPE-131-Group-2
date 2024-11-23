@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import NavBar from '../components/NavBar';
+import FooterCard from '../components/FooterCard';
 
 const Registration = () => {
     // Declare states to store the values ​​of input fields
@@ -90,7 +92,7 @@ const Registration = () => {
   };
 
     return (
-        <div style={{ fontFamily: 'Arial, sans-serif', margin: 0 }}>
+     /*    <div style={{ fontFamily: 'Arial, sans-serif', margin: 0 }}>
             <header>
                 <nav style={{
                     backgroundColor: '#003459',
@@ -100,7 +102,28 @@ const Registration = () => {
                 }}>
                     <h1 style={{fontWeight: 'bold', fontSize: '30px'}}>Bank of Banks</h1>
                 </nav>
-            </header>
+            </header> */
+
+          //  <div style={{ fontFamily: ' sans-serif' , flexDirection: 'column', minHeight: '100vh'}}>
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', backgroundColor: '#f3f4f6', fontFamily: 'sans-serif'}}>
+
+    {/* Navigation Bar */}
+    <NavBar/>
+
+    {/* Holds the nav bar and heading  */}
+    
+      {/* Upper portion of the page, later to include a functional nav bar so we can navigate through multiple pages
+      Have this navbar as a component  */}
+      {/* <nav style={{
+        backgroundColor: '#003459',
+        padding: '30px',
+        color: 'white',
+        textAlign: 'center'
+      }}> */}
+    <header style={{ backgroundColor: '#003459', color: 'white', padding: '24px', textAlign: 'center', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
+
+      <h1 style={{ fontSize: '2rem', fontWeight: 'bold' }}>Bank of Banks </h1>
+    </header>
             
             <h2 style={{ textAlign: 'center', fontWeight: 'normal', fontSize: '25px', marginTop: '20px' }}>Welcome, apply in just minutes.</h2>
 
@@ -325,9 +348,10 @@ const Registration = () => {
                 <a href="/" onClick={handleCancel} style={{ color: 'blue', textDecoration: 'underline' }}>Cancel
                 {/* This is the "Cancel" button */}
                 </a>
-                <span> | </span>
+                <span>  </span>
                
             </div>
+          <FooterCard/>
         </div>
     );
 };
