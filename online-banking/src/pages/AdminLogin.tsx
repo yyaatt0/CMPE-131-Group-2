@@ -140,6 +140,32 @@ const AdminLogin = () => {
             Login
           </button>
         </form>
+
+
+<p style={{ textAlign: "center" }}>
+        <a
+          href="#"
+          onClick={(e) => {
+            e.preventDefault();
+            const messageElement = document.getElementById("forgot-message");
+            if (messageElement) {
+              messageElement.style.display = "block"; 
+            } else {
+              console.error("Element with id 'forgot-message' not found.");
+            }
+          }}
+        >
+          Forgot Password?
+        </a>
+      </p>
+
+      <div
+        id="forgot-message"
+        style={{ display: "none", color: "red", marginTop: "10px" }}
+      >
+        Please contact IT for assistance!
+      </div>
+        
       
       </div>
       <FooterCard/>
