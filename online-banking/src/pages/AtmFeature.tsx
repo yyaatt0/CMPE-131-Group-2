@@ -55,7 +55,11 @@ const AtmFeature = () => {
 
   // This will keep hold of the error bool if there is an error that occured when considering the input handling
   const [error, setError] = useState<string>("");
-  const errorMsg = ["Cannot withdraw more than the current balance", "Cannot transfer more then the current balance", "Please enter an amount", "One or more check images have NOT been uploaded", "Please select a recieptient account", "Please input/select a value", "Amount cannot be $0.00!"];
+  const errorMsg = ["Cannot withdraw more than the current balance", "Cannot transfer more then the current balance", "Please enter an amount", "One or more check images have NOT been uploaded", "Please select a recieptient account", "Please input/select a value", "Amount cannot be $0.00", "Ammount limit exceeded"];
+
+
+  const AMOUNT_LIMIT = 2500;
+  const CHECK_LIMIT = 25000;
 
   // The logout redirect
   const navigate = useNavigate();
@@ -140,7 +144,9 @@ const AtmFeature = () => {
       case "Withdraw Cash":
         if (amountNum === 0) {
           setError(errorMsg[6]);
-        } else if (amountNum <= balance[selectedAccount]) {
+        } else if (amountNum > AMOUNT_LIMIT) {
+          setError(errorMsg[7]);
+        } else if (amountNum <= balance[selectedAccount] && amountNum <= AMOUNT_LIMIT) {
           setBalances(prev => ({
             ...prev,
             [selectedAccount]: prev[selectedAccount] - amountNum
@@ -158,6 +164,8 @@ const AtmFeature = () => {
       case "Deposit Cash":
         if(amountNum === 0) {
           setError(errorMsg[6]);
+        } else if (amountNum > AMOUNT_LIMIT) {
+          setError(errorMsg[7]);
         } else {
           setBalances(prev => ({
             ...prev,
@@ -173,9 +181,11 @@ const AtmFeature = () => {
       case "Deposit Check":
         if(amountNum === 0) {
           setError(errorMsg[6]);
+        }  else if (amountNum > CHECK_LIMIT) {
+          setError(errorMsg[7]);
         } else if (selectedFrontImg === undefined || selectedBackImg === undefined) {
           setImgError(errorMsg[3]);
-        } else if (selectedFrontImg !== undefined && selectedBackImg !== undefined) {
+        } else if (selectedFrontImg !== undefined && selectedBackImg !== undefined && amountNum <= CHECK_LIMIT) {
           setBalances(prev => ({
             ...prev,
             [selectedAccount]: prev[selectedAccount] + amountNum
@@ -191,19 +201,20 @@ const AtmFeature = () => {
       // FUND TRANSFER
       case "Fund Transfer":
         if (!transferConfirmation) {
-          if (amountNum === 0) {
+          if (transferRecipient && amountNum === 0) {
             setError(errorMsg[6]);
-          } else if (transferRecipient && amountNum <= balance[selectedAccount]) {
-            setTransferConfirmation(true);
-            setError("");
-            setTransferError("");
           } else if (!transferRecipient){
             setTransferError(errorMsg[4]);
           } else if (amountNum > balance[selectedAccount]) {
             setError(errorMsg[1]);
-          } 
-
-        } else if (amountNum <= balance[selectedAccount]) {
+          } else if (amountNum > AMOUNT_LIMIT) {
+            setError(errorMsg[7]);
+          } else if (transferRecipient && amountNum <= balance[selectedAccount] && amountNum <= AMOUNT_LIMIT) {
+            setTransferConfirmation(true);
+            setError("");
+            setTransferError("");
+          }
+        } else if (amountNum <= balance[selectedAccount] && amountNum <= AMOUNT_LIMIT) {
           setBalances(prev => ({
             ...prev,
             [selectedAccount]: prev[selectedAccount] - amountNum,
@@ -244,6 +255,16 @@ const AtmFeature = () => {
       case "Deposit Cash":
         popupContent = (
           <>
+            <style>
+              {`
+                input::placeholder {
+                  color: #A9A9AC;
+                  font-size: 1.2rem;
+                  opacity: 0.7;
+                }
+              `}
+            </style>
+
             <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1rem' }}>{activePopup}</h2>
             
             {/* This is the textbox where we enter the amount */}
@@ -255,8 +276,8 @@ const AtmFeature = () => {
                 type="text"
                 value={amount}
                 onChange={(e) => {handleAmountChange(e); setError("")}}
-                placeholder="0.00"
-                style={{width: '95%', height: '40px', padding: '0.5rem', textAlign: 'right', fontSize: '1.5rem', borderRadius: '0.375rem', borderWidth: '2px', borderStyle: 'solid', borderColor: 'black', backgroundColor: 'white', color: 'black',}}
+                placeholder="Max Limit $2500"
+                style={{width: '95%', height: '40px', padding: '0.5rem', textAlign: 'right', fontSize: '1.5rem', borderRadius: '0.375rem', borderWidth: '2px', borderStyle: 'solid', borderColor: 'black', backgroundColor: 'white', color: 'black', }}
               />
             </div>
 
@@ -296,6 +317,16 @@ const AtmFeature = () => {
       case "Fund Transfer":
         popupContent = (
           <>
+            <style>
+              {`
+                input::placeholder {
+                  color: #A9A9AC;
+                  font-size: 1.2rem;
+                  opacity: 0.7;
+                }
+              `}
+            </style>
+
             <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1rem' }}>Fund Transfer</h2>
 
             {/* This boolean handles if the "Next" button has been clicked or not.
@@ -312,7 +343,7 @@ const AtmFeature = () => {
                   <input
                     type="text"
                     value={amount}
-                    placeholder="0.00"
+                    placeholder="Max Limit $2500"
                     onChange={(e) => {handleAmountChange(e); setError("")}}
                     style={{width: '95%', height: '40px', padding: '0.5rem', textAlign: 'right', fontSize: '1.5rem', borderRadius: '0.375rem', borderWidth: '2px', borderStyle: 'solid', borderColor: 'black', backgroundColor: 'white', color: 'black',}}
                   />
@@ -320,6 +351,8 @@ const AtmFeature = () => {
 
                 {/* This is the selecting the recipient */}
                 <div style={{ marginTop: '1rem', marginBottom: '1rem' }}>
+                   {/* This says if there is no account selected, and the is some amount enter, prompt an error   */}
+                   {transferError && (<p style={{color: 'red', fontSize: '15px'}}>{transferError}</p>)}
                   <select
 
                     // This portion hold variables for the transfer reciepient (only between accounts)
@@ -329,7 +362,7 @@ const AtmFeature = () => {
                       setTransferRecipient(e.target.value);
                       setTransferError("");
                     }}
-                    style={{width: '100%', height: '50px', fontSize: '15px', paddingLeft: '10px',border: '1px solid #ccc',borderRadius: '0.375rem',backgroundColor: 'white',color: 'black',borderColor: transferError ? 'red' : 'gray',}}
+                    style={{width: '100%', height: '50px', fontSize: '15px', paddingLeft: '10px',border: '1px solid #ccc',borderRadius: '0.375rem',backgroundColor: 'white',color: 'black',borderColor: transferError ? 'red' : 'gray', backgroundImage: 'linear-gradient(45deg, transparent 50%, gray 50%), linear-gradient(135deg, gray 50%, transparent 50%), linear-gradient(to right, #ccc, #ccc)',backgroundPosition: 'calc(100% - 20px) calc(1em + 8px), calc(100% - 15px) calc(1em + 8px), calc(100% - 2.5em) 0.8em', backgroundSize: '5px 5px, 5px 5px, 1px 1.5rem', backgroundRepeat: 'no-repeat', appearance: 'none',}}
                   >
 
                     {/* Drop down box to select an account  */}
@@ -338,9 +371,6 @@ const AtmFeature = () => {
                       <option key={account} value={account}>{account}</option>
                     ))}
                   </select>
-
-                  {/* This says if there is no account selected, and the is some amount enter, prompt an error   */}
-                  {transferError && (<p style={{color: 'red', fontSize: '15px'}}>{transferError}</p>)}
                 </div>
 
                 {/* This is the numpad */}
@@ -412,6 +442,16 @@ const AtmFeature = () => {
       case "Deposit Check":
         popupContent = (
           <>
+            <style>
+              {`
+                input::placeholder {
+                  color: #A9A9AC;
+                  font-size: 0.9rem;
+                  opacity: 0.7;
+                }
+              `}
+            </style>
+
             <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1rem'}}>Deposit Check</h2>
             
             {/* Front of check image insert; having these pictures will do absolutely NOTHING*/}
@@ -475,7 +515,7 @@ const AtmFeature = () => {
               <input
                 type="text"
                 value={amount}
-                placeholder="Enter check amount"
+                placeholder="Max Limit $25000"
                 onChange={(e) => {handleAmountChange(e); setError("")}}
                 style={{width: '95%',padding: '0.5rem',border: '1px solid #ccc',borderRadius: '0.375rem',height: '30px',fontSize: '0.9rem',borderStyle: 'solid',backgroundColor: 'white',color: 'black',}}
               />
@@ -560,7 +600,7 @@ const AtmFeature = () => {
 
       {/* The div below will describe the nav bar on the lefthand side
       That Nav bar will consist of selecting the account, the name of the person, selecting accounts, and a logout button */}
-      <div style={{ width: '33%', backgroundColor: '#003459', color: 'white', padding: '2rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', position: 'relative' }}>
+      <div style={{ width: '160px', backgroundColor: '#003459', color: 'white', padding: '2rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', position: 'relative' }}>
         <div>
 
           {/* There is a hardcoded name but later connect the backend to retrieve that data */}
@@ -611,6 +651,7 @@ const AtmFeature = () => {
           style={{ 
             display: 'flex', 
             alignItems: 'center', 
+            marginInline: 'auto',
             justifyContent: 'center', 
             color: isLogoutHovered ? '#003459' : 'white', 
             backgroundColor: isLogoutHovered ? "white" : "transparent",
@@ -631,17 +672,15 @@ const AtmFeature = () => {
       </div>
 
       {/* This div contains holding the button features*/}
-      <div style={{ padding: '2rem', width: '67%', overflowY: 'auto', marginRight: '1rem' }}>
+      <div style={{margin: '1.1rem', width: '512px' }}>
 
         {/* Header to display what accout is selected */}
         <h2 style={{ fontSize: '1.5rem', marginBottom: '2rem' }}>{selectedAccount}</h2>
 
         {/* This is the div grid that allows the user to select which feature to choose from */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1.5rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1.5rem', width: 'fit-content' }}>
           {actions.map((action, index) => (
             <div
-
-              //onMouseDown={() => (document.activeElement as HTMLElement).blur()}
               onClick={() => handleActionClick(action)}
               key={action}
 
@@ -654,6 +693,9 @@ const AtmFeature = () => {
                 padding: '2vw',
                 backgroundColor: 'white',
                 borderRadius: '8px',
+                maxWidth: '512px',
+                minHeight: '60px',
+                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
                 transition: isActionBtnHovered === index ? 'box-shadow 0.3s, transform 0.4s ease' : "none",
                 transform: isActionBtnActive === index ? 'scale(0.95)' : 'scale(1)',
                 cursor: 'pointer',
@@ -680,8 +722,8 @@ const AtmFeature = () => {
       </div>
 
       {/* The div below is the ones that display the current balance of the account */}
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', margin: '2rem ', backgroundColor: 'transparent' }}>
-        <h1 style={{ fontWeight: 'bold', paddingLeft: '2rem', paddingRight: '2rem', fontSize: 'calc(1.5rem + 2vw)' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', backgroundColor: 'white', border: 'none', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', width: '400px', height: '300px', margin: 'auto', }}>
+        <h1 style={{ fontWeight: 'bold', fontSize: 'calc(1.5rem + 2vw)' }}>
           Balance
         </h1>
         <h2 style={{ paddingTop: '2rem', fontSize: 'calc(1rem + 1vw)', fontWeight: 'bold' }}>

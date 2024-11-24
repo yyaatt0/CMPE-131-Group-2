@@ -50,7 +50,8 @@ function Homepage() {
 
   const handleCreateAccount = () => {
     if(currentUser){
-      console.log("Redirect to account creation page.")
+      console.log("Redirect to account creation page.");
+      navigate('/accountpage');
     }
     else
       navigate('/userlogin');
@@ -111,9 +112,7 @@ function Homepage() {
 
       <div className='offers-section'>
           <InfoCardSmall heading='Platinum Rewards'>
-            <>
-              <p>{credit_desc}</p>
-            </>
+            <p>{credit_desc}</p>
           </InfoCardSmall>
           <InfoCardSmall heading='Insurance' className='blue-1'>
             <p>{insurance_desc}</p>
