@@ -2,12 +2,26 @@ import express from 'express'
 import cors from "cors"
 
 import authRoutes from './routes/auth.js'; // Import Routes that use db.js
-// import session from 'express-session';     // Import session
+import session from 'express-session';
+import cookieParser from 'cookie-parser'
 
 
 //USING EXPRESS
 const app = express();
 
+//STORE SESSION IN MEMORY
+const store = new session.MemoryStore();
+//CREATE SESSION
+app.use(cookieParser());
+app.use(session({
+    secret: "secretKey",
+    resave: false,
+    saveUninitialized: false,
+    store,
+    cookie: { 
+      maxAge: 60000 * 60} 
+  }))
+  
 //ALLOWS ANY USE OF JSON SENT BY POST METHOD
 app.use(express.json())
 
@@ -17,20 +31,17 @@ app.use(cors({
     origin: 'http://localhost:3000', // Frontend URL
 }));
 
-
-// app.use(session({
-//   secret: 'your-secret-key',  // Replace with a strong secret key
-//   resave: false,
-//   saveUninitialized: true,
-//   cookie: { secure: false }   // Set secure: true for production with HTTPS
-// }));
-
-
-
 // Routes
 app.use('/auth', authRoutes);
 
-
-
 const PORT = process.env.PORT || 3001; // Use port 3001 for backend
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+
+//CHECK IF SESSION WORKS
+app.get("/", (req, res) => {
+  console.log(req.session);
+  console.log(req.sessionID);
+  req.session.visited = true;
+  res.cookie("Hello", "World", { maxAge: 30000, signed: true});
+  res.status(201).send({msg:"Hello"});
+})

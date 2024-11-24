@@ -50,7 +50,7 @@ const AtmLogin = () => {
     e.preventDefault();
     if (username && password.length === 4) {
       try {
-        const response = await axios.post('http://localhost:3001/auth/atm-login', {
+        const response = await axios.post('http://localhost:3001/auth/atmlogin', {
           username: username,
           pin: password,
         });

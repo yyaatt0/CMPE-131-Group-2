@@ -1,5 +1,4 @@
 import express from 'express';
-
 import db from '../db.js'; // Import the database connection
 
 const router = express.Router();
@@ -12,10 +11,10 @@ router.get("/users", (req, res) => {
     })
 })
 
-
 //USER LOGIN METHOD, REQUEST USERNAME & PASSWORD
 //SEND DATA TO DATABASE THROUGH POST METHOD
 router.post("/login", (req, res) => {
+  console.log(req.session)
   const { username, password } = req.body;
   console.log('Login attempt:', { username, password });
 
@@ -35,19 +34,24 @@ router.post("/login", (req, res) => {
       console.log("User has not been found.");
       return res.json({ success: false, message: 'Invalid username or password' });
     }
-
-    console.log("User has been found.");
-    // req.session.user = { id: data[0].id, username: data[0].username }; // Store session
+    
+    //STORE USER ID AND NAME INTO SESSION USER
+    const id = data[0].userID;
+    const fname = data[0].fname;
+    const lname = data[0].lname;
+    //SET USER PARAMETERS TO CONST, CAN ADD MORE LATER
+    req.session.user = { id, fname, lname }
+    console.log(req.session.user);
     return res.json({ success: true, message: 'Login successful' });
   });
 });
 
+//GET BALANCE
 router.get("/balance/:userID", (req, res) => {
-  const userID = req.params.userID;
-  console.log("Received userID:", userID); // Debug log
+  console.log("Received userID:", req.session.user.id); // Debug log
 
-  const qry = "SELECT balance FROM accounts WHERE userID = ?";
-  db.query(qry, [userID], (err, data) => {
+  const qry = "SELECT type, balance FROM accounts WHERE userID = ?";
+  db.query(qry, [req.session.user.id], (err, data) => {
       if (err) {
           console.error("Database error details:", err); // Log full error details
           return res.json({ success: false, message: "Database error", error: err });
@@ -60,42 +64,34 @@ router.get("/balance/:userID", (req, res) => {
       return res.json({ success: true, balance: data[0].balance });
   });
 });
-  
 
 // // ATM LOGIN METHOD, REQUEST USERNAME & PIN
-router.post("/atm-login", (req, res) => {
+router.post("/auth/atmlogin", (req, res) => {
   const { username, pin } = req.body;
   console.log('ATM Login attempt:', { username, pin });
 
-  const userQry = "SELECT * FROM users WHERE username = ?";
+  const userQry = "SELECT users.userID, users.fname, users.lname, userpins.pin FROM users \
+   INNER JOIN userpins ON users.userID=userpins.userID WHERE users.username = ? AND userpins.pin = ?";
   
-  db.query(userQry, [username], (err, userData) => {
+  db.query(userQry, [username, pin], (err, data) => {
     if (err) {
       return res.json({ success: false, message: 'Database error' });
     }
 
-    if (userData.length === 0) {
+    if (data.length === 0) {
       console.log("User has not been found.");
       return res.json({ success: false, message: 'Invalid username or pin' });
     }
 
-    // User found, now check if the PIN matches
-    const userID = userData[0].userID; // Assuming userID is the unique identifier for the user
-    const pinQry = "SELECT * FROM userPins WHERE userID = ? AND pin = ?";
+    //STORE USER ID AND NAME INTO SESSION USER
+    const id = data[0].userID;
+    const fname = data[0].fname;
+    const lname = data[0].lname;
+    //SET USER PARAMETERS TO CONST, CAN ADD MORE LATER
+    req.session.user = { id, fname, lname }
+    console.log(req.session.user);
     
-    db.query(pinQry, [userID, pin], (err, pinData) => {
-      if (err) {
-        return res.json({ success: false, message: 'Database error' });
-      }
-
-      if (pinData.length === 0) {
-        console.log("Incorrect PIN.");
-        return res.json({ success: false, message: 'Invalid username or pin' });
-      }
-
-      console.log("ATM Login successful.");
-      return res.json({ success: true, message: 'ATM login successful' });
-    });
+    return res.json({ success: true, message: 'ATM login successful' });
   });
 });
   

@@ -36,7 +36,7 @@ const UserLogin = () => {
 
       // If authentication is successful, navigate to the user page  
       if (response.data.success) {
-        navigate('/userPortal'); // Redirect to the user portal
+        navigate('/AccountPage'); // Redirect to the user portal
       } else {
         setError('Invalid username or password');
       }

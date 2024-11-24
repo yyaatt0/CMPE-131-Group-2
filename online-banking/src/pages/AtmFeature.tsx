@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 // This package is for the icons used in this page
 import { CornerUpLeft, X } from "lucide-react"; 
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 // This will be used as a reference to associate the account type and the balance associated with it
 interface AccountBalance {
@@ -50,16 +51,36 @@ const AtmFeature = () => {
     navigate('/AtmLogin');
   };
 
+  const [user, setUser] = useState({
+    firstName: "",
+    lastName: "",
+
+  })
   // HARDCODED DATA
   // BACKEND: Import the data from the database into this format: account type and balance
   const [balance, setBalances] = useState<AccountBalance>({
-    "Savings Account": 1000,
-    "Checking Account": 500,
+    "Checking Account": 0,
+    "Savings Account": 0,
   });
+
+  //GET BALANCE
+  useEffect(() => {
+    const fetchBalance = async () => {
+        try {
+            const res = await axios.get("http://localhost:3001//balance/:userID")
+            setBalances(res.data);
+            console.log(res)
+        }
+        catch(err) {
+            console.log(err)
+        }
+    }
+    fetchBalance()
+})
 
   // HARDCODED DATA
   // BACKEND: Fill this array from the data base based on what account the user has 
-  const accounts: string[] = ["Savings Account", "Checking Account"];
+  const accounts = ["Savings Account", "Checking Accoeteunt"];
 
   // HARDCODED DATA
   // BACKEND: Fill this with the name associated with the account logged in
