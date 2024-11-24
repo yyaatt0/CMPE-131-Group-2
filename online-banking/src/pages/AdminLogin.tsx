@@ -140,12 +140,6 @@ const AdminLogin = () => {
             Login
           </button>
         </form>
-
-        {/* Button going to the page to reset the password */}
-        <br />
-        <div style={{ textAlign: 'center' }}>
-          <a href="/forgotPassword" style={{ paddingBottom: '10px', display: 'inline-block' }} >Forgot Password?</a>
-        </div>
       
       </div>
       <FooterCard/>
