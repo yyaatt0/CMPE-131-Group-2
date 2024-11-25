@@ -165,7 +165,13 @@ export default function Component() {
           {activeTab === "pay" && (
             <div className="tab-content">
               <h2>Pay Someone</h2>
-              <p>E-pay functionality would be implemented here.</p>
+              <form>
+                <label>Recipient</label>
+                <input type='text'/>
+                <label>Amount</label>
+                <input type='text'/>
+                <button type='submit'>Send</button>
+              </form>
             </div>
           )}
           {activeTab === "deposit" && (
