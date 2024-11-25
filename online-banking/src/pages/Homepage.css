@@ -18,14 +18,14 @@
 .account-list-section {
 
   background-color: #003459;
-  border: 20px double white;
-  border-radius: 30px;
+  box-shadow: 4px 4px 5px black;
+  border-radius: 1rem;
 
   display: flex;
   flex-direction: column;
   place-self: center;
 
-  width: 50vw;
+  width: 75vw;
   height: auto;
 
   margin: 2%;
@@ -35,6 +35,7 @@
 .account-list {
 
   background-color: rgb(224, 224, 224);
+  border-radius: 1rem;
 
   padding: 7px;
   margin: 2%;
@@ -153,5 +154,82 @@
 
   background-color: rgba(96, 255, 118, 0.5);
   transition-duration: 500ms;
+
+}
+
+.offers-section {
+
+  border-top: 1px solid rgb(202, 202, 202);
+
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  place-self: center;
+
+  padding-top: 2%;
+
+  width: 85vw;
+  height: 60vh;
+
+}
+
+.small-info-card {
+
+  color: white;
+  text-align: center;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  position: relative;
+
+  padding: 1%;
+  margin: 2%;
+
+  width: 20vw;
+  height: 20vw; 
+
+}
+
+.circle-heading {
+
+  background-color: #003459;
+  border-radius: 50%;
+  box-shadow: 0px 5px 10px black;
+
+  place-content: center;
+
+  font-size: 1vw;
+
+  width: 33vw;
+  height: 75%;
+
+}
+
+.circle-text {
+
+  color: rgb(153, 153, 153);
+  line-height: 1.75vw;
+  font-size: 1vw;
+  font-weight: 600;
+  text-align: left;
+
+  width: 100%;
+  max-height: 25%;
+
+}
+
+.blue-1 {
+
+  background-color: #0b66a7;
+
+}
+
+.blue-2 {
+
+  background-color: #2a93df;
 
 }

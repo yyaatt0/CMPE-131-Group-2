@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import NavBar from '../components/NavBar';
+import FooterCard from '../components/FooterCard';
 
 const Registration = () => {
     // Declare states to store the values ​​of input fields
     const [LastName, setLastName] = useState<string>(''); //user's Last name 
     const [FirstName, setFirstName] = useState<string>(''); // First name
-    const [Username, setUsername] = useState<string>(''); // user login name
+    const [username, setUsername] = useState<string>(''); // user login name
     const [Email, setEmail] = useState<string>(''); //email
-    const [Password, setPw] = useState<string>(''); //password
+    const [password, setPw] = useState<string>(''); //password
     const [ConfirmPassword, setConfirmPw] = useState<string>(''); //Confirm Password
     const [Pin, setPin] = useState<string>(''); //Pin
     const [ConfirmPin, setConfirmPin] = useState<string>(''); //Confirm PIN
@@ -26,12 +28,12 @@ const Registration = () => {
 
       const validChars = /^[A-Za-z0-9!*]*$/;
         // Check valid characters in Username and Password
-        if (!validChars.test(Username) || !validChars.test(Password)) {
+        if (!validChars.test(username) || !validChars.test(password)) {
             setErrorMssg('Please try again!');
             return false;
         }
         // Check if Password and ConfirmPassword match
-        if (Password !== ConfirmPassword) {
+        if (password !== ConfirmPassword) {
             setErrorMssg('Password and Confirm Password do not match.');
             return false;
         }
@@ -65,9 +67,9 @@ const Registration = () => {
             await axios.post('http://localhost:3000/registration', {
                 LastName,
                 FirstName,
-                Username,
+                username,
                 Email,
-                Password,
+                password,
                 Pin,
             });
             // Successful registration notification and redirection to Hompage
@@ -90,7 +92,7 @@ const Registration = () => {
   };
 
     return (
-        <div style={{ fontFamily: 'Arial, sans-serif', margin: 0 }}>
+     /*    <div style={{ fontFamily: 'Arial, sans-serif', margin: 0 }}>
             <header>
                 <nav style={{
                     backgroundColor: '#003459',
@@ -100,7 +102,28 @@ const Registration = () => {
                 }}>
                     <h1 style={{fontWeight: 'bold', fontSize: '30px'}}>Bank of Banks</h1>
                 </nav>
-            </header>
+            </header> */
+
+          //  <div style={{ fontFamily: ' sans-serif' , flexDirection: 'column', minHeight: '100vh'}}>
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', backgroundColor: '#f3f4f6', fontFamily: 'sans-serif'}}>
+
+    {/* Navigation Bar */}
+    <NavBar/>
+
+    {/* Holds the nav bar and heading  */}
+    
+      {/* Upper portion of the page, later to include a functional nav bar so we can navigate through multiple pages
+      Have this navbar as a component  */}
+      {/* <nav style={{
+        backgroundColor: '#003459',
+        padding: '30px',
+        color: 'white',
+        textAlign: 'center'
+      }}> */}
+    <header style={{ backgroundColor: '#003459', color: 'white', padding: '24px', textAlign: 'center', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
+
+      <h1 style={{ fontSize: '2rem', fontWeight: 'bold' }}>Bank of Banks </h1>
+    </header>
             
             <h2 style={{ textAlign: 'center', fontWeight: 'normal', fontSize: '25px', marginTop: '20px' }}>Welcome, apply in just minutes.</h2>
 
@@ -164,7 +187,7 @@ const Registration = () => {
                     <input
                         //for the username
                         type="text"
-                        value={Username}
+                        value={username}
                         onChange={(e) => setUsername(e.target.value)}
                         required
                         style={{
@@ -207,7 +230,7 @@ const Registration = () => {
                     <input
                         //for the password
                         type="password"
-                        value={Password}
+                        value={password}
                         onChange={(e) => setPw(e.target.value)}
                         required
                         style={{
@@ -325,9 +348,10 @@ const Registration = () => {
                 <a href="/" onClick={handleCancel} style={{ color: 'blue', textDecoration: 'underline' }}>Cancel
                 {/* This is the "Cancel" button */}
                 </a>
-                <span> | </span>
+                <span>  </span>
                
             </div>
+          <FooterCard/>
         </div>
     );
 };
