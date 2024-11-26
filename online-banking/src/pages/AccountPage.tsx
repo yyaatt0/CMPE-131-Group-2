@@ -1,7 +1,9 @@
+import { transaction } from "../types";
+
 import { useState } from "react";
 import { FileText, Send, DollarSign, PiggyBank, CornerUpLeft, User} from "lucide-react";
+
 import "./AccountPage.css"; 
-import NavBar from "../components/NavBar";
 
 // Mock data for account details and transactions
 const accountDetails = {
@@ -10,7 +12,8 @@ const accountDetails = {
   accountNumber: "**** **** **** 1234",
 };
 
-const transactions = [
+// BACKEND: This is a temporary hardcoded transaction list. Needs to be updated to grab list from database.
+const transactions: transaction[] = [
   { id: 1, amount: -50.0, type: "Purchase", info: "Grocery Store", date: "2023-05-01" },
   { id: 2, amount: 1000.0, type: "Deposit", info: "Payroll", date: "2023-04-30" },
   // Add more transactions as needed...
@@ -36,7 +39,7 @@ export default function Component() {
   const [hoveredAccount, setHoveredAccount] = useState<string | null>(null);
 
   // Balance display
-  const [accountBalance, setAccountBalace] = useState<number>(accountDetails.balance);
+  const [accountBalance, setAccountBalance] = useState<number>(accountDetails.balance); // BACKEND: Initial value here should be obtained from database
 
   // Show confirmation window
   const [showConfirmationPopup, setShowConfirmationPopup] = useState(false);
@@ -46,16 +49,18 @@ export default function Component() {
   const [payAmount, setPayAmount] = useState<string>("");
 
   /*  
+      FRONTEND: 
+      
       General function to handle number-only text input 
-      * Prereqs: setVal is a useState<string> function that has already been defined above
-      * Example usage: 
-                <input 
-                  type='text' 
-                  placeholder='Enter amount'
-                  value={amount}
-                  onChange={(e) => handleNumInputChange(e, setAmount)}
-                  required
-                />
+        * Prereqs: setVal is a useState<string> function that has already been defined above
+        * Example usage: 
+                  <input 
+                    type='text' 
+                    placeholder='Enter amount'
+                    value={amount}
+                    onChange={(e) => handleNumInputChange(e, setAmount)}
+                    required
+                  />
   */
   const handleNumInputChange = (e: React.ChangeEvent<HTMLInputElement>, setVal: (val: string) => void) => {
 
@@ -67,24 +72,44 @@ export default function Component() {
   };
 
   /* 
-    BACKEND:  Function to handle money being subtracted from the current account.
-              Temporarily uses a useState function to update displayed account 
-              balance. Will need to replace with function that modifies value in 
-              the database.
+    BACKEND:
+
+      updateAccountBalance: Takes calculated new account balance and should update
+                            the account balance in the database accordingly
+      
+      addNewTransaction:    Takes in a transaction, t, and pushes the information
+                            to the transaction portion of the database. See
+                            transaction type info in types.tsx for specifics on
+                            what data the type holds.
+
   */
+  const updateAccountBalance = (new_balance: number) => {
+
+    /* Add function here to update balance on backend */
+    setAccountBalance(new_balance); // Update account balance on frontend
+
+  }
+  const addNewTransaction = (t: transaction) => {
+
+    /* Add function here to add a transaction to the database */
+    transactions.push(t); // *temporary* Updates temp transaction list on frontend
+
+  }
+
   const handlePayment = (phone: string, amount: string) => {
 
     setShowConfirmationPopup(false);
-    setAccountBalace(accountBalance - Number(amount)); // Needs to be updated to work with database
+    updateAccountBalance(accountBalance - Number(amount));
 
     const date = new Date();
-    transactions.push({
+    const payment: transaction = {
       id: 0,
       amount: -Number(amount),
       type: 'Payment',
       info: `Payment to ${phone}`,
       date: `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`
-    })
+    }
+    addNewTransaction(payment);
 
   }
 
