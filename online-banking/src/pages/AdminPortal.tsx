@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Search } from 'lucide-react';
+import { Search, LogOut } from 'lucide-react';
 import '../styles.css';
 import './AdminPortal.css';
 import ReqTextInput from '../components/ReqTextInput';
@@ -8,6 +8,7 @@ import ListCard from '../components/ListCard';
 import ScrollBox from '../components/ScrollBox';
 import PageButtons from '../components/PageButtons';
 import { setTextRange } from 'typescript';
+import { useNavigate } from 'react-router-dom';
 
 // Basic user type definition. Will add more fields later (contact info, ssn, etc.)
 type user = {id: number, firstName: string, lastName: string};
@@ -79,6 +80,15 @@ function AdminPortal() {
     const tabsRef = useRef<(HTMLButtonElement | null)[]>([]);
     const [tabUnderlineWidth, setTabUnderlineWidth] = useState(0);
     const [tabUnderlineLeft, setTabUnderlineLeft] = useState(0);
+
+    // HARDCODED DATA
+    // BACKEND WILL IMPORT THIS
+    const adminName = "John Doe";
+
+    const navigate = useNavigate();
+    const handleClick = () => {
+        navigate('/Homepage');
+    };
 
     useEffect(() => {
         const updateUnderlinePosition = () => {
@@ -161,7 +171,12 @@ function AdminPortal() {
 
     return(
         <>
-            <h1 className='section-header'>Admin Portal | Welcome, (Admin)</h1> {/* Will need to get name of current admin */}
+            <div className='header-wrapper'>
+                <h1 className='section-header'>Admin Portal | Welcome, {adminName}</h1> {/* Will need to get name of current admin */}
+                <button className='logout-button' onClick={handleClick}>
+                    <LogOut/> Logout
+                </button>
+            </div>
             <div className='admin-nav'>  {/* Admin navigation tabs | 0: User database, 1: Add new employwee, 2: Manage Admin Access*/}
 
                 <span
