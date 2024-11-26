@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 // the cmd line to install this is 
 // npm install lucide-react
 // This package is for the icons used in this page
-import { CornerUpLeft, X } from "lucide-react"; 
+import { LogOut, X } from "lucide-react"; 
 import { useNavigate } from "react-router-dom";
 
 // This will be used as a reference to associate the account type and the balance associated with it
@@ -667,7 +667,7 @@ const AtmFeature = () => {
             transform: isLogoutActive ? 'scale(0.9)' : 'scale(1)'
             }}>
 
-          <CornerUpLeft style={{ marginRight: '0.5rem' }} /> Logout
+          <LogOut style={{ marginRight: '0.5rem' }} /> Logout
         </button>
       </div>
 
