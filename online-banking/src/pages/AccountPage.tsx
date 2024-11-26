@@ -72,14 +72,23 @@ export default function Component() {
               balance. Will need to replace with function that modifies value in 
               the database.
   */
-  const handlePayment = (amount: string) => {
+  const handlePayment = (phone: string, amount: string) => {
 
     setShowConfirmationPopup(false);
     setAccountBalace(accountBalance - Number(amount)); // Needs to be updated to work with database
 
+    const date = new Date();
+    transactions.push({
+      id: 0,
+      amount: -Number(amount),
+      type: 'Payment',
+      info: `Payment to ${phone}`,
+      date: `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`
+    })
+
   }
 
-  const renderConfimationPopup = (amount: string) => {
+  const renderConfimationPopup = (phone: string, amount: string) => {
 
 
     return (
@@ -89,13 +98,13 @@ export default function Component() {
           <h2>Are you sure?</h2>
           <p>
              Action cannot be undone once 'Confirm' is clicked. Please verify
-             that the recipient phone number and amount entered is correct. Bank of
-             Banks is not liable for any incorrect payments made by its
-             users. For more information please see our Terms and Conditions.
+             that the information entered is correct. Bank of Banks is not 
+             liable for any errors made by its users. For more information please see our Terms and Conditions.
+
           </p>
           <div>
             <button onClick={() => setShowConfirmationPopup(false)}>Cancel</button>
-            <button onClick={() => handlePayment(amount)}>Confirm</button>
+            <button onClick={() => handlePayment(phone, amount)}>Confirm</button>
           </div>
         </div>
       </div>
@@ -256,7 +265,7 @@ export default function Component() {
                 />
                 <button type='submit'>Send</button>
               </form>
-              {showConfirmationPopup && renderConfimationPopup(payAmount)}
+              {showConfirmationPopup && renderConfimationPopup(phoneNumber, payAmount)}
             </div>
           )}
           {activeTab === "deposit" && (
