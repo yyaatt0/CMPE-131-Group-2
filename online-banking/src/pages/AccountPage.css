@@ -136,3 +136,66 @@
 .transaction-amount.negative {
   color: red;
 }
+
+/* Pay tab styles */
+
+.pay-content h2 {
+
+  place-self: center;
+
+}
+
+.pay-form {
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  margin: 25px 0 50px 0;
+
+}
+
+.pay-form input[type=text] {
+
+  background-color: #f5f5f5;
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 0 3px #666;
+  outline: none;
+
+  font-size: 1rem;
+
+  padding: 10px;
+  margin: 10px;
+
+  width: 25%;
+  height: 30px;
+
+}
+
+.pay-form input[type=text]:focus {
+
+  border: none;
+  box-shadow: 0 0 5px rgb(88, 128, 189);
+
+}
+
+.pay-form button {
+
+  background-color: #003459;
+  border: none;
+  border-radius: 10px;
+  box-shadow: none;
+
+  margin: 10px;
+
+  width: 25%;
+  height: 40px;
+
+}
+
+.pay-form button:hover {
+
+  background-color: #025591;
+
+}

@@ -35,6 +35,29 @@ export default function Component() {
   const [selectedAccount, setSelectedAccount] = useState<string>("Savings Account"); // BACKEND: Change to whatever first account pops up
   const [hoveredAccount, setHoveredAccount] = useState<string | null>(null);
 
+  // For pay tab
+  const [phoneNumber, setPhoneNumber] = useState<string>("");
+  const [payAmount, setPayAmount] = useState<string>("");
+
+  /*  
+      General function to handle number-only text input 
+      * Prereqs: setVal is a useState<string> function that has already been defined above
+      * Example usage: 
+                <input 
+                  type='text' 
+                  placeholder='Enter amount'
+                  value={amount}
+                  onChange={(e) => handleNumInputChange(e, setAmount)}
+                  required
+                />
+  */
+  const handleNumInputChange = (e: React.ChangeEvent<HTMLInputElement>, setVal: (val: string) => void) => {
+    const value = e.target.value;
+    if (/^\d*\.?\d{0,2}$/.test(value) || value === '') {
+      setVal(value);
+    }
+  };
+
   return (
     <div className="app-container">
 
@@ -163,13 +186,23 @@ export default function Component() {
             </div>
           )}
           {activeTab === "pay" && (
-            <div className="tab-content">
+            <div className="pay-content">
               <h2>Pay Someone</h2>
-              <form>
-                <label>Recipient</label>
-                <input type='text'/>
-                <label>Amount</label>
-                <input type='text'/>
+              <form className="pay-form">
+                <input 
+                  type='text' 
+                  placeholder='Phone Number'
+                  value={phoneNumber}
+                  onChange={(e) => handleNumInputChange(e, setPhoneNumber)}
+                  required
+                />
+                <input 
+                  type='text' 
+                  placeholder='Amount' 
+                  value={payAmount}
+                  onChange={(e) => handleNumInputChange(e, setPayAmount)}
+                  required
+                />
                 <button type='submit'>Send</button>
               </form>
             </div>
