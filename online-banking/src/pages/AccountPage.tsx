@@ -35,6 +35,12 @@ export default function Component() {
   const [selectedAccount, setSelectedAccount] = useState<string>("Savings Account"); // BACKEND: Change to whatever first account pops up
   const [hoveredAccount, setHoveredAccount] = useState<string | null>(null);
 
+  // Balance display
+  const [accountBalance, setAccountBalace] = useState<number>(accountDetails.balance);
+
+  // Show confirmation window
+  const [showConfirmationPopup, setShowConfirmationPopup] = useState(false);
+
   // For pay tab
   const [phoneNumber, setPhoneNumber] = useState<string>("");
   const [payAmount, setPayAmount] = useState<string>("");
@@ -52,11 +58,50 @@ export default function Component() {
                 />
   */
   const handleNumInputChange = (e: React.ChangeEvent<HTMLInputElement>, setVal: (val: string) => void) => {
+
     const value = e.target.value;
     if (/^\d*\.?\d{0,2}$/.test(value) || value === '') {
       setVal(value);
     }
+
   };
+
+  /* 
+    BACKEND:  Function to handle money being subtracted from the current account.
+              Temporarily uses a useState function to update displayed account 
+              balance. Will need to replace with function that modifies value in 
+              the database.
+  */
+  const handlePayment = (amount: string) => {
+
+    setShowConfirmationPopup(false);
+    setAccountBalace(accountBalance - Number(amount)); // Needs to be updated to work with database
+
+  }
+
+  const renderConfimationPopup = (amount: string) => {
+
+
+    return (
+
+      <div className='background-dim'>
+        <div className='confirmation-popup'>
+          <h2>Are you sure?</h2>
+          <p>
+             Action cannot be undone once 'Confirm' is clicked. Please verify
+             that the recipient phone number and amount entered is correct. Bank of
+             Banks is not liable for any incorrect payments made by its
+             users. For more information please see our Terms and Conditions.
+          </p>
+          <div>
+            <button onClick={() => setShowConfirmationPopup(false)}>Cancel</button>
+            <button onClick={() => handlePayment(amount)}>Confirm</button>
+          </div>
+        </div>
+      </div>
+
+    );
+  }
 
   return (
     <div className="app-container">
@@ -121,7 +166,7 @@ export default function Component() {
             {/* This portion here the variables are out of place since the first portion was hardcoded */}
             {selectedAccount} - {accountDetails.accountNumber}
           </p>
-          <div className="balance">${accountDetails.balance.toFixed(2)}</div>
+          <div className="balance">${accountBalance.toFixed(2)}</div>
           <p className="balance-label">Available Balance</p>
         </div>
 
@@ -188,7 +233,13 @@ export default function Component() {
           {activeTab === "pay" && (
             <div className="pay-content">
               <h2>Pay Someone</h2>
-              <form className="pay-form">
+              <form 
+                className="pay-form" 
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  setShowConfirmationPopup(true);
+                }}
+              >
                 <input 
                   type='text' 
                   placeholder='Phone Number'
@@ -205,6 +256,7 @@ export default function Component() {
                 />
                 <button type='submit'>Send</button>
               </form>
+              {showConfirmationPopup && renderConfimationPopup(payAmount)}
             </div>
           )}
           {activeTab === "deposit" && (
