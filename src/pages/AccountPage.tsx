@@ -125,7 +125,14 @@ export default function Component() {
         alert("Please upload both front and back images of the check.");
         return;
 }
-      
+      // Confirmation dialog
+  const confirmDeposit = window.confirm(
+    `You are about to deposit $${amount.toFixed(2)} into your account. Do you wish to proceed?`
+  );
+  if (!confirmDeposit) {
+    alert("Deposit canceled.");
+    return;
+  }
     
       
     // Update balance
