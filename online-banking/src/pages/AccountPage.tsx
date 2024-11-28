@@ -110,6 +110,7 @@ export default function Component() {
       date: `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`
     }
     addNewTransaction(payment);
+    setActiveTab('transactions');
 
   }
 
