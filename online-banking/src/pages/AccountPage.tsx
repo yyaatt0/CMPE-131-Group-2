@@ -1,7 +1,9 @@
+import { transaction } from "../types";
+
 import { useState } from "react";
 import { FileText, Send, DollarSign, PiggyBank, CornerUpLeft, User} from "lucide-react";
+
 import "./AccountPage.css"; 
-import NavBar from "../components/NavBar";
 
 // Mock data for account details and transactions
 const accountDetails = {
@@ -10,7 +12,8 @@ const accountDetails = {
   accountNumber: "**** **** **** 1234",
 };
 
-const transactions = [
+// BACKEND: This is a temporary hardcoded transaction list. Needs to be updated to grab list from database.
+const transactions: transaction[] = [
   { id: 1, amount: -50.0, type: "Purchase", info: "Grocery Store", date: "2023-05-01" },
   { id: 2, amount: 1000.0, type: "Deposit", info: "Payroll", date: "2023-04-30" },
   // Add more transactions as needed...
@@ -34,6 +37,112 @@ export default function Component() {
   // For the side Nav bar to select accounts
   const [selectedAccount, setSelectedAccount] = useState<string>("Savings Account"); // BACKEND: Change to whatever first account pops up
   const [hoveredAccount, setHoveredAccount] = useState<string | null>(null);
+
+  // Balance display
+  const [accountBalance, setAccountBalance] = useState<number>(accountDetails.balance); // BACKEND: Initial value here should be obtained from database
+
+  // Show confirmation window
+  const [showConfirmationPopup, setShowConfirmationPopup] = useState(false);
+
+  // For pay tab
+  const [phoneNumber, setPhoneNumber] = useState<string>("");
+  const [payAmount, setPayAmount] = useState<string>("");
+
+  /*  
+      FRONTEND: 
+      
+      General function to handle number-only text input 
+        * Prereqs: setVal is a useState<string> function that has already been defined above
+        * Example usage: 
+                  <input 
+                    type='text' 
+                    placeholder='Enter amount'
+                    value={amount}
+                    onChange={(e) => handleNumInputChange(e, setAmount)}
+                    required
+                  />
+  */
+  const handleNumInputChange = (e: React.ChangeEvent<HTMLInputElement>, setVal: (val: string) => void) => {
+
+    const value = e.target.value;
+    if (/^\d*\.?\d{0,2}$/.test(value) || value === '') {
+      setVal(value);
+    }
+
+  };
+
+  /* 
+    BACKEND:
+
+      updateAccountBalance: Takes calculated new account balance and should update
+                            the account balance in the database accordingly
+      
+      addNewTransaction:    Takes in a transaction, t, and pushes the information
+                            to the transaction portion of the database. See
+                            transaction type info in types.tsx for specifics on
+                            what data the type holds.
+
+  */
+  const updateAccountBalance = (new_balance: number) => {
+
+    /* Add function here to update balance on backend */
+    setAccountBalance(new_balance); // Update account balance on frontend
+
+  }
+  const addNewTransaction = (t: transaction) => {
+
+    /* Add function here to add a transaction to the database */
+    transactions.push(t); // *temporary* Updates temp transaction list on frontend
+
+  }
+
+  const handlePayment = (phone: string, amount: string) => {
+
+    setShowConfirmationPopup(false);
+    updateAccountBalance(accountBalance - Number(amount));
+
+    const date = new Date();
+    const payment: transaction = {
+      id: 0,
+      amount: -Number(amount),
+      type: 'Payment',
+      info: `Payment to ${phone}`,
+      date: `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`
+    }
+    addNewTransaction(payment);
+
+  }
+
+  /* 
+    FRONTEND:
+
+      General function for rendering a confirmation popup.
+      Reqs: handleConfirm is a predefined function that returns void
+      Ex usage:
+        renderConfirmationPopup(() => handlePayment(phoneNumber, payAmount));
+        renderConfirmationPopup(() => doSomething());
+
+  */
+  const renderConfirmationPopup = (handleConfirm: (params?: any) => void) => {
+    return (
+
+      <div className='background-dim'>
+        <div className='confirmation-popup'>
+          <h2>Are you sure?</h2>
+          <p>
+             Action cannot be undone once 'Confirm' is clicked. Please verify
+             that the information entered is correct. Bank of Banks is not 
+             liable for any errors made by its users. For more information please see our Terms and Conditions.
+          </p>
+          <div>
+            <button onClick={() => setShowConfirmationPopup(false)}>Cancel</button>
+            <button onClick={() => handleConfirm()}>Confirm</button>
+          </div>
+        </div>
+      </div>
+
+    );
+  }
 
   return (
     <div className="app-container">
@@ -98,7 +207,7 @@ export default function Component() {
             {/* This portion here the variables are out of place since the first portion was hardcoded */}
             {selectedAccount} - {accountDetails.accountNumber}
           </p>
-          <div className="balance">${accountDetails.balance.toFixed(2)}</div>
+          <div className="balance">${accountBalance.toFixed(2)}</div>
           <p className="balance-label">Available Balance</p>
         </div>
 
@@ -163,9 +272,32 @@ export default function Component() {
             </div>
           )}
           {activeTab === "pay" && (
-            <div className="tab-content">
+            <div className="pay-content">
               <h2>Pay Someone</h2>
-              <p>E-pay functionality would be implemented here.</p>
+              <form 
+                className="pay-form" 
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  setShowConfirmationPopup(true);
+                }}
+              >
+                <input 
+                  type='text' 
+                  placeholder='Phone Number'
+                  value={phoneNumber}
+                  onChange={(e) => handleNumInputChange(e, setPhoneNumber)}
+                  required
+                />
+                <input 
+                  type='text' 
+                  placeholder='Amount' 
+                  value={payAmount}
+                  onChange={(e) => handleNumInputChange(e, setPayAmount)}
+                  required
+                />
+                <button type='submit'>Send</button>
+              </form>
+              {showConfirmationPopup && renderConfirmationPopup(() => handlePayment(phoneNumber, payAmount))}
             </div>
           )}
           {activeTab === "deposit" && (
