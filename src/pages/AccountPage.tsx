@@ -55,7 +55,7 @@ export default function Component() {
 
   const [amount, setAmount] = useState<string>("");
   const [error, setError] = useState<string>("");
-  const [image, setImage] = useState<string | null>(null); // Hình ảnh
+  const [image, setImage] = useState<string | null>(null); 
 
 
  // Reset deposit data when tab changes to something other than "deposit"
