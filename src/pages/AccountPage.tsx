@@ -127,7 +127,7 @@ export default function Component() {
 }
       // Confirmation dialog
   const confirmDeposit = window.confirm(
-    `You are about to deposit $${amount.toFixed(2)} into your account. Do you wish to proceed?`
+    `You are about to deposit $${amount.toFixed(2)} into your account. Do you want to continue?`
   );
   if (!confirmDeposit) {
     alert("Deposit canceled.");
