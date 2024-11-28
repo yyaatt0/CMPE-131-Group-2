@@ -25,7 +25,7 @@ const accounts: string[] = ["Savings Account", "Checking Account"];
 // HARDCODED DATA: User Name
 const name = "John Doe";
 
-export default function AccountPage() {
+export default function Component() {
   const [activeTab, setActiveTab] = useState("transactions");
 
     // This is for the hover and active portion of the logout button
