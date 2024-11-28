@@ -117,11 +117,13 @@ export default function Component() {
     FRONTEND:
 
       General function for rendering a confirmation popup.
-      Reqs: handleConfirm is a function that has at least 1 string argument.
+      Reqs: handleConfirm is a predefined function that returns void
       Ex usage:
-        renderConfimationPopup(() => handlePayment(phoneNumber, payAmount))
+        renderConfirmationPopup(() => handlePayment(phoneNumber, payAmount));
+        renderConfirmationPopup(() => doSomething());
+
   */
-  const renderConfimationPopup = (handleConfirm: (vals?: string[]) => void) => {
+  const renderConfirmationPopup = (handleConfirm: (params?: any) => void) => {
     return (
 
       <div className='background-dim'>
@@ -295,7 +297,7 @@ export default function Component() {
                 />
                 <button type='submit'>Send</button>
               </form>
-              {showConfirmationPopup && renderConfimationPopup(() => handlePayment(phoneNumber, payAmount))}
+              {showConfirmationPopup && renderConfirmationPopup(() => handlePayment(phoneNumber, payAmount))}
             </div>
           )}
           {activeTab === "deposit" && (
