@@ -113,9 +113,15 @@ export default function Component() {
 
   }
 
-  const renderConfimationPopup = (phone: string, amount: string) => {
+  /* 
+    FRONTEND:
 
-
+      General function for rendering a confirmation popup.
+      Reqs: handleConfirm is a function that has at least 1 string argument.
+      Ex usage:
+        renderConfimationPopup(() => handlePayment(phoneNumber, payAmount))
+  */
+  const renderConfimationPopup = (handleConfirm: (vals?: string[]) => void) => {
     return (
 
       <div className='background-dim'>
@@ -125,11 +131,10 @@ export default function Component() {
              Action cannot be undone once 'Confirm' is clicked. Please verify
              that the information entered is correct. Bank of Banks is not 
              liable for any errors made by its users. For more information please see our Terms and Conditions.
-
           </p>
           <div>
             <button onClick={() => setShowConfirmationPopup(false)}>Cancel</button>
-            <button onClick={() => handlePayment(phone, amount)}>Confirm</button>
+            <button onClick={() => handleConfirm()}>Confirm</button>
           </div>
         </div>
       </div>
@@ -290,7 +295,7 @@ export default function Component() {
                 />
                 <button type='submit'>Send</button>
               </form>
-              {showConfirmationPopup && renderConfimationPopup(phoneNumber, payAmount)}
+              {showConfirmationPopup && renderConfimationPopup(() => handlePayment(phoneNumber, payAmount))}
             </div>
           )}
           {activeTab === "deposit" && (
