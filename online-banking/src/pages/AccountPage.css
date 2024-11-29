@@ -152,7 +152,7 @@
 
 }
 
-.confirmation-popup {
+.popup {
 
   background-color: white;
   border-radius: 25px;
@@ -175,7 +175,7 @@
 
 }
 
-.confirmation-popup * {
+.popup * {
 
   text-align: center;
 
@@ -219,9 +219,20 @@
 
   margin: 25px 0 50px 0;
 
+  --PhoneInputCountry-paddingRight: 10px;
+  --PhoneInputCountrySelect-marginRight: 0;
+
+  --PhoneInputCountryFlag-height: calc(.75vw + 1.5vh);
+
 }
 
-.pay-form input[type=text] {
+.PhoneSection {
+
+  transform: translate(-1.375vw, 0);
+
+}
+
+.pay-form input[type=text], .PhoneInput input {
 
   background-color: #f5f5f5;
   border: none;
@@ -234,7 +245,7 @@
   padding: 10px;
   margin: 10px;
 
-  width: 25%;
+  width: 15vw;
   height: 30px;
 
 }

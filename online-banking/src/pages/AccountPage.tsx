@@ -3,7 +3,13 @@ import { transaction } from "../types";
 import { useState } from "react";
 import { FileText, Send, DollarSign, PiggyBank, CornerUpLeft, User} from "lucide-react";
 
+// npm install react-phone-number-input --save (Make sure to install inside online-banking)
+import PhoneInput, { formatPhoneNumber, isPossiblePhoneNumber, isValidPhoneNumber, type Value } from "react-phone-number-input";
+import 'react-phone-number-input/style.css'
+
+
 import "./AccountPage.css"; 
+import PopupBox from "../components/PopupBox";
 
 // Mock data for account details and transactions
 const accountDetails = {
@@ -42,11 +48,19 @@ export default function Component() {
   const [accountBalance, setAccountBalance] = useState<number>(accountDetails.balance); // BACKEND: Initial value here should be obtained from database
 
   // Show confirmation window
-  const [showConfirmationPopup, setShowConfirmationPopup] = useState(false);
+  const [activePopup, setActivePopup] = useState('');
 
   // For pay tab
-  const [phoneNumber, setPhoneNumber] = useState<string>("");
+  const [phoneNumber, setPhoneNumber] = useState<Value>("" as Value);
   const [payAmount, setPayAmount] = useState<string>("");
+
+  const handlePhoneNumber = (num: Value | undefined) => {
+    
+    if(num){
+      setPhoneNumber(num);
+    }
+
+  }
 
   /*  
       FRONTEND: 
@@ -98,7 +112,12 @@ export default function Component() {
 
   const handlePayment = (phone: string, amount: string) => {
 
-    setShowConfirmationPopup(false);
+    if(!isValidPhoneNumber(phone)){
+      setActivePopup('invalid-number');
+      return;
+    }
+
+    setActivePopup('');
     updateAccountBalance(accountBalance - Number(amount));
 
     const date = new Date();
@@ -110,6 +129,31 @@ export default function Component() {
       date: `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`
     }
     addNewTransaction(payment);
+    setActiveTab('transactions');
+
+  }
+
+  /* 
+    FRONTEND:
+
+      General function for rendering a confirmation popup.
+      Reqs: String is any error message you wish to display:
+      Ex usage:
+        renderErrorPopup('Invalid Input!');
+  */
+  const renderErrorPopup = (message: string) => {
+
+    return (
+
+      <PopupBox>
+        <h2>Error</h2>
+        <p>{message}</p>
+        <div>
+          <button onClick={() => setActivePopup('')}>Ok</button>
+        </div>
+      </PopupBox>
+
+    );
 
   }
 
@@ -126,8 +170,7 @@ export default function Component() {
   const renderConfirmationPopup = (handleConfirm: (params?: any) => void) => {
     return (
 
-      <div className='background-dim'>
-        <div className='confirmation-popup'>
+      <PopupBox>
           <h2>Are you sure?</h2>
           <p>
              Action cannot be undone once 'Confirm' is clicked. Please verify
@@ -135,11 +178,10 @@ export default function Component() {
              liable for any errors made by its users. For more information please see our Terms and Conditions.
           </p>
           <div>
-            <button onClick={() => setShowConfirmationPopup(false)}>Cancel</button>
+            <button onClick={() => setActivePopup('')}>Cancel</button>
             <button onClick={() => handleConfirm()}>Confirm</button>
           </div>
-        </div>
-      </div>
+      </PopupBox>
 
     );
   }
@@ -278,15 +320,17 @@ export default function Component() {
                 className="pay-form" 
                 onSubmit={(e) => {
                   e.preventDefault();
-                  setShowConfirmationPopup(true);
+                  setActivePopup('confirmation');
                 }}
               >
-                <input 
+                <PhoneInput 
                   type='text' 
                   placeholder='Phone Number'
+                  defaultCountry="US"
                   value={phoneNumber}
-                  onChange={(e) => handleNumInputChange(e, setPhoneNumber)}
+                  onChange={(e) => handlePhoneNumber(e)}
                   required
+                  className="PhoneSection"
                 />
                 <input 
                   type='text' 
@@ -297,7 +341,8 @@ export default function Component() {
                 />
                 <button type='submit'>Send</button>
               </form>
-              {showConfirmationPopup && renderConfirmationPopup(() => handlePayment(phoneNumber, payAmount))}
+              {activePopup === 'confirmation' && renderConfirmationPopup(() => handlePayment(String(phoneNumber), payAmount))}
+              {activePopup === 'invalid-number' && renderErrorPopup('Invalid phone number. Please try again.')}
             </div>
           )}
           {activeTab === "deposit" && (
