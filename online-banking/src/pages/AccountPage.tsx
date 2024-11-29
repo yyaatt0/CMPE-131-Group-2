@@ -2,6 +2,7 @@ import { transaction } from "../types";
 import { payment_confirm, lockout_warning, transaction_locked, pay_limit_reached, balance_warn } from "../textdescriptions";
 
 import { useState } from "react";
+import { useNavigate } from 'react-router-dom';
 import { FileText, Send, DollarSign, PiggyBank, CornerUpLeft, User} from "lucide-react";
 
 // npm install react-phone-number-input --save (Make sure to install inside online-banking)
@@ -42,6 +43,7 @@ const accounts: string[] = ["Savings Account", "Checking Account"];
 
 export default function Component() {
   const [activeTab, setActiveTab] = useState("transactions");
+  const [activeNavTab, setActiveNavTab] = useState("accounts");
 
   // This is for the hover and active portion of the logout button
   const [isLogoutHovered, setLogoutIsHovered] = useState(false);
@@ -205,7 +207,10 @@ export default function Component() {
 
     );
   }
-
+  const navigate = useNavigate();
+  const handleClick = () => {
+    navigate('/Homepage');
+  };
   return (
     <div className="app-container">
 
@@ -225,7 +230,7 @@ export default function Component() {
             {accounts.map((account) => (
               <button
                 key={account}
-                onClick={() => setSelectedAccount(account)}
+                onClick={() => {setSelectedAccount(account); setActiveNavTab("accounts")}}
                 onMouseEnter={() => setHoveredAccount(account)}
                 onMouseLeave={() => setHoveredAccount(null)}
                 style={{background: 'transparent', border: 'none', color: selectedAccount === account ? '#003459' : 'white',textAlign: 'left', padding: '1rem',fontSize: '1.2rem',cursor: 'pointer',borderRadius: '5px',transition: 'background-color 0.4s ease, color 0.4s ease',backgroundColor:
@@ -243,13 +248,14 @@ export default function Component() {
 
         <div className="button-wrapper">
           {/* Settings button */}
-          <button className="user-button">
+          <button className="user-button" onClick={() => setActiveNavTab("account_settings")}>
             <User style={{ marginRight: '0.5rem' }}/>
             Account
           </button>
 
           {/* Logout button portion */}
           <button 
+            onClick={handleClick}
             onMouseEnter={() => setLogoutIsHovered(true)}
             onMouseLeave={() => setLogoutIsHovered(false)}
             onMouseDown={() => setLogoutIsActive(true)}
@@ -260,80 +266,83 @@ export default function Component() {
         </div>
       </div>
       
+      {/* This seperate div is used to seperate the nav side bar stuff */}
       <div className="second-app-container">
-        {/* Account Overview */}
-        <div className="card">
-          <h1 className="card-title">Account Overview</h1>
-          <p className="card-description">
+        {activeNavTab === "accounts" && (
+          <>
+          {/* Account Overview */}
+          <div className="card">
+            <h1 className="card-title">Account Overview</h1>
+            <p className="card-description">
 
-            {/* This portion here the variables are out of place since the first portion was hardcoded */}
-            {selectedAccount} - {accountDetails.accountNumber}
-          </p>
-          <div className="balance">${accountBalance.toFixed(2)}</div>
-          <p className="balance-label">Available Balance</p>
-        </div>
+              {/* This portion here the variables are out of place since the first portion was hardcoded */}
+              {selectedAccount} - {accountDetails.accountNumber}
+            </p>
+            <div className="balance">${accountDetails.balance.toFixed(2)}</div>
+            <p className="balance-label">Available Balance</p>
+          </div>
 
-        {/* Navigation Tabs */}
-        <div className="tabs-container">
-          <button
-            className={`tab-button ${activeTab === "transactions" ? "active" : ""}`}
-            onClick={() => setActiveTab("transactions")}
-          >
-            <FileText className="icon" />
-            Transactions
-          </button>
-          <button
-            className={`tab-button ${activeTab === "transfer" ? "active" : ""}`}
-            onClick={() => setActiveTab("transfer")}
-          >
-            <Send className="icon" />
-            Transfer
-          </button>
-          <button
-            className={`tab-button ${activeTab === "pay" ? "active" : ""}`}
-            onClick={() => setActiveTab("pay")}
-          >
-            <DollarSign className="icon" />
-            Pay
-          </button>
-          <button
-            className={`tab-button ${activeTab === "deposit" ? "active" : ""}`}
-            onClick={() => setActiveTab("deposit")}
-          >
-            <PiggyBank className="icon" />
-            Deposit
-          </button>
-        </div>
+          {/* Navigation Tabs */}
+          <div className="tabs-container">
+            <button
+              className={`tab-button ${activeTab === "transactions" ? "active" : ""}`}
+              onClick={() => setActiveTab("transactions")}
+            >
+              <FileText className="icon" />
+              Transactions
+            </button>
+            <button
+              className={`tab-button ${activeTab === "transfer" ? "active" : ""}`}
+              onClick={() => setActiveTab("transfer")}
+            >
+              <Send className="icon" />
+              Transfer
+            </button>
+            <button
+              className={`tab-button ${activeTab === "pay" ? "active" : ""}`}
+              onClick={() => setActiveTab("pay")}
+            >
+              <DollarSign className="icon" />
+              Pay
+            </button>
+            <button
+              className={`tab-button ${activeTab === "deposit" ? "active" : ""}`}
+              onClick={() => setActiveTab("deposit")}
+            >
+              <PiggyBank className="icon" />
+              Deposit
+            </button>
+          </div>
 
-        {/* Content Area */}
-        <div className="content-area">
-          {activeTab === "transactions" && (
-            <div className="transactions">
-              {transactions.map((transaction) => (
-                <div className="transaction-card" key={transaction.id}>
-                  <div>
-                    <div className="transaction-type">{transaction.type}</div>
-                    <div className="transaction-info">{transaction.info}</div>
-                    <div className="transaction-date">{transaction.date}</div>
+          {/* Content Area */}
+          <div className="content-area">
+            {activeTab === "transactions" && (
+              <div className="transactions">
+                {transactions.map((transaction) => (
+                  <div className="transaction-card" key={transaction.id}>
+                    <div>
+                      <div className="transaction-type">{transaction.type}</div>
+                      <div className="transaction-info">{transaction.info}</div>
+                      <div className="transaction-date">{transaction.date}</div>
+                    </div>
+                    <div
+                      className={`transaction-amount ${
+                        transaction.amount >= 0 ? "positive" : "negative"
+                      }`}
+                    >
+                      ${Math.abs(transaction.amount).toFixed(2)}
+                    </div>
                   </div>
-                  <div
-                    className={`transaction-amount ${
-                      transaction.amount >= 0 ? "positive" : "negative"
-                    }`}
-                  >
-                    ${Math.abs(transaction.amount).toFixed(2)}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-          {activeTab === "transfer" && (
-            <div className="tab-content">
-              <h2>Transfer Funds</h2>
-              <p>Transfer functionality would be implemented here.</p>
-            </div>
-          )}
-          {activeTab === "pay" && (
+                ))}
+              </div>
+            )}
+            {activeTab === "transfer" && (
+              <div className="tab-content">
+                <h2>Transfer Funds</h2>
+                <p>Transfer functionality would be implemented here.</p>
+              </div>
+            )}
+            {activeTab === "pay" && (
             <div className="pay-content">
               <h2>Make a Payment</h2>
               <form 
@@ -396,13 +405,26 @@ export default function Component() {
               }
             </div>
           )}
-          {activeTab === "deposit" && (
-            <div className="tab-content">
-              <h2>Deposit Check</h2>
-              <p>Online check deposit functionality would be implemented here.</p>
-            </div>
-          )}
-        </div>
+            {activeTab === "deposit" && (
+              <div className="tab-content">
+                <h2>Deposit Check</h2>
+                <p>Online check deposit functionality would be implemented here.</p>
+              </div>
+            )}
+          </div>
+          </>
+        )}
+        {activeNavTab === "account_settings" && (
+          <>
+            <h1>Account Settings</h1>
+
+
+            {/* TODO */}
+
+
+
+          </>
+        )}
       </div>
     </div>
   );
