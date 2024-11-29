@@ -1,10 +1,11 @@
 import { transaction } from "../types";
+import { payment_confirm, balance_warn, transaction_locked } from "../textdescriptions";
 
 import { useState } from "react";
 import { FileText, Send, DollarSign, PiggyBank, CornerUpLeft, User} from "lucide-react";
 
 // npm install react-phone-number-input --save (Make sure to install inside online-banking)
-import PhoneInput, { formatPhoneNumber, isPossiblePhoneNumber, isValidPhoneNumber, type Value } from "react-phone-number-input";
+import PhoneInput, { isPossiblePhoneNumber, type Value } from "react-phone-number-input";
 import 'react-phone-number-input/style.css'
 
 
@@ -47,12 +48,13 @@ export default function Component() {
   // Balance display
   const [accountBalance, setAccountBalance] = useState<number>(accountDetails.balance); // BACKEND: Initial value here should be obtained from database
 
-  // Show confirmation window
+  // Set popup windows
   const [activePopup, setActivePopup] = useState('');
 
   // For pay tab
   const [phoneNumber, setPhoneNumber] = useState<Value>("" as Value);
   const [payAmount, setPayAmount] = useState<string>("");
+  const [transactionLock, setTransactionLock] = useState(accountBalance <= 0);
 
   const handlePhoneNumber = (num: Value | undefined) => {
     
@@ -110,20 +112,30 @@ export default function Component() {
 
   }
 
-  const handlePayment = (phone: string, amount: string) => {
+  const validateBalance = (amount: number) => {
 
-    if(!isValidPhoneNumber(phone)){
+    if(accountBalance - amount <= 0){
+      setActivePopup('balance-warn');
+    }
+    else{
+      setActivePopup('confirmation');
+    }
+  }
+
+  const handlePayment = (phone: string, amount: number) => {
+
+    if(!isPossiblePhoneNumber(phone)){
       setActivePopup('invalid-number');
       return;
     }
 
     setActivePopup('');
-    updateAccountBalance(accountBalance - Number(amount));
+    updateAccountBalance(accountBalance - amount);
 
     const date = new Date();
     const payment: transaction = {
       id: 0,
-      amount: -Number(amount),
+      amount: -amount,
       type: 'Payment',
       info: `Payment to ${phone}`,
       date: `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`
@@ -136,7 +148,7 @@ export default function Component() {
   /* 
     FRONTEND:
 
-      General function for rendering a confirmation popup.
+      General function for rendering an error popup.
       Reqs: String is any error message you wish to display:
       Ex usage:
         renderErrorPopup('Invalid Input!');
@@ -167,16 +179,12 @@ export default function Component() {
         renderConfirmationPopup(() => doSomething());
 
   */
-  const renderConfirmationPopup = (handleConfirm: (params?: any) => void) => {
+  const renderConfirmationPopup = (handleConfirm: (params?: any) => void, heading?: string, text?: string) => {
     return (
 
       <PopupBox>
-          <h2>Are you sure?</h2>
-          <p>
-             Action cannot be undone once 'Confirm' is clicked. Please verify
-             that the information entered is correct. Bank of Banks is not 
-             liable for any errors made by its users. For more information please see our Terms and Conditions.
-          </p>
+          <h2>{heading}</h2>
+          <p>{text}</p>
           <div>
             <button onClick={() => setActivePopup('')}>Cancel</button>
             <button onClick={() => handleConfirm()}>Confirm</button>
@@ -315,12 +323,12 @@ export default function Component() {
           )}
           {activeTab === "pay" && (
             <div className="pay-content">
-              <h2>Pay Someone</h2>
+              <h2>Make a Payment</h2>
               <form 
                 className="pay-form" 
                 onSubmit={(e) => {
                   e.preventDefault();
-                  setActivePopup('confirmation');
+                  transactionLock ? setActivePopup('locked') : validateBalance(Number(payAmount));
                 }}
               >
                 <PhoneInput 
@@ -341,8 +349,29 @@ export default function Component() {
                 />
                 <button type='submit'>Send</button>
               </form>
-              {activePopup === 'confirmation' && renderConfirmationPopup(() => handlePayment(String(phoneNumber), payAmount))}
-              {activePopup === 'invalid-number' && renderErrorPopup('Invalid phone number. Please try again.')}
+              {activePopup === 'confirmation' && 
+                renderConfirmationPopup(
+                  () => handlePayment(phoneNumber, Number(payAmount)), 
+                  'Are you sure?', 
+                  payment_confirm
+                )
+              }
+              {activePopup === 'balance-warn' && 
+                renderConfirmationPopup(
+                  () => {
+                    handlePayment(phoneNumber, Number(payAmount))
+                    setTransactionLock(true);
+                  }, 
+                  'Warning!', 
+                  balance_warn
+                )
+              }
+              {activePopup === 'invalid-number' &&
+               renderErrorPopup('Invalid phone number. Please try again.')
+              }
+              {activePopup === 'locked' &&
+                renderErrorPopup(transaction_locked)
+              }
             </div>
           )}
           {activeTab === "deposit" && (
