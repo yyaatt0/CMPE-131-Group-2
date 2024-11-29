@@ -125,11 +125,11 @@ export default function Component() {
     if(amount > PAYMENT_LIMIT){
       setActivePopup('pay-limit-reached');
     }
-    else if(accountBalance > PAYMENT_WARNING_MIN_BALANCE && amount > accountBalance * PAYMENT_WARNING_PERCENTAGE){
-      setActivePopup('balance-warning')
-    }
     else if(accountBalance - amount <= MIN_BALANCE){
       setActivePopup('lockout-warning');
+    }
+    else if(accountBalance > PAYMENT_WARNING_MIN_BALANCE && amount > accountBalance * PAYMENT_WARNING_PERCENTAGE){
+      setActivePopup('balance-warning')
     }
     else{
       setActivePopup('confirmation');
