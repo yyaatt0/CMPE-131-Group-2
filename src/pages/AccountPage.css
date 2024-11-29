@@ -1,250 +1,273 @@
 /* Global Styles */
 .app-container {
-    font-family: Arial, sans-serif;
-    background-color: #e2e2e2;
-    min-height: 100vh;
-    display: flex;
-  }
+  font-family: Arial, sans-serif;
+  background-color: #e2e2e2;
+  min-height: 100vh;
+  display: flex;
+}
+
+.button-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.user-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: 1px solid white;
+  border-radius: 5px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  width: 125px;
+  margin-inline: auto;
+  transition: background-color 0.4s ease, color 0.4s ease, 0.4s ease;
+}
+
+.user-button:hover {
+  color: #003459;
+  background-color: white;
+}
+
+.user-button:active {
+  transform: scale(0.9);
+}
+
+.second-app-container {
+  margin: 1.1rem;
+  width: 1024px ;
+}
+
+/* Card Styles */
+.card {
+  background: white;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin: 16px;
+}
+
+.card-title {
+  font-size: 24px;
+  margin: 0 0 8px;
+}
+
+.card-description {
+  color: #666;
+}
+
+.balance {
+  font-size: 32px;
+  font-weight: bold;
+}
+
+.balance-label {
+  color: #888;
+}
+
+/* Tabs Styles */
+.tabs-container {
+  display: flex;
+  gap: 8px;
+  margin: 16px;
+}
+
+.tab-button {
+  padding: 8px 16px;
+  border: 1px solid #ddd;
+  background: white;
+  color: black;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.tab-button.active {
+  background: #003459;
+  color: white;
+}
+
+.tab-button .icon {
+  width: 16px;
+  height: 16px;
+}
+
+/* Content Area */
+.content-area {
+  background: white;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.transactions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.transaction-card {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background: #fff;
+}
+
+.transaction-type {
+  font-weight: bold;
+}
+
+.transaction-info,
+.transaction-date {
+  color: #666;
+  font-size: 12px;
+}
+
+.transaction-amount {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.transaction-amount.positive {
+  color: green;
+}
+
+.transaction-amount.negative {
+  color: red;
+}
+
+/* Confirmation popup window */
+
+.background-dim {
+
+  background-color: rgba(0, 0, 0, 0.5);
+
+  position: fixed;
+  left: 0;
+  top: 0;
+
+  width: 100vw;
+  height: 100vh;
+
+}
+
+.popup {
+
+  background-color: white;
+  border-radius: 25px;
+  box-shadow: 0 2px 4px 4px rgba(0, 0, 0, 0.1);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+
+  padding: 20px;
+
+  width: 20vw;
+  height: fit-content;
+
+}
+
+.popup * {
+
+  text-align: center;
+
+  width: 100%;
+
+}
+
+/* Pay tab styles */
+
+.pay-content h2 {
+
+  place-self: center;
+
+}
+
+.pay-content button {
+
+  background-color: #003459;
+  border: none;
+  border-radius: 10px;
+  box-shadow: none;
+
+  margin: 10px;
+
+  width: 25%;
+  height: 40px;
+
+}
+
+.pay-content button:hover {
+
+  background-color: #025591;
+
+}
+
+.pay-form {
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  margin: 25px 0 50px 0;
+
+  --PhoneInputCountry-paddingRight: 10px;
+  --PhoneInputCountrySelect-marginRight: 0;
+
+  --PhoneInputCountryFlag-height: calc(.75vw + 1.5vh);
+
+}
+
+.PhoneSection {
+
+  transform: translate(-1.375vw, 0);
+
+}
+
+.pay-form input[type=text], .PhoneInput input {
+
+  background-color: #f5f5f5;
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 0 3px #666;
+  outline: none;
+
+  font-size: 1rem;
+
+  padding: 10px;
+  margin: 10px;
+
+  width: 15vw;
+  height: 30px;
+
+}
+
+.pay-form input[type=text]:focus {
+
+  border: none;
+  box-shadow: 0 0 5px rgb(88, 128, 189);
+
+}
   
-  .button-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-  }
   
-  .user-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: none;
-    border: 1px solid white;
-    border-radius: 5px;
-    padding: 0.5rem 1rem;
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: bold;
-    width: 125px;
-    margin-inline: auto;
-    transition: background-color 0.4s ease, color 0.4s ease, 0.4s ease;
-  }
-  
-  .second-app-container {
-    margin: 1.1rem;
-    width: 1024px ;
-  }
-  
-  /* Card Styles */
-  .card {
-    background: white;
-    border-radius: 8px;
-    padding: 16px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    margin: 16px;
-  }
-  
-  .card-title {
-    font-size: 24px;
-    margin: 0 0 8px;
-  }
-  
-  .card-description {
-    color: #666;
-  }
-  
-  .balance {
-    font-size: 32px;
-    font-weight: bold;
-  }
-  
-  .balance-label {
-    color: #888;
-  }
-  
-  /* Tabs Styles */
-  .tabs-container {
-    display: flex;
-    gap: 8px;
-    margin: 16px;
-  }
-  
-  .tab-button {
-    padding: 8px 16px;
-    border: 1px solid #ddd;
-    background: white;
-    color: black;
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-    transition: background 0.3s;
-  }
-  
-  .tab-button.active {
-    background: #003459;
-    color: white;
-  }
-  
-  .tab-button .icon {
-    width: 16px;
-    height: 16px;
-  }
-  
-  /* Content Area */
-  .content-area {
-    background: white;
-    border-radius: 8px;
-    padding: 16px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  .transactions {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  
-  .transaction-card {
-    display: flex;
-    justify-content: space-between;
-    padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    background: #fff;
-  }
-  
-  .transaction-type {
-    font-weight: bold;
-  }
-  
-  .transaction-info,
-  .transaction-date {
-    color: #666;
-    font-size: 12px;
-  }
-  
-  .transaction-amount {
-    font-size: 16px;
-    font-weight: bold;
-  }
-  
-  .transaction-amount.positive {
-    color: green;
-  }
-  
-  .transaction-amount.negative {
-    color: red;
-  }
-  
-  /* Confirmation popup window */
-  
-  .background-dim {
-  
-    background-color: rgba(0, 0, 0, 0.5);
-  
-    position: fixed;
-    left: 0;
-    top: 0;
-  
-    width: 100vw;
-    height: 100vh;
-  
-  }
-  
-  .confirmation-popup {
-  
-    background-color: white;
-    border-radius: 25px;
-    box-shadow: 0 2px 4px 4px rgba(0, 0, 0, 0.1);
-  
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 1;
-  
-    padding: 20px;
-  
-    width: 20vw;
-    height: fit-content;
-  
-  }
-  
-  .confirmation-popup * {
-  
-    text-align: center;
-  
-    width: 100%;
-  
-  }
-  
-  /* Pay tab styles */
-  
-  .pay-content h2 {
-  
-    place-self: center;
-  
-  }
-  
-  .pay-content button {
-  
-    background-color: #003459;
-    border: none;
-    border-radius: 10px;
-    box-shadow: none;
-  
-    margin: 10px;
-  
-    width: 25%;
-    height: 40px;
-  
-  }
-  
-  .pay-content button:hover {
-  
-    background-color: #025591;
-  
-  }
-  
-  .pay-form {
-  
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  
-    margin: 25px 0 50px 0;
-  
-  }
-  
-  .pay-form input[type=text] {
-  
-    background-color: #f5f5f5;
-    border: none;
-    border-radius: 10px;
-    box-shadow: 0 0 3px #666;
-    outline: none;
-  
-    font-size: 1rem;
-  
-    padding: 10px;
-    margin: 10px;
-  
-    width: 25%;
-    height: 30px;
-  
-  }
-  
-  .pay-form input[type=text]:focus {
-  
-    border: none;
-    box-shadow: 0 0 5px rgb(88, 128, 189);
-  
-  }
+
 
 .file-upload {
     display: flex;
@@ -257,3 +280,4 @@
     max-width: 150px; 
     height: auto; 
   }
+  
