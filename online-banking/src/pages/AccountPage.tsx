@@ -16,7 +16,7 @@ import PopupBox from "../components/PopupBox";
 const MIN_BALANCE: number = 0;
 const PAYMENT_WARNING_PERCENTAGE: number = 0.1;
 const PAYMENT_WARNING_MIN_BALANCE: number = 1000;
-const PAYMENT_LIMIT: number = 1000;
+const PAYMENT_LIMIT: number = 2500;
 
 // Mock data for account details and transactions
 const accountDetails = {
@@ -354,7 +354,7 @@ export default function Component() {
                 />
                 <input 
                   type='text' 
-                  placeholder='Amount' 
+                  placeholder={`Amount (Max: $${PAYMENT_LIMIT})`}
                   value={payAmount}
                   onChange={(e) => handleNumInputChange(e, setPayAmount)}
                   required
