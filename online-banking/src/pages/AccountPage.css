@@ -152,7 +152,7 @@
 
 }
 
-.confirmation-popup {
+.popup {
 
   background-color: white;
   border-radius: 25px;
@@ -175,7 +175,7 @@
 
 }
 
-.confirmation-popup * {
+.popup * {
 
   text-align: center;
 
