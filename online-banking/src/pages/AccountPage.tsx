@@ -2,6 +2,9 @@ import { transaction } from "../types";
 
 import { useState } from "react";
 import { FileText, Send, DollarSign, PiggyBank, CornerUpLeft, User} from "lucide-react";
+import PhoneInput, { formatPhoneNumber, isPossiblePhoneNumber, isValidPhoneNumber, type Value } from "react-phone-number-input";
+import 'react-phone-number-input/style.css'
+
 
 import "./AccountPage.css"; 
 
@@ -45,8 +48,16 @@ export default function Component() {
   const [showConfirmationPopup, setShowConfirmationPopup] = useState(false);
 
   // For pay tab
-  const [phoneNumber, setPhoneNumber] = useState<string>("");
+  const [phoneNumber, setPhoneNumber] = useState<Value>("" as Value);
   const [payAmount, setPayAmount] = useState<string>("");
+
+  const handlePhoneNumber = (num: Value | undefined) => {
+    
+    if(num){
+      setPhoneNumber(num);
+    }
+
+  }
 
   /*  
       FRONTEND: 
@@ -97,6 +108,11 @@ export default function Component() {
   }
 
   const handlePayment = (phone: string, amount: string) => {
+
+    if(!isPossiblePhoneNumber(phone)){
+      console.log(`Phone number: ${phone} is Invalid Phone Number. Payment failed.`);
+      return;
+    }
 
     setShowConfirmationPopup(false);
     updateAccountBalance(accountBalance - Number(amount));
@@ -282,12 +298,14 @@ export default function Component() {
                   setShowConfirmationPopup(true);
                 }}
               >
-                <input 
+                <PhoneInput 
                   type='text' 
                   placeholder='Phone Number'
+                  defaultCountry="US"
                   value={phoneNumber}
-                  onChange={(e) => handleNumInputChange(e, setPhoneNumber)}
+                  onChange={(e) => handlePhoneNumber(e)}
                   required
+                  className="PhoneSection"
                 />
                 <input 
                   type='text' 
@@ -298,7 +316,7 @@ export default function Component() {
                 />
                 <button type='submit'>Send</button>
               </form>
-              {showConfirmationPopup && renderConfirmationPopup(() => handlePayment(phoneNumber, payAmount))}
+              {showConfirmationPopup && renderConfirmationPopup(() => handlePayment(String(phoneNumber), payAmount))}
             </div>
           )}
           {activeTab === "deposit" && (
