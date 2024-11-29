@@ -2,6 +2,8 @@ import { transaction } from "../types";
 
 import { useState } from "react";
 import { FileText, Send, DollarSign, PiggyBank, CornerUpLeft, User} from "lucide-react";
+
+// npm install react-phone-number-input --save (Make sure to install inside online-banking)
 import PhoneInput, { formatPhoneNumber, isPossiblePhoneNumber, isValidPhoneNumber, type Value } from "react-phone-number-input";
 import 'react-phone-number-input/style.css'
 
