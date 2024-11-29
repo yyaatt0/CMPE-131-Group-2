@@ -29,3 +29,13 @@ export type account = {
     balance: number | string
 
 };
+
+export type transaction = {
+
+    id: number, 
+    amount: number, 
+    type: string, 
+    info: string, 
+    date: string
+
+}

@@ -1,8 +1,23 @@
+import { transaction } from "../types";
+import { payment_confirm, lockout_warning, transaction_locked, pay_limit_reached, balance_warn } from "../textdescriptions";
+
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import { FileText, Send, DollarSign, PiggyBank, CornerUpLeft, User} from "lucide-react";
+
+// npm install react-phone-number-input --save (Make sure to install inside online-banking)
+import PhoneInput, { isPossiblePhoneNumber, type Value } from "react-phone-number-input";
+import 'react-phone-number-input/style.css'
+
+
 import "./AccountPage.css"; 
-import NavBar from "../components/NavBar";
+import PopupBox from "../components/PopupBox";
+
+// Constants
+const MIN_BALANCE: number = 0;
+const PAYMENT_WARNING_PERCENTAGE: number = 0.1;
+const PAYMENT_WARNING_MIN_BALANCE: number = 1000;
+const PAYMENT_LIMIT: number = 2500;
 
 // Mock data for account details and transactions
 const accountDetails = {
@@ -11,7 +26,8 @@ const accountDetails = {
   accountNumber: "**** **** **** 1234",
 };
 
-const transactions = [
+// BACKEND: This is a temporary hardcoded transaction list. Needs to be updated to grab list from database.
+const transactions: transaction[] = [
   { id: 1, amount: -50.0, type: "Purchase", info: "Grocery Store", date: "2023-05-01" },
   { id: 2, amount: 1000.0, type: "Deposit", info: "Payroll", date: "2023-04-30" },
   // Add more transactions as needed...
@@ -37,11 +53,164 @@ export default function Component() {
   const [selectedAccount, setSelectedAccount] = useState<string>("Savings Account"); // BACKEND: Change to whatever first account pops up
   const [hoveredAccount, setHoveredAccount] = useState<string | null>(null);
 
-  const navigate = useNavigate();
-    const handleClick = () => {
-        navigate('/Homepage');
-    };
+  // Balance display
+  const [accountBalance, setAccountBalance] = useState<number>(accountDetails.balance); // BACKEND: Initial value here should be obtained from database
 
+  // Set popup windows
+  const [activePopup, setActivePopup] = useState('');
+
+  // For pay tab
+  const [phoneNumber, setPhoneNumber] = useState<Value>("" as Value);
+  const [payAmount, setPayAmount] = useState<string>("");
+  const [transactionLock, setTransactionLock] = useState(accountBalance <= 0);
+
+  const handlePhoneNumber = (num: Value | undefined) => {
+    
+    if(num){
+      setPhoneNumber(num);
+    }
+
+  }
+
+  /*  
+      FRONTEND: 
+      
+      General function to handle number-only text input 
+        * Prereqs: setVal is a useState<string> function that has already been defined above
+        * Example usage: 
+                  <input 
+                    type='text' 
+                    placeholder='Enter amount'
+                    value={amount}
+                    onChange={(e) => handleNumInputChange(e, setAmount)}
+                    required
+                  />
+  */
+  const handleNumInputChange = (e: React.ChangeEvent<HTMLInputElement>, setVal: (val: string) => void) => {
+
+    const value = e.target.value;
+    if (/^\d*\.?\d{0,2}$/.test(value) || value === '') {
+      setVal(value);
+    }
+
+  };
+
+  /* 
+    BACKEND:
+
+      updateAccountBalance: Takes calculated new account balance and should update
+                            the account balance in the database accordingly
+      
+      addNewTransaction:    Takes in a transaction, t, and pushes the information
+                            to the transaction portion of the database. See
+                            transaction type info in types.tsx for specifics on
+                            what data the type holds.
+
+  */
+  const updateAccountBalance = (new_balance: number) => {
+
+    /* Add function here to update balance on backend */
+    setAccountBalance(new_balance); // Update account balance on frontend
+
+  }
+  const addNewTransaction = (t: transaction) => {
+
+    /* Add function here to add a transaction to the database */
+    transactions.push(t); // *temporary* Updates temp transaction list on frontend
+
+  }
+
+  const validateBalance = (amount: number) => {
+
+    if(amount > PAYMENT_LIMIT){
+      setActivePopup('pay-limit-reached');
+    }
+    else if(accountBalance > PAYMENT_WARNING_MIN_BALANCE && amount > accountBalance * PAYMENT_WARNING_PERCENTAGE){
+      setActivePopup('balance-warning')
+    }
+    else if(accountBalance - amount <= MIN_BALANCE){
+      setActivePopup('lockout-warning');
+    }
+    else{
+      setActivePopup('confirmation');
+    }
+  }
+
+  const handlePayment = (phone: string, amount: number) => {
+
+    if(!isPossiblePhoneNumber(phone)){
+      setActivePopup('invalid-number');
+      return;
+    }
+
+    setActivePopup('');
+    updateAccountBalance(accountBalance - amount);
+
+    const date = new Date();
+    const payment: transaction = {
+      id: 0,
+      amount: -amount,
+      type: 'Payment',
+      info: `Payment to ${phone}`,
+      date: `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`
+    }
+    addNewTransaction(payment);
+    setActiveTab('transactions');
+
+  }
+
+  /* 
+    FRONTEND:
+
+      General function for rendering an error popup.
+      Reqs: String is any error message you wish to display:
+      Ex usage:
+        renderErrorPopup('Invalid Input!');
+  */
+  const renderErrorPopup = (message: string) => {
+
+    return (
+
+      <PopupBox>
+        <h2>Error</h2>
+        <p>{message}</p>
+        <div>
+          <button onClick={() => setActivePopup('')}>Ok</button>
+        </div>
+      </PopupBox>
+
+    );
+
+  }
+
+  /* 
+    FRONTEND:
+
+      General function for rendering a confirmation popup.
+      Reqs: handleConfirm is a predefined function that returns void
+      Ex usage:
+        renderConfirmationPopup(() => handlePayment(phoneNumber, payAmount));
+        renderConfirmationPopup(() => doSomething());
+
+  */
+  const renderConfirmationPopup = (handleConfirm: (params?: any) => void, heading?: string, text?: string) => {
+    return (
+
+      <PopupBox>
+          <h2>{heading}</h2>
+          <p>{text}</p>
+          <div>
+            <button onClick={() => setActivePopup('')}>Cancel</button>
+            <button onClick={() => handleConfirm()}>Confirm</button>
+          </div>
+      </PopupBox>
+
+    );
+  }
+  const navigate = useNavigate();
+  const handleClick = () => {
+    navigate('/Homepage');
+  };
   return (
     <div className="app-container">
 
@@ -96,7 +265,7 @@ export default function Component() {
           </button>
         </div>
       </div>
-
+      
       {/* This seperate div is used to seperate the nav side bar stuff */}
       <div className="second-app-container">
         {activeNavTab === "accounts" && (
@@ -174,11 +343,68 @@ export default function Component() {
               </div>
             )}
             {activeTab === "pay" && (
-              <div className="tab-content">
-                <h2>Pay Someone</h2>
-                <p>E-pay functionality would be implemented here.</p>
-              </div>
-            )}
+            <div className="pay-content">
+              <h2>Make a Payment</h2>
+              <form 
+                className="pay-form" 
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  transactionLock ? setActivePopup('locked') : validateBalance(Number(payAmount));
+                }}
+              >
+                <PhoneInput 
+                  type='text' 
+                  placeholder='Phone Number'
+                  defaultCountry="US"
+                  value={phoneNumber}
+                  onChange={(e) => handlePhoneNumber(e)}
+                  required
+                  className="PhoneSection"
+                />
+                <input 
+                  type='text' 
+                  placeholder={`Amount (Max: $${PAYMENT_LIMIT})`}
+                  value={payAmount}
+                  onChange={(e) => handleNumInputChange(e, setPayAmount)}
+                  required
+                />
+                <button type='submit'>Send</button>
+              </form>
+              {activePopup === 'confirmation' && 
+                renderConfirmationPopup(
+                  () => handlePayment(phoneNumber, Number(payAmount)), 
+                  'Please confirm.', 
+                  payment_confirm
+                )
+              }
+              {activePopup === 'balance-warning' &&
+                renderConfirmationPopup(
+                  () => setActivePopup('confirmation'),
+                  'Are you sure?',
+                  balance_warn
+                )
+              }
+              {activePopup === 'lockout-warning' && 
+                renderConfirmationPopup(
+                  () => {
+                    handlePayment(phoneNumber, Number(payAmount))
+                    setTransactionLock(true);
+                  }, 
+                  'Warning!', 
+                  lockout_warning
+                )
+              }
+              {activePopup === 'invalid-number' &&
+               renderErrorPopup('Invalid phone number. Please try again.')
+              }
+              {activePopup === 'locked' &&
+                renderErrorPopup(transaction_locked)
+              }
+              {activePopup === 'pay-limit-reached' &&
+                renderErrorPopup(pay_limit_reached)
+              }
+            </div>
+          )}
             {activeTab === "deposit" && (
               <div className="tab-content">
                 <h2>Deposit Check</h2>
