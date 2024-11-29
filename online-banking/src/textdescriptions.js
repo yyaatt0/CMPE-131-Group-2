@@ -12,3 +12,12 @@ export const insurance_desc =
 
 export const business_desc =
     "Empower your business with the tailored solutions and comprehensive support offered by Bank of Banks Business Accounts."
+
+export const payment_confirm = 
+    "Action cannot be undone once 'Confirm' is clicked. Please verify that the information entered is correct. Bank of Banks is not liable for any errors made by its users. For more information please see our Terms and Conditions."
+
+export const balance_warn = 
+    "Transaction will put your account below the minimum balance required to make further transaction. Continuing will result in an transaction lock, prohibiting further transactions from being made until the minimum required balance is reached again."
+
+export const transaction_locked = 
+    "This account is currently locked out of making further transactions as it does not meet the minimum requirements necessary. Please visit our help page for more info."
