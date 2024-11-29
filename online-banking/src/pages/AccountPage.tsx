@@ -1,5 +1,5 @@
 import { transaction } from "../types";
-import { payment_confirm, balance_warn, transaction_locked } from "../textdescriptions";
+import { payment_confirm, lockout_warning, transaction_locked, pay_limit_reached, balance_warn } from "../textdescriptions";
 
 import { useState } from "react";
 import { FileText, Send, DollarSign, PiggyBank, CornerUpLeft, User} from "lucide-react";
@@ -11,6 +11,12 @@ import 'react-phone-number-input/style.css'
 
 import "./AccountPage.css"; 
 import PopupBox from "../components/PopupBox";
+
+// Constants
+const MIN_BALANCE: number = 0;
+const PAYMENT_WARNING_PERCENTAGE: number = 0.1;
+const PAYMENT_WARNING_MIN_BALANCE: number = 1000;
+const PAYMENT_LIMIT: number = 1000;
 
 // Mock data for account details and transactions
 const accountDetails = {
@@ -114,8 +120,14 @@ export default function Component() {
 
   const validateBalance = (amount: number) => {
 
-    if(accountBalance - amount <= 0){
-      setActivePopup('balance-warn');
+    if(amount > PAYMENT_LIMIT){
+      setActivePopup('pay-limit-reached');
+    }
+    else if(accountBalance > PAYMENT_WARNING_MIN_BALANCE && amount > accountBalance * PAYMENT_WARNING_PERCENTAGE){
+      setActivePopup('balance-warning')
+    }
+    else if(accountBalance - amount <= MIN_BALANCE){
+      setActivePopup('lockout-warning');
     }
     else{
       setActivePopup('confirmation');
@@ -352,18 +364,25 @@ export default function Component() {
               {activePopup === 'confirmation' && 
                 renderConfirmationPopup(
                   () => handlePayment(phoneNumber, Number(payAmount)), 
-                  'Are you sure?', 
+                  'Please confirm.', 
                   payment_confirm
                 )
               }
-              {activePopup === 'balance-warn' && 
+              {activePopup === 'balance-warning' &&
+                renderConfirmationPopup(
+                  () => setActivePopup('confirmation'),
+                  'Are you sure?',
+                  balance_warn
+                )
+              }
+              {activePopup === 'lockout-warning' && 
                 renderConfirmationPopup(
                   () => {
                     handlePayment(phoneNumber, Number(payAmount))
                     setTransactionLock(true);
                   }, 
                   'Warning!', 
-                  balance_warn
+                  lockout_warning
                 )
               }
               {activePopup === 'invalid-number' &&
@@ -371,6 +390,9 @@ export default function Component() {
               }
               {activePopup === 'locked' &&
                 renderErrorPopup(transaction_locked)
+              }
+              {activePopup === 'pay-limit-reached' &&
+                renderErrorPopup(pay_limit_reached)
               }
             </div>
           )}
