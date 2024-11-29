@@ -278,7 +278,7 @@ export default function Component() {
               {/* This portion here the variables are out of place since the first portion was hardcoded */}
               {selectedAccount} - {accountDetails.accountNumber}
             </p>
-            <div className="balance">${accountDetails.balance.toFixed(2)}</div>
+            <div className="balance">${accountBalance.toFixed(2)}</div>
             <p className="balance-label">Available Balance</p>
           </div>
 
