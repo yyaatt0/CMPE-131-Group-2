@@ -36,7 +36,7 @@ const UserLogin = () => {
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', backgroundColor: '#f3f4f6', fontFamily: 'sans-serif'}}>
 
       {/* Navigation Bar */}
-      <NavBar/>
+      <UserBar/>
 
       {/* Holds the nav bar and heading  */}
       
