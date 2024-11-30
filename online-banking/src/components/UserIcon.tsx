@@ -12,16 +12,20 @@ interface UserIconProps {
 }
 
 const height = '100px';
+const width = '100px';
 
 function UserIcon({src, children}: UserIconProps) {
     return (
         <>
-        <div>
+        <div style={{position: 'relative', height: height, width: width}}>
             <img
                 src={src}
                 alt={src}
                 style={{
                     width: '100%',
+                    height: '100%',
+                    borderRadius: '55px',
+                    boxShadow: '0px 6px 8px rgba(0, 0, 0, 0.1)',
                 }}
             />
             {children}

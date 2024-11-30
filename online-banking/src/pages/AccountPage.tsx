@@ -15,6 +15,7 @@ import { useEffect } from "react"; // Add this line for useEffect import
 
 import "./AccountPage.css"; 
 import PopupBox from "../components/PopupBox";
+import ExpandableBtnList from "../components/ExpandableBtnList";
 
 // Constants
 const MIN_BALANCE: number = 0;
@@ -76,7 +77,18 @@ export default function Component() {
 
   const [amount, setAmount] = useState<string>("");
   const [error, setError] = useState<string>("");
-  const [image, setImage] = useState<string | null>(null); //
+  const [image, setImage] = useState<string | null>(null); 
+
+  // This portion of the code is about the ACCOUNT SETTINGS
+  const accountDataBtn: string[] = ["Change Username", "Change Password", "Change Email", "Change Pin"];
+  const createAccBtn: string[] = ["Checking Account", "Savings Account"]; // Will only have these ones since they are easy
+  const[settingBtn, setSettingBtn] = useState<string | null> (null);
+  
+  const handleSetting = (action: string) => {
+    // I'll be using the activePopUp but will add additional case statements 
+    setSettingBtn(action);
+  };
+
 
 
 
@@ -224,89 +236,88 @@ export default function Component() {
 
     );
   }
+
   const navigate = useNavigate();
   const handleClick = () => {
     navigate('/Homepage');
   };
 
    // Reset deposit data when tab changes to something other than "deposit"
- useEffect(() => {
-  if (activeTab !== 'deposit') {
-    setDepositAmount(""); // Reset deposit amount
-    setSelectedFrontImg(null); // Reset front image
-    setSelectedBackImg(null); // Reset back image
-  }
-}, [activeTab]);
+  useEffect(() => {
+    if (activeTab !== 'deposit') {
+      setDepositAmount(""); // Reset deposit amount
+      setSelectedFrontImg(null); // Reset front image
+      setSelectedBackImg(null); // Reset back image
+    }
+  }, [activeTab]);
 
-// Deposit function
-const handleDeposit = () => {
-  const amount = parseFloat(depositAmount);
-  if (isNaN(amount) || amount <= 0 || amount > 25000) {
-    alert("Please enter a valid amount between 0 and 25000.");
-   
+  // Deposit function
+  const handleDeposit = () => {
+    const amount = parseFloat(depositAmount);
+    if (isNaN(amount) || amount <= 0 || amount > 25000) {
+      alert("Please enter a valid amount between 0 and 25000.");
+    
+      return;
+    }
+    if (!selectedFrontImg || !selectedBackImg) {
+        alert("Please upload both front and back images of the check.");
+        return;
+  }
+      // Confirmation dialog
+  const confirmDeposit = window.confirm(
+    `You are about to deposit $${amount.toFixed(2)} into your account. Do you want to continue?`
+  );
+  if (!confirmDeposit) {
+    alert("Deposit canceled.");
     return;
   }
-  if (!selectedFrontImg || !selectedBackImg) {
-      alert("Please upload both front and back images of the check.");
-      return;
-}
-    // Confirmation dialog
-const confirmDeposit = window.confirm(
-  `You are about to deposit $${amount.toFixed(2)} into your account. Do you want to continue?`
-);
-if (!confirmDeposit) {
-  alert("Deposit canceled.");
-  return;
-}
-// Update balance
-const newBalance = accountBalance + amount;
-updateAccountBalance(newBalance);
+  // Update balance
+  const newBalance = accountBalance + amount;
+  updateAccountBalance(newBalance);
 
-// Add deposit transaction
-const date = new Date();
-const depositTransaction: transaction = {
-  id: transactions.length + 1, // Increment transaction ID
-  amount,
-  type: "Deposit",
-  info: "Check Deposit",
-  date: `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`,
-};
+  // Add deposit transaction
+  const date = new Date();
+  const depositTransaction: transaction = {
+    id: transactions.length + 1, // Increment transaction ID
+    amount,
+    type: "Deposit",
+    info: "Check Deposit",
+    date: `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`,
+  };
 
-addNewTransaction(depositTransaction);
+  addNewTransaction(depositTransaction);
 
-// Reset deposit amount
-setDepositAmount("");
-setSelectedFrontImg(null);
-setSelectedBackImg(null); // Reset images after deposit
+  // Reset deposit amount
+  setDepositAmount("");
+  setSelectedFrontImg(null);
+  setSelectedBackImg(null); // Reset images after deposit
 
-alert(`The amount ${amount.toFixed(2)}  has been deposited into the account.`);
-};
-// Handle image file changes for front and back images
-const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>, type: string) => {
-  const file = event.target.files?.[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      if (type === 'front') {
-        setSelectedFrontImg(reader.result as string);
-      } else {
-        setSelectedBackImg(reader.result as string);
-      }
-    };
-    reader.readAsDataURL(file);
-  }
-};
-// Deposit confirmation function
-const handleConfirmDeposit = () => {
-  if (amount && selectedFrontImg && selectedBackImg) {
-    // Perform deposit confirmation action here
-    console.log("Deposit confirmed with amount:", amount);
-  } else {
-    setError('Please fill out all fields correctly');
-  }
-};
-
-
+  alert(`The amount ${amount.toFixed(2)}  has been deposited into the account.`);
+  };
+  // Handle image file changes for front and back images
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>, type: string) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        if (type === 'front') {
+          setSelectedFrontImg(reader.result as string);
+        } else {
+          setSelectedBackImg(reader.result as string);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+  // Deposit confirmation function
+  const handleConfirmDeposit = () => {
+    if (amount && selectedFrontImg && selectedBackImg) {
+      // Perform deposit confirmation action here
+      console.log("Deposit confirmed with amount:", amount);
+    } else {
+      setError('Please fill out all fields correctly');
+    }
+  };
 
   return (
     <div className="app-container">
@@ -593,17 +604,68 @@ const handleConfirmDeposit = () => {
         )}
         {activeNavTab === "account_settings" && (
           <>
+            {/* Making all the buttons seperate to hopefully make integration easier  */}
             <div className="screen-card"> 
+              <h1 className="card-title">Account Profile & Settings</h1>
               <div className="info-wrapper">
-                <UserIcon src={images.home_signing}/>
-                <h1 className="card-title">{name}</h1>
+                <UserIcon src={images.user_icon}/>
+                <br/>
+                {/* This will be their username/email; using a name placeholder for now */}
+                <h1 className="card-title">@{name}</h1>
+              </div>
+              <div className="tab-btn"> 
+                <ExpandableBtnList trigger="Create an Account" buttons={createAccBtn} onButtonClick={handleSetting}/>
+                <ExpandableBtnList trigger="Account Data" buttons={accountDataBtn} onButtonClick={handleSetting}/>
               </div>
             </div>
-
-            
-
-
-
+            {settingBtn === "Checking Account" && (
+              <>
+                <PopupBox>
+                  <h2>Make Checking Account</h2>
+                  <p>Make Checking Account</p>
+                </PopupBox>
+              </>
+            )}
+            {settingBtn === "Savings Account" && (
+              <>
+                <PopupBox>
+                  <h2>Make Savings Account</h2>
+                  <p>Make Savings Account</p>
+                </PopupBox>
+              </>
+            )}
+            {settingBtn === "Change Username" && (
+              <>
+                <PopupBox>
+                  <h2>Change Username</h2>
+                  <p>Change Username</p>
+                </PopupBox>
+              </>
+            )}
+            {settingBtn === "Change Password" && (
+              <>
+                <PopupBox>
+                  <h2>Change Password</h2>
+                  <p>Change Password</p>
+                </PopupBox>
+              </>
+            )}
+            {settingBtn === "Change Email" && (
+              <>
+                <PopupBox>
+                  <h2>Change Email</h2>
+                  <p>Change Email</p>
+                </PopupBox>
+              </>
+            )}
+            {settingBtn === "Change Pin" && (
+              <>
+                <PopupBox>
+                  <h2>Change Pin</h2>
+                  <h2>Change Pin</h2>
+                </PopupBox>
+              </>
+            )}
           </>
         )}
       </div>
