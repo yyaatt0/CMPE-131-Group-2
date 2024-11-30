@@ -166,7 +166,10 @@ const AdminLogin = () => {
         Please contact IT for assistance!
       </div>
         
-      
+       <div style={{ textAlign: 'center', margin: '20px auto' }}>
+
+<a href="/userlogin" style={{ paddingBottom: '10px', display: 'inline-block' }}> User Login </a> 
+</div>
       </div>
       <FooterCard/>
 
