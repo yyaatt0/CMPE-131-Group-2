@@ -8,7 +8,7 @@ import { FileText, Send, DollarSign, PiggyBank, CornerUpLeft, User} from "lucide
 // npm install react-phone-number-input --save (Make sure to install inside online-banking)
 import PhoneInput, { isPossiblePhoneNumber, type Value } from "react-phone-number-input";
 import 'react-phone-number-input/style.css'
-
+import { useEffect } from "react"; // Add this line for useEffect import
 
 import "./AccountPage.css"; 
 import PopupBox from "../components/PopupBox";
@@ -63,6 +63,19 @@ export default function Component() {
   const [phoneNumber, setPhoneNumber] = useState<Value>("" as Value);
   const [payAmount, setPayAmount] = useState<string>("");
   const [transactionLock, setTransactionLock] = useState(accountBalance <= 0);
+
+  //For deposit 
+  const [depositAmount, setDepositAmount] = useState<string>("");
+
+  // State variables for file uploads (front/back of check)
+  const [selectedFrontImg, setSelectedFrontImg] = useState<string | null>(null);
+  const [selectedBackImg, setSelectedBackImg] = useState<string | null>(null);
+
+  const [amount, setAmount] = useState<string>("");
+  const [error, setError] = useState<string>("");
+  const [image, setImage] = useState<string | null>(null); //
+
+
 
   const handlePhoneNumber = (num: Value | undefined) => {
     
@@ -211,6 +224,86 @@ export default function Component() {
   const handleClick = () => {
     navigate('/Homepage');
   };
+
+   // Reset deposit data when tab changes to something other than "deposit"
+ useEffect(() => {
+  if (activeTab !== 'deposit') {
+    setDepositAmount(""); // Reset deposit amount
+    setSelectedFrontImg(null); // Reset front image
+    setSelectedBackImg(null); // Reset back image
+  }
+}, [activeTab]);
+
+// Deposit function
+const handleDeposit = () => {
+  const amount = parseFloat(depositAmount);
+  if (isNaN(amount) || amount <= 0 || amount > 25000) {
+    alert("Please enter a valid amount between 0 and 25000.");
+   
+    return;
+  }
+  if (!selectedFrontImg || !selectedBackImg) {
+      alert("Please upload both front and back images of the check.");
+      return;
+}
+    // Confirmation dialog
+const confirmDeposit = window.confirm(
+  `You are about to deposit $${amount.toFixed(2)} into your account. Do you want to continue?`
+);
+if (!confirmDeposit) {
+  alert("Deposit canceled.");
+  return;
+}
+// Update balance
+const newBalance = accountBalance + amount;
+updateAccountBalance(newBalance);
+
+// Add deposit transaction
+const date = new Date();
+const depositTransaction: transaction = {
+  id: transactions.length + 1, // Increment transaction ID
+  amount,
+  type: "Deposit",
+  info: "Deposit Funds",
+  date: `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`,
+};
+
+addNewTransaction(depositTransaction);
+
+// Reset deposit amount
+setDepositAmount("");
+setSelectedFrontImg(null);
+setSelectedBackImg(null); // Reset images after deposit
+
+alert(`The amount ${amount.toFixed(2)}  has been deposited into the account.`);
+};
+// Handle image file changes for front and back images
+const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>, type: string) => {
+  const file = event.target.files?.[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      if (type === 'front') {
+        setSelectedFrontImg(reader.result as string);
+      } else {
+        setSelectedBackImg(reader.result as string);
+      }
+    };
+    reader.readAsDataURL(file);
+  }
+};
+// Deposit confirmation function
+const handleConfirmDeposit = () => {
+  if (amount && selectedFrontImg && selectedBackImg) {
+    // Perform deposit confirmation action here
+    console.log("Deposit confirmed with amount:", amount);
+  } else {
+    setError('Please fill out all fields correctly');
+  }
+};
+
+
+
   return (
     <div className="app-container">
 
@@ -407,11 +500,91 @@ export default function Component() {
           )}
             {activeTab === "deposit" && (
               <div className="tab-content">
-                <h2>Deposit Check</h2>
-                <p>Online check deposit functionality would be implemented here.</p>
-              </div>
-            )}
+          
+    <h2>Deposit Check</h2>
+    
+    {/* Upload Front and Back of Check */}
+    <div style={{ display: 'flex', justifyContent: 'center', gap: '20px' }}>
+      
+      {/* Front of Check */}
+      <div style={{ textAlign: 'center' }}>
+        <h3>Upload Front of Check</h3>
+        <input
+          type="file"
+          accept="image/*"
+          onChange={(e) => handleFileChange(e, 'front')}
+        />
+        {selectedFrontImg && (
+          <div>
+            <h4>Front of Check</h4>
+            <img
+              src={selectedFrontImg}
+              alt="Front of check"
+              style={{ maxWidth: '100%', maxHeight: '200px', objectFit: 'cover' }}
+            />
           </div>
+        )}
+      </div>
+
+      {/* Back of Check */}
+      <div style={{ textAlign: 'center' }}>
+        <h3>Upload Back of Check</h3>
+        <input
+          type="file"
+          accept="image/*"
+          onChange={(e) => handleFileChange(e, 'back')}
+        />
+        {selectedBackImg && (
+          <div>
+            <h4>Back of Check</h4>
+            <img
+              src={selectedBackImg}
+              alt="Back of check"
+              style={{ maxWidth: '100%', maxHeight: '200px', objectFit: 'cover' }}
+            />
+          </div>
+        )}
+      </div>
+    </div>
+
+    {/* Deposit Amount Input */}
+    <div style={{ textAlign: 'center', marginTop: '20px' }}>
+      <h3>Enter Deposit Amount</h3>
+      <input
+        type="number"
+        placeholder="Enter amount"
+        value={depositAmount}
+        onChange={(e) => handleNumInputChange(e, setDepositAmount)}
+        className="amount-input"
+        style={{ padding: '10px', width: '200px', fontSize: '16px' }}
+      />
+    </div>
+
+    {/* Error Display */}
+    {error && <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>}
+
+    {/* Confirm Deposit Button */}
+    <div style={{ textAlign: 'center', marginTop: '20px' }}>
+      <button
+        onClick={handleDeposit}
+
+        className="deposit-btn"
+        style={{
+          backgroundColor: '#003459',
+          color: 'white',
+          padding: '10px 20px',
+          border: 'none',
+          cursor: 'pointer',
+          fontSize: '16px',
+        }}
+      >
+       Confirm Deposit
+      </button>
+      
+    </div>
+</div>
+)}
+</div>
           </>
         )}
         {activeNavTab === "account_settings" && (
