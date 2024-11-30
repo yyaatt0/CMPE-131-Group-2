@@ -3,6 +3,8 @@ import { payment_confirm, lockout_warning, transaction_locked, pay_limit_reached
 
 import images from '../images';
 import UserIcon from "../components/UserIcon";
+import ExpandableBtnList from "../components/ExpandableBtnList"; // npm install react-collapsible --save for this portion
+
 
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
@@ -15,7 +17,6 @@ import { useEffect } from "react"; // Add this line for useEffect import
 
 import "./AccountPage.css"; 
 import PopupBox from "../components/PopupBox";
-import ExpandableBtnList from "../components/ExpandableBtnList";
 
 // Constants
 const MIN_BALANCE: number = 0;
