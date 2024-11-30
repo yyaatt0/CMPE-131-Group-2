@@ -337,9 +337,44 @@ export default function Component() {
               </div>
             )}
             {activeTab === "transfer" && (
-              <div className="tab-content">
-                <h2>Transfer Funds</h2>
-                <p>Transfer functionality would be implemented here.</p>
+              <div className="transfer-form">
+                <h2>Transfer</h2>
+                <form>
+                  <div className="form-group">
+                    <label htmlFor="transfer-to">Transfer to</label>
+                    <select id="transfer-to" className="transfer-select">
+                      <option value="account1">Account 1</option>
+                      <option value="account2">Account 2</option>
+                    </select>
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="transfer-date">Transfer date</label>
+                    <input type="date" id="transfer-date" className="transfer-date" />
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="amount">Amount</label>
+                    <input
+                      type="number"
+                      id="amount"
+                      className="transfer-amount"
+                      placeholder="Enter amount"
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="message">Message</label>
+                    <input
+                      type="text"
+                      id="message"
+                      className="transfer-message"
+                      placeholder="Optional message"
+                    />
+                  </div>
+
+                  <button type="submit" className="user-button">Submit</button>
+                </form>
               </div>
             )}
             {activeTab === "pay" && (
