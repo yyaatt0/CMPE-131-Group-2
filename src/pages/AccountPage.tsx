@@ -1,4 +1,4 @@
-import { transaction } from "../type";
+import { transaction } from "../types";
 import { payment_confirm, lockout_warning, transaction_locked, pay_limit_reached, balance_warn } from "../textdescriptions";
 
 import { useState } from "react";
