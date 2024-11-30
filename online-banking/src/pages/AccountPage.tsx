@@ -1,6 +1,9 @@
 import { transaction } from "../types";
 import { payment_confirm, lockout_warning, transaction_locked, pay_limit_reached, balance_warn } from "../textdescriptions";
 
+import images from '../images';
+import UserIcon from "../components/UserIcon";
+
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import { FileText, Send, DollarSign, PiggyBank, CornerUpLeft, User} from "lucide-react";
@@ -129,7 +132,8 @@ export default function Component() {
   const addNewTransaction = (t: transaction) => {
 
     /* Add function here to add a transaction to the database */
-    transactions.push(t); // *temporary* Updates temp transaction list on frontend
+    /*  Make sure the transaction list is unique for each individual account, which is NOT done here */
+    transactions.unshift(t); // *temporary* Updates temp transaction list on frontend
 
   }
 
@@ -165,7 +169,7 @@ export default function Component() {
       amount: -amount,
       type: 'Payment',
       info: `Payment to ${phone}`,
-      date: `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`
+      date: `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
     }
     addNewTransaction(payment);
     setActiveTab('transactions');
@@ -264,7 +268,7 @@ const depositTransaction: transaction = {
   id: transactions.length + 1, // Increment transaction ID
   amount,
   type: "Deposit",
-  info: "Deposit Funds",
+  info: "Check Deposit",
   date: `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`,
 };
 
@@ -585,14 +589,18 @@ const handleConfirmDeposit = () => {
 </div>
 )}
 </div>
-          </>
+        </>
         )}
         {activeNavTab === "account_settings" && (
           <>
-            <h1>Account Settings</h1>
+            <div className="screen-card"> 
+              <div className="info-wrapper">
+                <UserIcon src={images.home_signing}/>
+                <h1 className="card-title">{name}</h1>
+              </div>
+            </div>
 
-
-            {/* TODO */}
+            
 
 
 
