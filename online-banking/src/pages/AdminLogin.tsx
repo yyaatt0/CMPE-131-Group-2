@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import NavBar from '../components/NavBar';
+import UserBar from '../components/UserBar';
 import FooterCard from '../components/FooterCard';
 
 const AdminLogin = () => {
@@ -43,7 +43,7 @@ const AdminLogin = () => {
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', backgroundColor: '#f3f4f6', fontFamily: 'sans-serif'}}>
 
       {/* Navigation Bar */}
-      <NavBar/>
+      <UserBar/>
 
       {/* Holds the nav bar and heading  */}
       
