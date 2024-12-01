@@ -73,14 +73,14 @@ const AtmLogin = () => {
     // The div below describes the basic body style
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', backgroundColor: '#f3f4f6', fontFamily: 'sans-serif'}}>
 
+      {/* Navigation Bar */}
+      <NavBar/>
+
       {/* Header style */}
       <header style={{ backgroundColor: '#003459', color: 'white', padding: '24px', textAlign: 'center', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
         <h1 style={{ fontSize: '2rem', fontWeight: 'bold' }}>Bank of Banks ATM</h1>
         <p style={{ fontSize: '1.125rem', marginTop: '8px' }}>Welcome to your secure banking experience</p>
       </header>
-
-      {/* Navigation Bar */}
-      <NavBar/>
 
       {/* The main below is describing the large center gray background portion */}
       <main style={{ flexGrow: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '16px', backgroundColor: '#e5e7eb' }}>
@@ -154,7 +154,7 @@ const AtmLogin = () => {
                 </div>
 
                 {/* This div will hold the numpad portion of the screen */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px', width: 'fit-content', margin: 'auto', }}>
                   
                   {/* Numpad from 1-9 */}
                   {actions.map((num) => (
@@ -177,7 +177,9 @@ const AtmLogin = () => {
                         borderRadius: '4px', 
                         cursor: 'pointer', 
                         transition: isActionBtnHover === num ? 'background-color 0.5s, transform 0.4s ease' : 'background-color 0.5s',
-                        transform: isActionBtnActive === num ? 'scale(0.95)' : 'scale(1)'
+                        transform: isActionBtnActive === num ? 'scale(0.95)' : 'scale(1)',
+                        width: '160px', 
+                        height: '65px',
                       }}
                     >
                       {num}
@@ -204,7 +206,10 @@ const AtmLogin = () => {
                       cursor: 'pointer', 
                       transition: zeroBtnHover  ? 'background-color 0.5s, transform 0.4s ease' : 'background-color 0.5s',
                       transform: zeroBtnActive  ? 'scale(0.95)' : 'scale(1)',
-                      gridColumn: 'span 3' 
+                      gridColumn: 'span 3', 
+                      width: '160px',
+                      height:'65px',
+                      justifySelf: 'center',
                   }}
                   >
                     0
@@ -221,8 +226,11 @@ const AtmLogin = () => {
                     onMouseUp={() => setSubmitBtnActive(false)}
 
                   style={{ 
-                    width: '100%', 
+                    width: '496px', 
+                    height: '50px',
+                    position: 'relative',
                     padding: '12px',
+                    margin: 'auto',
                     backgroundColor: submitBtnHover ? '#00171F' : '#003459', 
                     color: 'white', 
                     fontSize: '16px', 
