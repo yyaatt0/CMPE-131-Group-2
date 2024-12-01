@@ -42,6 +42,10 @@ const transactions: transaction[] = [
 // HARDCODED DATA 
 // BACKEND
 const accounts: string[] = ["Savings Account", "Checking Account"];
+// These are just test cases below
+//const accounts: string[] = ["Savings Account"];
+//const accounts: string[] = [];
+
 
  // HARDCODED DATA
   // BACKEND: Fill this with the name associated with the account logged in
@@ -509,10 +513,20 @@ export default function Component() {
           </button>
         </div>
       </div>
-      
       {/* This seperate div is used to seperate the nav side bar stuff */}
       <div className="second-app-container">
-        {activeNavTab === "accounts" && (
+        {/* This will be the divider to open a new account if no account is made  */}
+        {/* If no account is registered, then it goes here */}
+        {accounts.length === 0 && (
+          <>
+            <div>
+              <h1>Welcome to Banks of Banks</h1>
+              <h2>Please navigate towards the Account Settings (botton button) and start by creating a checking/savings account!</h2>
+            </div>
+          </>
+        )}
+
+        {activeNavTab === "accounts" && accounts.length !== 0 && (
           <>
           {/* Account Overview */}
           <div className="card">

@@ -12,7 +12,12 @@ interface AccountBalance {
 
 const AtmFeature = () => {
   // For the side Nav bar to select accounts
-  const [selectedAccount, setSelectedAccount] = useState<string>("Savings Account"); // BACKEND: Change to whatever first account pops up
+
+  // HARDCODED DATA
+  // BACKEND: Fill this array from the data base based on what account the user has 
+  const accounts: string[] = ["Savings Account", "Checking Account"];
+
+  const [selectedAccount, setSelectedAccount] = useState<string>(accounts[0]); // BACKEND: Change to whatever first account pops up
   const [hoveredAccount, setHoveredAccount] = useState<string | null>(null);
   
   // This is for the hover and active portion of the logout button
@@ -74,9 +79,6 @@ const AtmFeature = () => {
     "Checking Account": 500,
   });
 
-  // HARDCODED DATA
-  // BACKEND: Fill this array from the data base based on what account the user has 
-  const accounts: string[] = ["Savings Account", "Checking Account"];
 
   // HARDCODED DATA
   // BACKEND: Fill this with the name associated with the account logged in
@@ -671,67 +673,80 @@ const AtmFeature = () => {
         </button>
       </div>
 
-      {/* This div contains holding the button features*/}
-      <div style={{margin: '1.1rem', width: '512px' }}>
+      {/* Checks if there is an existing account or not */}
+      {accounts.length === 0 && (
+        <>
+          <div>
+            <h1 style={{margin: '100px'}}> Welcome to Banks of Banks</h1>
+          </div>
+        </>
+      )}
 
-        {/* Header to display what accout is selected */}
-        <h2 style={{ fontSize: '1.5rem', marginBottom: '2rem' }}>{selectedAccount}</h2>
+      {accounts.length !== 0 && (
+        <>
+          {/* This div contains holding the button features*/}
+          <div style={{margin: '1.1rem', width: '512px' }}>
 
-        {/* This is the div grid that allows the user to select which feature to choose from */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1.5rem', width: 'fit-content' }}>
-          {actions.map((action, index) => (
-            <div
-              onClick={() => handleActionClick(action)}
-              key={action}
+            {/* Header to display what accout is selected */}
+            <h2 style={{ fontSize: '1.5rem', marginBottom: '2rem' }}>{selectedAccount}</h2>
 
-              onMouseEnter={() => setActionBtnHovered(index)}
-              onMouseLeave={() => setActionBtnHovered(null)}
-              onMouseDown={() => setActionBtnActive(index)}
-              onMouseUp={() => setActionBtnActive(null)}
+            {/* This is the div grid that allows the user to select which feature to choose from */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1.5rem', width: 'fit-content' }}>
+              {actions.map((action, index) => (
+                <div
+                  onClick={() => handleActionClick(action)}
+                  key={action}
 
-              style={{
-                padding: '2vw',
-                backgroundColor: 'white',
-                borderRadius: '8px',
-                maxWidth: '512px',
-                minHeight: '60px',
-                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-                transition: isActionBtnHovered === index ? 'box-shadow 0.3s, transform 0.4s ease' : "none",
-                transform: isActionBtnActive === index ? 'scale(0.95)' : 'scale(1)',
-                cursor: 'pointer',
-                gridColumn: action === 'View Transactions' ? 'span 2' : 'auto',
-              }}>
+                  onMouseEnter={() => setActionBtnHovered(index)}
+                  onMouseLeave={() => setActionBtnHovered(null)}
+                  onMouseDown={() => setActionBtnActive(index)}
+                  onMouseUp={() => setActionBtnActive(null)}
 
-              <button 
-                style={{ 
-                  width: '100%', 
-                  height: '100%', 
-                  padding: '1.5rem', 
-                  background: 'none',
-                  color: 'black', 
-                  border: '1px solid #003459', 
-                  fontSize: 'calc(0.5rem + 0.5vw)', 
-                  cursor: 'pointer' 
+                  style={{
+                    padding: '2vw',
+                    backgroundColor: 'white',
+                    borderRadius: '8px',
+                    maxWidth: '512px',
+                    minHeight: '60px',
+                    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+                    transition: isActionBtnHovered === index ? 'box-shadow 0.3s, transform 0.4s ease' : "none",
+                    transform: isActionBtnActive === index ? 'scale(0.95)' : 'scale(1)',
+                    cursor: 'pointer',
+                    gridColumn: action === 'View Transactions' ? 'span 2' : 'auto',
                   }}>
-                {action}
-              </button>
 
+                  <button 
+                    style={{ 
+                      width: '100%', 
+                      height: '100%', 
+                      padding: '1.5rem', 
+                      background: 'none',
+                      color: 'black', 
+                      border: '1px solid #003459', 
+                      fontSize: 'calc(0.5rem + 0.5vw)', 
+                      cursor: 'pointer' 
+                      }}>
+                    {action}
+                  </button>
+
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-      </div>
+          </div>
 
-      {/* The div below is the ones that display the current balance of the account */}
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', backgroundColor: 'white', border: 'none', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', width: '400px', height: '300px', margin: 'auto', }}>
-        <h1 style={{ fontWeight: 'bold', fontSize: 'calc(1.5rem + 2vw)' }}>
-          Balance
-        </h1>
-        <h2 style={{ paddingTop: '2rem', fontSize: 'calc(1rem + 1vw)', fontWeight: 'bold' }}>
-         ${balance[selectedAccount].toFixed(2)}
-        </h2>
-      </div>
+          {/* The div below is the ones that display the current balance of the account */}
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', backgroundColor: 'white', border: 'none', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', width: '400px', height: '300px', margin: 'auto', }}>
+            <h1 style={{ fontWeight: 'bold', fontSize: 'calc(1.5rem + 2vw)' }}>
+              Balance
+            </h1>
+            <h2 style={{ paddingTop: '2rem', fontSize: 'calc(1rem + 1vw)', fontWeight: 'bold' }}>
+            ${balance[selectedAccount].toFixed(2)}
+            </h2>
+          </div>
 
-      {renderPopup()}
+          {renderPopup()}
+        </>
+      )}
     </div>
   );
 }
