@@ -7,7 +7,7 @@ import ExpandableBtnList from "../components/ExpandableBtnList"; // npm install 
 
 
 import { useState } from "react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useRoutes } from 'react-router-dom';
 import { FileText, Send, DollarSign, PiggyBank, CornerUpLeft, User} from "lucide-react";
 
 // npm install react-phone-number-input --save (Make sure to install inside online-banking)
@@ -17,6 +17,7 @@ import { useEffect } from "react"; // Add this line for useEffect import
 
 import "./AccountPage.css"; 
 import PopupBox from "../components/PopupBox";
+import { isSet } from "util/types";
 
 // Constants
 const MIN_BALANCE: number = 0;
@@ -80,16 +81,150 @@ export default function Component() {
   const [error, setError] = useState<string>("");
   const [image, setImage] = useState<string | null>(null); 
 
-  // This portion of the code is about the ACCOUNT SETTINGS
+  // This portion of the code is about the ACCOUNT SETTINGS ONLY 
   const accountDataBtn: string[] = ["Change Username", "Change Password", "Change Email", "Change Pin"];
   const createAccBtn: string[] = ["Checking Account", "Savings Account"]; // Will only have these ones since they are easy
   const[settingBtn, setSettingBtn] = useState<string | null> (null);
+  const [showPassPin, setShowPassPin] = useState(false);
+
+  const [newAccData, setNewAccData] = useState("");
+  const [confirmAccData, setConfirmAccData] = useState("");
+  const [accErrorMsg, setAccErrorMsg] = useState("");
+
+  const [initialAmount, setInitialAmount] = useState("");
   
   const handleSetting = (action: string) => {
-    // I'll be using the activePopUp but will add additional case statements 
+    // This will be like a switch var to know when to popup which appropriate window
+    // Seperated each window hoping it will be a little easier to understand where everything is
     setSettingBtn(action);
   };
 
+  // Toggle between show and hide password
+  const togglePassPin = () => {
+    setShowPassPin((prevState) => !prevState);
+  }
+
+  /*
+      BACKEND:
+
+      I declared a function where when the confirm button is hit for whatever 
+      option they want to do, the backend data is updated and some stuff on the 
+      Frontend should change as well
+
+      As of now I added just basic input handling, for example,
+        When changing data, I just made sure that the new data and confirming the new data matched
+        I also changed that if there is an invalid amount when opening an acc
+
+      WHAT'S LEFT
+        I have to communicate to Yen about the password/username restrictions when changing the password
+        I have also not the size of the input for the pin
+        I also did not include any input handling on the SSN or Birthday when creating an account; 
+          it also does not check if the type of account exist or not
+  */
+  const handleConfirmSetting = () => {
+    switch (settingBtn) {
+      case "Checking Account": {
+
+          // Checks if there is an actual input or not
+          if(initialAmount === "") {
+            setAccErrorMsg("Please enter some amount (minimum is $0.00)")
+          }
+          else {
+            setAccErrorMsg("");
+            setInitialAmount("");
+            setSettingBtn(null);
+          }
+
+          /* TODO */
+
+        break;
+      }
+      case "Savings Account": {
+
+        // Checks if there is an actual input or not
+        if(initialAmount === "") {
+          setAccErrorMsg("Please enter some amount (minimum is $0.00)")
+        }
+        else {
+          setAccErrorMsg("");
+          setInitialAmount("");
+          setSettingBtn(null);
+        }
+
+        /* TODO */
+
+        break;
+      }
+      case "Change Username": {
+
+        // Portion for the matching new data input handling
+        if(newAccData !== confirmAccData) {
+          setAccErrorMsg("The existing username does not match or new usernames does not match");
+        }
+        else {
+          setConfirmAccData("");
+          setNewAccData("");
+          setAccErrorMsg("");
+          setSettingBtn(null);
+        }
+
+        /* TODO */
+
+      break;
+      }
+      case "Change Password": {
+
+        // Portion for the matching new data input handling
+        if(newAccData !== confirmAccData) {
+          setAccErrorMsg("The existing password does not match or new passwords does not match");
+        }
+        else {
+          setConfirmAccData("");
+          setNewAccData("");
+          setAccErrorMsg("");
+          setSettingBtn(null);
+        }
+
+          /* TODO */
+
+        break;
+      }
+      case "Change Email": {
+
+        // Portion for the matching new data input handling
+        if(newAccData !== confirmAccData) {
+          setAccErrorMsg("The existing email does not match or new emails does not match");
+        }
+        else {
+          setConfirmAccData("");
+          setNewAccData("");
+          setAccErrorMsg("");
+          setSettingBtn(null);
+        }
+
+        /* TODO */
+
+        break;
+      }
+      case "Change Pin": {
+
+        // Portion for the matching new data input handling
+        if(newAccData !== confirmAccData) {
+          setAccErrorMsg("The existing pin does not match or new pins does not match");
+        }
+        else {
+          setConfirmAccData("");
+          setNewAccData("");
+          setAccErrorMsg("");
+          setSettingBtn(null);
+        }
+
+        /* TODO */
+
+        break;
+      }
+    }
+  }
 
 
 
@@ -622,48 +757,152 @@ export default function Component() {
             {settingBtn === "Checking Account" && (
               <>
                 <PopupBox>
-                  <h2>Make Checking Account</h2>
-                  <p>Make Checking Account</p>
+                  <div className="acc-setting-header">
+                    <h2>Setup Checking Account</h2>
+                    <button className="x-btn" onClick={() => {setSettingBtn(null); setInitialAmount(""); setAccErrorMsg("")}}>X</button>
+                  </div>
+                  {accErrorMsg && <p style={{color: 'red', fontSize: '14px'}}>{accErrorMsg}</p>}
+                  <div className="acc-body">
+                    <p>Enter the following information below</p>
+                    <div className="input-wrapper">
+                      <div className="input-row">
+                        <input type="text" placeholder="SSN"/>
+                        <input type="text" placeholder="Birthdate" onFocus={(e) => e.target.type = 'date'} onBlur={(e) => e.target.type = 'text'}/>  
+                      </div>
+                      <div className="input-row">
+                        <input type="text" placeholder="Initial Deposit" value={initialAmount} onChange={(e) => {handleNumInputChange(e, setInitialAmount); setAccErrorMsg("")}}/>
+                      </div>
+                    </div>
+                    <button onClick={() => {handleConfirmSetting()}}>Confirm</button>
+                  </div>
                 </PopupBox>
               </>
             )}
             {settingBtn === "Savings Account" && (
               <>
                 <PopupBox>
-                  <h2>Make Savings Account</h2>
-                  <p>Make Savings Account</p>
+                  <div className="acc-setting-header">
+                    <h2>Setup Savings Account</h2>
+                    <button className="x-btn" onClick={() => {setSettingBtn(null); setInitialAmount(""); setAccErrorMsg("")}}>X</button>
+                  </div>
+                  {accErrorMsg && <p style={{color: 'red', fontSize: '14px'}}>{accErrorMsg}</p>}
+                  <div className="acc-body">
+                    <p>Enter the following information below</p>
+                    <div className="input-wrapper">
+                      <div className="input-row">
+                        <input type="text" placeholder="SSN"/>
+                        <input type="text" placeholder="Birthdate" onFocus={(e) => e.target.type = 'date'} onBlur={(e) => e.target.type = 'text'}/>  
+                      </div>
+                      <div className="input-row">
+                        <input type="text" placeholder="Initial Deposit" value={initialAmount} onChange={(e) => {handleNumInputChange(e, setInitialAmount); setAccErrorMsg("")}}/>
+                      </div>
+                    </div>
+                    <button onClick={() => {handleConfirmSetting()}}>Confirm</button>
+                  </div>
                 </PopupBox>
               </>
             )}
             {settingBtn === "Change Username" && (
               <>
                 <PopupBox>
-                  <h2>Change Username</h2>
-                  <p>Change Username</p>
+                  <div className="acc-setting-header">
+                    <h2>Change Username</h2>
+                    <button className="x-btn" onClick={() => {setSettingBtn(null); setNewAccData(""); setConfirmAccData("");}}>X</button>
+                  </div>
+                  {accErrorMsg && <p style={{color: 'red', fontSize: '14px'}}>{accErrorMsg}</p>}
+                  <div className="acc-body">
+                    <p>Enter the following information below</p>
+                    <div className="input-row">
+                      <input type="text" placeholder="Current Username"/>
+                    </div>
+                    <div className="input-row">
+                      <input type="text" placeholder="New Username" value={newAccData} onChange={(e) => {setNewAccData(e.target.value); setAccErrorMsg("")}}/>
+                    </div>
+                    <div className="input-row">
+                      <input type="text" placeholder="Confirm New Username" value={confirmAccData} onChange={(e) => {setConfirmAccData(e.target.value); setAccErrorMsg("")}}/>
+                    </div>
+                    <button onClick={() => {handleConfirmSetting()}}>Confirm</button>
+                  </div>
                 </PopupBox>
               </>
             )}
             {settingBtn === "Change Password" && (
               <>
                 <PopupBox>
-                  <h2>Change Password</h2>
-                  <p>Change Password</p>
+                  <div className="acc-setting-header">
+                    <h2>Change Pin</h2>
+                    <button className="x-btn" onClick={() => {setSettingBtn(null); setShowPassPin(false); setNewAccData(""); setConfirmAccData("");}}>X</button>
+                  </div>
+                  {accErrorMsg && <p style={{color: 'red', fontSize: '14px'}}>{accErrorMsg}</p>}
+                  <div className="acc-body">
+                    <p>Enter the following information below</p>
+                    <div className="input-row">
+                      <input type={showPassPin ? "text" : "password"} placeholder="Current Password"/>
+                    </div>
+                    <div className="input-row">
+                      <input type={showPassPin ? "text" : "password"} placeholder="New Password" value={newAccData} onChange={(e) => {setNewAccData(e.target.value); setAccErrorMsg("")}}/>
+                    </div>
+                    <div className="input-row">
+                      <input type={showPassPin ? "text" : "password"} placeholder="Confirm New Password" value={confirmAccData} onChange={(e) => {setConfirmAccData(e.target.value); setAccErrorMsg("")}}/>
+                    </div>
+                    <div className="checkbox-row">
+                      <input type="checkbox" onChange={togglePassPin} checked={showPassPin}/>
+                      <p>Show Pin</p>
+                    </div>
+                    <button onClick={() => {setShowPassPin(false); handleConfirmSetting()}}>Confirm</button>
+                  </div>
                 </PopupBox>
               </>
             )}
             {settingBtn === "Change Email" && (
               <>
                 <PopupBox>
-                  <h2>Change Email</h2>
-                  <p>Change Email</p>
+                  <div className="acc-setting-header">
+                    <h2>Change Email</h2>
+                    <button className="x-btn" onClick={() => {setSettingBtn(null); setNewAccData(""); setConfirmAccData("");}}>X</button>
+                  </div>
+                  {accErrorMsg && <p style={{color: 'red', fontSize: '14px'}}>{accErrorMsg}</p>}
+                  <div className="acc-body">
+                    <p>Enter the following information below</p>
+                    <div className="input-row">
+                      <input type="text" placeholder="Current Email"/>
+                    </div>
+                    <div className="input-row">
+                      <input type="text" placeholder="New Email" value={newAccData} onChange={(e) => {setNewAccData(e.target.value); setAccErrorMsg("")}}/>
+                    </div>
+                    <div className="input-row">
+                      <input type="text" placeholder="Confirm New Email" value={confirmAccData} onChange={(e) => {setConfirmAccData(e.target.value); setAccErrorMsg("")}}/>
+                    </div>
+                    <button onClick={() => {handleConfirmSetting()}}>Confirm</button>
+                  </div>
                 </PopupBox>
               </>
             )}
             {settingBtn === "Change Pin" && (
               <>
                 <PopupBox>
-                  <h2>Change Pin</h2>
-                  <h2>Change Pin</h2>
+                  <div className="acc-setting-header">
+                    <h2>Change Pin</h2>
+                    <button className="x-btn" onClick={() => {setSettingBtn(null); setShowPassPin(false); setNewAccData(""); setConfirmAccData("");}}>X</button>
+                  </div>
+                  {accErrorMsg && <p style={{color: 'red', fontSize: '14px'}}>{accErrorMsg}</p>}
+                  <div className="acc-body">
+                    <p>Enter the following information below</p>
+                    <div className="input-row">
+                      <input type={showPassPin ? "text" : "password"} placeholder="Current Pin"/>
+                    </div>
+                    <div className="input-row">
+                      <input type={showPassPin ? "text" : "password"} placeholder="New Pin" value={newAccData} onChange={(e) => {setNewAccData(e.target.value); setAccErrorMsg("")}}/>
+                    </div>
+                    <div className="input-row">
+                      <input type={showPassPin ? "text" : "password"} placeholder="Confirm New Pin" value={confirmAccData} onChange={(e) => {setConfirmAccData(e.target.value); setAccErrorMsg("")}}/>
+                    </div>
+                    <div className="checkbox-row">
+                      <input type="checkbox" onChange={togglePassPin} checked={showPassPin}/>
+                      <p>Show Pin</p>
+                    </div>
+                    <button onClick={() => {setShowPassPin(false); handleConfirmSetting()}}>Confirm</button>
+                  </div>
                 </PopupBox>
               </>
             )}
