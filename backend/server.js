@@ -5,7 +5,6 @@ import authRoutes from './routes/auth.js'; // Import Routes that use db.js
 import session from 'express-session';
 import cookieParser from 'cookie-parser'
 
-
 //USING EXPRESS
 const app = express();
 
@@ -19,7 +18,7 @@ app.use(session({
     saveUninitialized: false,
     store,
     cookie: { 
-      maxAge: 60000 * 60} 
+      maxAge: 60000 * 60},
   }))
   
 //ALLOWS ANY USE OF JSON SENT BY POST METHOD
