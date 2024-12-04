@@ -40,6 +40,10 @@ const Registration = () => {
             setErrorMssg('PIN and Confirm PIN do not match.');
             return false;
         }
+        if (Pin.length != 4) {
+            setErrorMssg('PIN must be 4 digits long.');
+            return false;
+        }
 
         return true;
     };
@@ -47,8 +51,8 @@ const Registration = () => {
     
 
     // Function to handle when the user submits the form
-    const submission = async (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
+    const submission = async (e: React.FormEvent) => {
+        e.preventDefault();
         // Stop if data is invalid
         if (!validateInput()) {
             return; 
@@ -56,26 +60,44 @@ const Registration = () => {
 
         try {
             // Send a request to check if the email already exists
-            const emailCheckResponse = await axios.get('http://localhost:3000',
+            const emailCheckResponse = await axios.get('http://localhost:3001/auth/check',
             {
-                params: { email: Email },
+                params: {email: Email},
+                headers: {
+                    "Content-Type": "application/json", // Optional for GET; usually not needed
+                  },
+            });
+            //sending a request to see if username already exists
+            const usernameCheckResponse = await axios.get('http://localhost:3001/auth/checkuser',
+            {
+                params: {username: Username},
+                headers: {
+                    "Content-Type": "application/json", // Optional for GET; usually not needed
+                  },
             });
 
-            // Send new account registration request
-            await axios.post('http://localhost:3000/registration', {
-                LastName,
-                FirstName,
-                Username,
-                Email,
-                Password,
-                Pin,
-            });
-            // Successful registration notification and redirection to Hompage
-            setSuccessMssg('Congratulations! Registration successful!'); 
-            setErrorMssg('');
-
-      
-            
+            if(emailCheckResponse.data.success){
+                if(usernameCheckResponse.data.success){
+                    await axios.post('http://localhost:3001/auth/signup', {
+                    lname: LastName,
+                    fname: FirstName,
+                    username: Username,
+                    email: Email,
+                    password: Password,
+                    pin: Pin,
+                    headers: {
+                        "Content-Type": "application/json", // Optional for GET; usually not needed
+                      }
+                    });
+                    navigate('/UserLogin');
+                }
+                else{
+                    setErrorMssg("Username already taken");
+                }
+            }
+            else{
+                setErrorMssg("Email already taken");
+            }
            
         } catch (error) { 
             // Handle errors when registration fails
