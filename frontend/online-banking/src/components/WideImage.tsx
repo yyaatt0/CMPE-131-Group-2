@@ -7,20 +7,20 @@
 */
 
 interface WideImageProps {
-    image: string;  // [Required]: path to image
-    text?: string;  // Text to display centered over image
+    src: string;  // [Required]: path to image
+    children?: React.ReactElement | string;
 }
 
 // Vars to control modifiable attributes
 const height = '500px'
 const opacity = '0.5'
 
-function WideImage({image, text}: WideImageProps) {
+function WideImage({src, children}: WideImageProps) {
     return (
         <div style={{position: 'relative', height: height, backgroundColor: '#003459'}}>
             <img 
-                src={image} 
-                alt={text} 
+                src={src} 
+                alt={src} 
                 style={{
                     width: '100%', 
                     height: '100%', 
@@ -29,9 +29,7 @@ function WideImage({image, text}: WideImageProps) {
                     opacity: opacity,
                 }}
             />
-            <header className="wide-image-text">
-                {text}
-            </header>
+            {children}
         </div>
     );
 }

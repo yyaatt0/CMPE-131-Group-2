@@ -2,85 +2,114 @@ import './Homepage.css'
 import '../styles.css'
 
 import images from '../images'
+import { savings_desc, checkings_desc, credit_desc, insurance_desc, business_desc } from '../textdescriptions'
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { user, account } from '../types';
 
-import AccountList from "../components/AccountList";
 import WideImage from "../components/WideImage";
 import FooterCard from "../components/FooterCard";
-import DevTools from "../components/DevTools";
 import NavBar from "../components/NavBar";
-import SectionHeader from "../components/SectionHeader";
+import ListCard from '../components/ListCard';
+import ArrowButton from '../components/ArrowButton';
+import { useNavigate } from 'react-router-dom';
+import ScrollBox from '../components/ScrollBox';
+import InfoCardSmall from '../components/InfoCardSmall';
 
 /*
-    Account data reqs:
-
-    id:         Specific id number
-    name:       Name of account
-    balance:    Numeric value representing balance stored in account
-*/
-type account = {id: number, name: string, balance: number};
-
-// Temp hardcoded data
-let accounts: account[] = [
-    { id: 0, name: "Personal Checking", balance: 1000 },
-    { id: 1, name: "Personal Savings", balance: 10000 },
-    { id: 2, name: "Business Checking", balance: 93758 },
-    { id: 3, name: "Business Savings", balance: 500782 }
+// Temp hardcoded accounts list
+let temp_accounts: account[] = [
+    { ID: 0, name: "Personal Checking", balance: 1000 },
+    { ID: 1, name: "Personal Savings", balance: 10000 },
+    { ID: 2, name: "Business Checking", balance: 93758 },
+    { ID: 3, name: "Business Savings", balance: 500782 }
 ];
-let noAccounts: account[] = [];
+
+// Temp currently logged in user
+let currentUser: user = {
+  UID: 100524, 
+  
+  firstName: 'Jerry', 
+  lastName: 'Racecardriver', 
+  
+  phone_primary: '(123)456-7890', 
+  email: 'jerrydriver@gmail.com', 
+  
+  ssn: '123-45-6789', 
+  
+  accounts: null
+}
+*/
 
 function Homepage() {
 
+  const navigate = useNavigate();
+
   // Handle account selection
-  const handleSelectItem = () => {
-    window.location.href = "/accountpage"; // Redirect to account page
+  const handleSelectAccount = () => {
+    navigate('/accountpage'); // Redirect to account page
   };
 
-  const [loggedIn, setLoggedIn] = useState(0);
-
-  // Handle login/logout
-  const handleSelectOption = (setStatus: number) => {
-    setLoggedIn(setStatus);
+  const handleCreateAccount = () => {
+    /*
+    if(currentUser){
+      console.log("Redirect to account creation page.");
+      navigate('/accountpage');
+    }
+    else
+      navigate('/userlogin');
+    */
+    navigate('/userlogin');
   }
 
   return (
     <div>
 
-      {/* Temp dev tools tab to test certain functionalities */}
-      <DevTools 
-        loggedIn={loggedIn} 
-        onSelectOption={handleSelectOption}
-      />
-
       <NavBar/>
 
-      <WideImage 
-        image={images.home_cover}
-        text="Bank of Banks"
-      />
+      <WideImage src={images.home_cover}>
+        <header className='wide-image-text'>Bank of Banks</header>
+      </WideImage>
 
-      <SectionHeader text="Accounts"/>
+      <h1 className='section-header'></h1>
+        
+      <div className='account-info-section'>
+        <div className="account-description">
+          <div className='text-area'>
+            <h2>Savings</h2>
+            <p>{savings_desc}</p>
+            <ArrowButton className='green-button' onClick={handleCreateAccount}>Open Account</ArrowButton>
+          </div>
+          <div className='image-area'>
+            <img src={images.saving}/>
+          </div>
+        </div>
+        <div className="account-description">
+          <div className='image-area'>
+            <img src={images.checking}/>
+          </div>
+          <div className='text-area'>
+            <h2>Checking</h2>
+            <p>{checkings_desc}</p>
+            <ArrowButton className='green-button' onClick={handleCreateAccount}>Open Account</ArrowButton>
+          </div>
+        </div>
+      </div>
 
-      {/* If logged in, display account listings */}
-      {loggedIn === 1 && 
-        <AccountList
-          accounts={accounts}
-          onSelectAccount={handleSelectItem}
-        />
-      }
+      <div className='offers-section'>
+          <InfoCardSmall heading='Platinum Rewards'>
+            <p>{credit_desc}</p>
+          </InfoCardSmall>
+          <InfoCardSmall heading='Insurance' className='blue-1'>
+            <p>{insurance_desc}</p>
+          </InfoCardSmall>
+          <InfoCardSmall heading='Business Accounts' className='blue-2'>
+            <p>{business_desc}</p>
+          </InfoCardSmall>
+      </div>
 
-      {/* If not logged in, display links to go to account creation pages */}
-      {loggedIn === 0 && 
-        <AccountList
-          accounts={noAccounts}
-          onSelectAccount={handleSelectItem}
-        />
-      }
-
-      <WideImage
-        image={images.home_signing}
-      />
+      <h1 className='section-header'></h1>
+      <WideImage src={images.home_signing}/>
 
       <FooterCard />
     </div>

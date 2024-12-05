@@ -31,6 +31,9 @@ footer {
 nav {
   background-color: #003459;
   display: flex;
+
+  position: relative;
+
   height: 65px;
 }
 
@@ -42,7 +45,7 @@ button {
   cursor: pointer;
 }
 
-.nav-tab {
+.nav-tab, .login {
   background-color: #003459;
   border: 0;
   display: table;
@@ -59,8 +62,22 @@ button {
   height: 100%;
 }
 
-.nav-tab:hover {
+.nav-tab:hover, .login:hover {
   background-color: #004f88;
+}
+
+.login {
+  
+  border: 1px solid white;
+  border-radius: 5px;
+
+  position: absolute;
+  right: 1%;
+  top: 10%;
+
+  width: 150px;
+  height: 75%;
+
 }
 
 .section-header {
@@ -174,11 +191,14 @@ button {
 .arrow-button {
   background-color: #003459;
   border-radius: 10px;
+  transition-duration: 500ms;
+
   display: flex;
   align-items: center;
+  justify-content: space-evenly;
 
   color: white;
-  font-size: 16px;
+  font-size: 1em;
   font-weight: bold;
 
   cursor: pointer;
@@ -190,4 +210,70 @@ button {
 
 .arrow-button:hover {
   background-color: #03528a;
+  transition-duration: 500ms;
 }
+
+.circle-content {
+  height: 100%;
+  width: 100%;
+}
+
+/* This portion is for the expandable button list in the account page */
+.Collapsible {
+  width: 100%;
+  height: 100%;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.Collapsible__trigger {
+  display: block;
+  width: 100%;
+  cursor: pointer;
+  background-color: #003459;
+  color: white;
+  padding: 15px;
+  text-align: left;
+  box-sizing: border-box;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.Collapsible__trigger:after {
+  content: '▾';
+  float: right;
+  transition: transform 300ms;
+}
+
+.Collapsible__trigger.is-open:after {
+  transform: rotate(-180deg);
+}
+
+.Collapsible__contentInner {
+  padding: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.exp-button {
+  display: block;
+  width: 100%;
+  padding: 14px 22px;
+  margin: 0;
+  border: none;
+  background-color: #e0e0e0;
+  text-align: left;
+  box-sizing: border-box;
+  font-size: 15px;
+  color: #333;
+  cursor: pointer;
+}
+
+.exp-button:hover {
+  background-color: #d5d5d5;
+}
+
+.expandable-btn-list {
+  width: 100%;
+}
+

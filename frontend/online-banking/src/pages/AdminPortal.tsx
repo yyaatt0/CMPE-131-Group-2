@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Search } from 'lucide-react';
+import { Search, LogOut } from 'lucide-react';
 import '../styles.css';
 import './AdminPortal.css';
 import ReqTextInput from '../components/ReqTextInput';
@@ -8,6 +8,7 @@ import ListCard from '../components/ListCard';
 import ScrollBox from '../components/ScrollBox';
 import PageButtons from '../components/PageButtons';
 import { setTextRange } from 'typescript';
+import { useNavigate } from 'react-router-dom';
 
 // Basic user type definition. Will add more fields later (contact info, ssn, etc.)
 type user = {id: number, firstName: string, lastName: string};
@@ -16,12 +17,12 @@ type user = {id: number, firstName: string, lastName: string};
 let userCount = 100;
 let users: user[] = []
 for(var i = 0; i < userCount; i++){
-    if(i % 5 == 0 && i % 3 != 0){
+    if(i % 5 === 0 && i % 3 !== 0){
         users.push(
             {id: i + 100000, firstName: 'Barry', lastName: 'Allen'}
         )
     }
-    else if(i % 5 != 0 && i % 3 == 0){
+    else if(i % 5 !== 0 && i % 3 === 0){
         users.push(
             {id: i + 100000, firstName: 'Peter', lastName: 'Griffin'}
         )
@@ -79,6 +80,15 @@ function AdminPortal() {
     const tabsRef = useRef<(HTMLButtonElement | null)[]>([]);
     const [tabUnderlineWidth, setTabUnderlineWidth] = useState(0);
     const [tabUnderlineLeft, setTabUnderlineLeft] = useState(0);
+
+    // HARDCODED DATA
+    // BACKEND WILL IMPORT THIS
+    const adminName = "John Doe";
+
+    const navigate = useNavigate();
+    const handleClick = () => {
+        navigate('/Homepage');
+    };
 
     useEffect(() => {
         const updateUnderlinePosition = () => {
@@ -161,7 +171,12 @@ function AdminPortal() {
 
     return(
         <>
-            <h1 className='section-header'>Admin Portal | Welcome, (Admin)</h1> {/* Will need to get name of current admin */}
+            <div className='header-wrapper'>
+                <h1 className='section-header'>Admin Portal | Welcome, {adminName}</h1> {/* Will need to get name of current admin */}
+                <button className='logout-button' onClick={handleClick}>
+                    <LogOut/> Logout
+                </button>
+            </div>
             <div className='admin-nav'>  {/* Admin navigation tabs | 0: User database, 1: Add new employwee, 2: Manage Admin Access*/}
 
                 <span
@@ -257,8 +272,9 @@ function AdminPortal() {
                                             {filterEmployee.map((emp, index) => (
                                                 <>
                                                     {/* Employee info display */}
-                                                    <ListCard className={selectedUser === index ? 'selected': ''} info={emp.info} onClick={() => handleUserSelect(index)}>
-
+                                                    <ListCard className={selectedUser === index ? 'selected': ''} onClick={() => handleUserSelect(index)}>
+                                                        <label className='list-content'> ID: {emp.info.id} </label>
+                                                        <label className='list-content'> Name: {emp.info.lastName}, {emp.info.firstName} </label>
                                                     </ListCard>
                                                 </>
                                             ))}
@@ -307,7 +323,10 @@ function AdminPortal() {
                                         </div>       
                                             {filterUser.map((user, index) => (
                                                 // User info display
-                                                <ListCard className={selectedUser === index ? 'selected' : ''} info={user} onClick={() => handleUserSelect(index)}/>
+                                                <ListCard className={selectedUser === index ? 'selected' : ''} onClick={() => handleUserSelect(index)}>
+                                                    <label className='list-content'> ID: {user.id} </label>
+                                                    <label className='list-content'> Name: {user.lastName}, {user.firstName} </label>
+                                                </ListCard>
                                             ))}
                                         </ScrollBox>
                                     </div>
