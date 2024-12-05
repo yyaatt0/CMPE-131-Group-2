@@ -97,9 +97,12 @@ export default function Component() {
 
   const [initialAmount, setInitialAmount] = useState("");
 
-  const [transferAmount, setTransferAmount] = useState<string>("");
-  const [transferAccountNumber, setTransferAccountNumber] = useState<string>("");
+  const [transferAmount, setTransferAmount] = useState<string>(""); //setting up variables
+  const [sourceAccountID, setSourceAccountID] = useState<string>("");
+  const [destAccountID, setDestAccountID] = useState<string>("");
   const [transferError, setTransferError] = useState<string>("");
+  const [transferSuccess, setTransferSuccess] = useState("");
+
   
   const handleSetting = (action: string) => {
     // This will be like a switch var to know when to popup which appropriate window
@@ -463,7 +466,7 @@ export default function Component() {
     }
   };
 
-  const handleTransfer = () => {
+  const handleTransfer = () => { //parsing values that are entered
     setTransferError("");
     const amount = parseFloat(transferAmount);
     if (isNaN(amount) || amount <= 0) {
@@ -474,28 +477,55 @@ export default function Component() {
       setTransferError("Insufficient funds for this transfer.");
       return;
     }
-    if (transferAccountNumber.length !== 10) {
+    if (sourceAccountID.length !== 10) {
       setTransferError("Please enter a valid 10-digit account number.");
       return;
     }
-    // Here you would typically call an API to process the transfer
-    // For this example, we'll just update the balance
-    updateAccountBalance(accountBalance - amount);
-    // Add a new transaction
-    const date = new Date();
-    const transferTransaction: transaction = {
-      id: transactions.length + 1,
-      amount: -amount,
-      type: "Transfer",
-      info: `Transfer to account ${transferAccountNumber}`,
-      date: `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`,
-    };
-    addNewTransaction(transferTransaction);
-    // Reset form
-    setTransferAmount("");
-    setTransferAccountNumber("");
-    setActiveTab("transactions");
-  };
+    
+    
+    fetch("http://localhost:3001/transfer", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        sourceAccountID: sourceAccountID,  // Source account ID
+        destAccountID: destAccountID,    // Destination account ID
+        amount: transferAmount,
+      }),
+      credentials: "include", // To send the session cookie for user identification
+    })
+    .then((response) => response.json())
+    .then((result) => {
+      if (!result.success) {
+        setTransferError(result.message || "An error occurred during the transfer.");
+        return;
+      }
+  
+      // If the transfer is successful, update the local balance and transaction
+      updateAccountBalance(accountBalance - amount);
+  
+      // Add a new transaction
+      const date = new Date();
+      const transferTransaction: transaction = {
+        id: transactions.length + 1,
+        amount: -amount,
+        type: "Transfer",
+        info: `Transfer to account ${destAccountID}`, // Destination account
+        date: `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`,
+      };
+      addNewTransaction(transferTransaction);
+  
+      // Reset form
+      setTransferAmount("");
+      setSourceAccountID(""); // Reset source account number
+      setDestAccountID(""); // Reset destination account number
+      setActiveTab("transactions");
+    })
+    .catch((error) => {
+      console.error("Error during transfer:", error);
+      setTransferError("An error occurred while communicating with the server.");
+    });
   
   return (
     <div className="app-container">
@@ -980,4 +1010,5 @@ export default function Component() {
       </div>
     </div>
   );
+}
 }
