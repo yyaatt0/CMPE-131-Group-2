@@ -70,10 +70,15 @@ const AtmFeature = () => {
             const res = await axios.get("http://localhost:3001/auth/balance/userBalance", {
               withCredentials: true, // Include session cookies in the request
             });
-            const { balance } = res.data;
+            //const { balance } = res.data;
+            // setBalances({
+            //   "Checking": balance, // Example distribution logic
+            //   "Savings": balance   // Example distribution logic
+            // });
+            const { balances } = res.data;
             setBalances({
-              "Checking": balance, // Example distribution logic
-              "Savings": balance   // Example distribution logic
+              "Checking": balances.Checking || 0, 
+              "Savings": balances.Savings || 0 
             });
             console.log(res)
         }

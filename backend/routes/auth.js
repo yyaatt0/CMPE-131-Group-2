@@ -169,9 +169,16 @@ router.get('/balance/userBalance', (req, res) => {
           return res.json({ success: false, message: "User not found" });
       }
       console.log(data)
-      
 
-      return res.json({ success: true});
+
+      return res.json({ 
+          success: true, 
+          balances: {
+              Checking: data[0]?.balance || 0, // Assuming the first entry is Checking
+              Savings: data[1]?.balance || 0   // Assuming the second entry is Savings
+          } 
+      });
+    
   });
 });
 
