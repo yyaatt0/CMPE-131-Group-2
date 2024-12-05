@@ -12,30 +12,23 @@ import {ChevronLeft, ChevronRight, ChevronUp, ChevronDown} from 'lucide-react'
 */
 
 interface ArrowButtonProps {
-    path: string;       // [Required]: destination that button takes you to
-                        //    * * *    setting  path="" will go to homepage
     direction?: string; // Direction of arrow ('left', 'right', 'up', 'down')
-                        //    * * *    
-    text?: string;      // Text displayed on button
-    color?: string;     // Color of button
-    hColor?: string;    // Hover Color of Button
+    className?: string;
+    children?: React.ReactElement | string;
+    onClick?: () => void;
 }
 
-function ArrowButton({path, direction, text, color, hColor}: ArrowButtonProps) {
+function ArrowButton({direction, children, className, onClick}: ArrowButtonProps) {
     
     const [isHovered, setIsHovered] = useState(false);
+    const classes: string = `arrow-button ${className}`
 
     return (
         <div 
-            className="arrow-button" 
-            onClick={() => window.location.href = path}
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-            style={{
-                backgroundColor: isHovered ? hColor : color
-            }}
+            className={classes}
+            onClick={onClick}
         >
-            <span>{text}</span>
+            <span>{children}</span>
             {(() => {
                 switch (direction) {
                     case "up":

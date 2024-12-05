@@ -6,7 +6,7 @@ import {House, UserRound, DollarSign, LogIn, LogOut} from 'lucide-react'
 import { useState } from 'react';
 
 
-function NavBar() {
+function UserBar() {
 
     const navigate = useNavigate();
 
@@ -52,16 +52,11 @@ function NavBar() {
                 <p style={{display: 'table-cell', verticalAlign: 'middle'}}>Profile</p>
             </div>
             */}
-            <div className='login' onClick={handleLogInOut}>
-                <div style={{display: 'table-cell', verticalAlign: 'middle', transform: 'translate(25%, 5%)'}}>
-                    {loggedIn ? <LogOut/> : <LogIn/>}
-                </div>
-                <p style={{display: 'table-cell', verticalAlign: 'middle'}}>
-                    {loggedIn ? "Logout" : "Login"}
-                </p>
-            </div>
+            
         </nav>
     );
 }
 
-export default NavBar;
+export default UserBar;
+
+

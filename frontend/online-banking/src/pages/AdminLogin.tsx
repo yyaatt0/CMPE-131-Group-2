@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import UserBar from '../components/UserBar';
+import FooterCard from '../components/FooterCard';
 
 const AdminLogin = () => {
   const [username, setUsername] = useState<string>('');   // Store the entered username
@@ -31,22 +33,30 @@ const AdminLogin = () => {
   };
 
   return (
-    <div style={{ fontFamily: ' sans-serif' , flexDirection: 'column', minHeight: '100vh'}}>
+    //  <div style={{ fontFamily: ' sans-serif' , flexDirection: 'column', minHeight: '100vh'}}>
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', backgroundColor: '#f3f4f6', fontFamily: 'sans-serif'}}>
+
+      {/* Navigation Bar */}
+      <UserBar/>
 
       {/* Holds the nav bar and heading  */}
-      <header>
+      
         {/* Upper portion of the page, later to include a functional nav bar so we can navigate through multiple pages
         Have this navbar as a component  */}
-        <nav style={{
+        {/* <nav style={{
           backgroundColor: '#003459',
           padding: '30px',
           color: 'white',
           textAlign: 'center'
-        }}>
-          <h1>Bank of Banks</h1>
-        </nav>
+        }}> */}
+      <header style={{ backgroundColor: '#003459', color: 'white', padding: '24px', textAlign: 'center', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
+
+        <h1 style={{ fontSize: '2rem', fontWeight: 'bold' }}>Bank of Banks </h1>
+
+        
+        
       </header>
-      
+        
       {/* This div holds the login potion of the page, like the textbox for the password/username,
       some of the buttons, and titles */}
       <div style={{
@@ -125,13 +135,37 @@ const AdminLogin = () => {
           </button>
         </form>
 
-        {/* Button going to the page to reset the password */}
-        <br />
-        <div style={{ textAlign: 'center' }}>
-          <a href="/forgotPassword" style={{ paddingBottom: '10px', display: 'inline-block' }} >Forgot Password?</a>
-        </div>
-      
+
+<p style={{ textAlign: "center" }}>
+        <a
+          href="#"
+          onClick={(e) => {
+            e.preventDefault();
+            const messageElement = document.getElementById("forgot-message");
+            if (messageElement) {
+              messageElement.style.display = "block"; 
+            } else {
+              console.error("Element with id 'forgot-message' not found.");
+            }
+          }}
+        >
+          Forgot Password?
+        </a>
+      </p>
+
+      <div
+        id="forgot-message"
+        style={{ display: "none", color: "red", marginTop: "10px" }}
+      >
+        Please contact IT for assistance!
       </div>
+        
+        <div style={{ textAlign: 'center', margin: '20px auto' }}>
+
+<a href="/userlogin" style={{ paddingBottom: '10px', display: 'inline-block' }}> User Login </a> 
+</div>
+      </div>
+      <FooterCard/>
 
     </div>
   );
