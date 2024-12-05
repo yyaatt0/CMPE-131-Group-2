@@ -261,4 +261,64 @@ router.post("/balanceFeatures", (req, res) => {
   return res.json()
 })
 
+router.post("/transfer", (req, res) => {
+  const { sourceAccountType, destAccountType, amount } = req.body;
+  const userID = req.session.userID;
+
+  if (!userID) {
+    return res.json({ success: false, message: 'User not logged in' });
+  }
+
+  const floatAmount = parseFloat(amount);
+  if (isNaN(floatAmount) || floatAmount <= 0) {
+    return res.json({ success: false, message: 'Invalid transfer amount' });
+  }
+
+  const findAccID = "SELECT accountID FROM bank.accounts WHERE userID = ? AND type = ?";
+
+  // FIND SOURCEACCID
+  db.query(findAccID, [userID, sourceAccountType], (err, sourceData) => {
+    if (err) {
+      return res.json({ success: false, message: 'Database error' });
+    }
+    if (sourceData.length === 0) {
+      return res.json({ success: false, message: 'Source account not found' });
+    }
+
+    const sourceAccountID = sourceData[0].accountID;
+
+    // FIND DESTACCID
+    db.query(findAccID, [userID, destAccountType], (err, destData) => {
+      if (err) {
+        return res.json({ success: false, message: 'Database error' });
+      }
+      if (destData.length === 0) {
+        return res.json({ success: false, message: 'Destination account not found' });
+      }
+
+      const destAccountID = destData[0].accountID;
+
+      // DEDUCT
+      const deductQry = "UPDATE bank.accounts SET balance = balance - ? WHERE accountID = ?";
+      db.query(deductQry, [floatAmount, sourceAccountID], (err, deductResult) => {
+        if (err) {
+          return res.json({ success: false, message: 'Database error' });
+        }
+
+        // ADD
+        const addQry = "UPDATE bank.accounts SET balance = balance + ? WHERE accountID = ?";
+        db.query(addQry, [floatAmount, destAccountID], (err, addResult) => {
+          if (err) {
+            return res.json({ success: false, message: 'Database error' });
+          }
+
+          return res.json({ success: true, message: 'Transfer successful' });
+        });
+      });
+    });
+  });
+});
+
+
+
 export default router;
