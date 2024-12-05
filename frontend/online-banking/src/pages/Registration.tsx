@@ -60,34 +60,27 @@ const Registration = () => {
 
         try {
             // Send a request to check if the email already exists
-            const emailCheckResponse = await axios.get('http://localhost:3001/auth/check',
+            const emailCheckResponse = await axios.post('http://localhost:3001/auth/check',
             {
-                params: {email: Email},
-                headers: {
-                    "Content-Type": "application/json", // Optional for GET; usually not needed
-                  },
+                email: Email
             });
             //sending a request to see if username already exists
-            const usernameCheckResponse = await axios.get('http://localhost:3001/auth/checkuser',
+            const usernameCheckResponse = await axios.post('http://localhost:3001/auth/checkuser',
             {
-                params: {username: Username},
-                headers: {
-                    "Content-Type": "application/json", // Optional for GET; usually not needed
-                  },
+                username: Username
             });
 
             if(emailCheckResponse.data.success){
+                console.log("Passed email check")
                 if(usernameCheckResponse.data.success){
+                    console.log("Passed username check")
                     await axios.post('http://localhost:3001/auth/signup', {
                     lname: LastName,
                     fname: FirstName,
                     username: Username,
                     email: Email,
                     password: Password,
-                    pin: Pin,
-                    headers: {
-                        "Content-Type": "application/json", // Optional for GET; usually not needed
-                      }
+                    pin: Pin
                     });
                     navigate('/UserLogin');
                 }

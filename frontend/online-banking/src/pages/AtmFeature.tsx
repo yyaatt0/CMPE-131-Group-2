@@ -174,6 +174,7 @@ const AtmFeature = () => {
 
   //WHEN CONFIRM IS PRESSED, UPDATES THE DATABASE BY SENDING THE USERACTION
   const handleConfirm =  async (e: { preventDefault: () => void; }) => {
+    console.log("Click");
     try {
       await axios.post("http://localhost:3000/balanceFeatures", userAction)
       navigate("/")
@@ -188,11 +189,13 @@ const AtmFeature = () => {
     switch(activePopup){
       case "Withdraw Cash": 
         userAction.action = "withdraw";
+        console.log(userAction.action)
         setConfirmHover(false);
         break;
       case "Deposit Cash":
       case "Deposit Check":
         userAction.action = "deposit";
+        console.log(userAction.action)
         setConfirmHover(false);
         break;
       case "Fund Transfer":
@@ -249,7 +252,7 @@ const AtmFeature = () => {
 
             {/* The confirm button */}
             <button
-              onClick={(e) => handleConfirm(e)}
+              onClick={handleConfirm}
               onMouseDown={() => setConfirmActive(true)}
               onMouseUp={() => setConfirmActive(false)}
               onMouseEnter={() => setConfirmHover(true)}
