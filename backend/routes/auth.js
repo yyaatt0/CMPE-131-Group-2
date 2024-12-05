@@ -76,10 +76,34 @@ router.post("/adminlogin", (req, res) => {
 });
 
 //GET BALANCE
-router.get("/balance/:userID", (req, res) => {
-  console.log("Received userID:", req.session.userID); // Debug log
+// router.get("/balance/userBalance", (req, res) => {
+//   console.log("Received userID:", req.session.userID); // Debug log
+//   console.log('Session balance Data:', req.session);
+//   const qry = "SELECT type, balance FROM accounts WHERE userID = ?";
+//   db.query(qry, [req.session.userID], (err, data) => {
+//       if (err) {
+//           console.error("Database error details:", err); // Log full error details
+//           return res.json({ success: false, message: "Database error", error: err });
+//       }
 
-  const qry = "SELECT type, balance FROM accounts WHERE userID = ?";
+//       if (data.length === 0) {
+//           return res.json({ success: false, message: "User not found" });
+//       }
+
+//       return res.json({ success: true, balance: data[0].balance });
+//   });
+// });
+
+router.get('/balance/userBalance', (req, res) => {
+  console.log('Session Data in /balance:', req.session);
+  console.log('Received userID:', req.session.userID);
+
+  if (!req.session.userID) {
+    return res.status(401).json({ success: false, message: 'User not logged in' });
+  }
+
+  const qry = "SELECT balance FROM accounts WHERE userID = ?";
+
   db.query(qry, [req.session.userID], (err, data) => {
       if (err) {
           console.error("Database error details:", err); // Log full error details
@@ -90,9 +114,10 @@ router.get("/balance/:userID", (req, res) => {
           return res.json({ success: false, message: "User not found" });
       }
 
-      return res.json({ success: true, balance: data[0].balance });
+      return res.json({ success: true});
   });
 });
+
 
 // // ATM LOGIN METHOD, REQUEST USERNAME & PIN
 router.post("/atmlogin", (req, res) => {
@@ -120,7 +145,7 @@ router.post("/atmlogin", (req, res) => {
     req.session.userID = id; 
     req.session.userFname = fname; 
     req.session.userLname = lname; 
-    
+    console.log('Session Data:', req.session);
     return res.json({ success: true, message: 'ATM login successful' });
   });
 });

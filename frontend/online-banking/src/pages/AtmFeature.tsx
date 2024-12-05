@@ -67,8 +67,15 @@ const AtmFeature = () => {
   useEffect(() => {
     const fetchBalance = async () => {
         try {
-            const res = await axios.get("http://localhost:3001//balance/:userID")
-            setBalances(res.data);
+            const res = await axios.get("http://localhost:3001/auth/balance/userBalance", {
+              withCredentials: true, // Include session cookies in the request
+            });
+            // setBalances(res.data);
+            const { balance } = res.data;
+            setBalances({
+              "Checking": balance, // Example distribution logic
+              "Savings": balance   // Example distribution logic
+            });
             console.log(res)
         }
         catch(err) {
@@ -76,7 +83,7 @@ const AtmFeature = () => {
         }
     }
     fetchBalance()
-})
+  }, []);  
 
   // HARDCODED DATA
   // BACKEND: Fill this array from the data base based on what account the user has 

@@ -53,6 +53,7 @@ const AtmLogin = () => {
         const response = await axios.post('http://localhost:3001/auth/atmlogin', {
           username: username,
           pin: password,
+          withCredentials: true, 
         });
 
         if (response.data.success) {
