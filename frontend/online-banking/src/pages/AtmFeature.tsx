@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 // the cmd line to install this is 
 // npm install lucide-react
 // This package is for the icons used in this page
-import { LogOut, X } from "lucide-react"; 
+import { CornerUpLeft, X } from "lucide-react"; 
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -12,13 +12,8 @@ interface AccountBalance {
 }
 
 const AtmFeature = () => {
-
-  // HARDCODED DATA
-  // BACKEND: Fill this array from the data base based on what account the user has 
-  const accounts: string[] = ["Savings Account", "Checking Account"];
-
   // For the side Nav bar to select accounts
-  const [selectedAccount, setSelectedAccount] = useState<string>(accounts[0]);  // BACKEND: Change to whatever first account pops up
+  const [selectedAccount, setSelectedAccount] = useState<string>("Checking"); // BACKEND: Change to whatever first account pops up
   const [hoveredAccount, setHoveredAccount] = useState<string | null>(null);
   
   // This is for the hover and active portion of the logout button
@@ -48,37 +43,13 @@ const AtmFeature = () => {
   // This is for showing a preview of the check images
   const [selectedFrontImg, setSelectedFrontImg] = useState<string>();
   const [selectedBackImg, setSelectedBackImg] = useState<string>();
-  const [imgError, setImgError] = useState<string>("");
 
-  // This is for the transfer fund portion of the ATM feature 
-  // Right now you can type whoever name you want to transfer and it will work
-  // Later I should add transfer balance between accounts
-  // When sending to another person, we need backend to confirm whoever email is typed is in the database
-  // Afterwards, we will get the full name of the account and confirm 
-  const [transferConfirmation, setTransferConfirmation] = useState<boolean>(false);
-  const [transferRecipient, setTransferRecipient] = useState<string>("");  
-  const [transferError, setTransferError] = useState<string>("");
-
-  // This will keep hold of the error bool if there is an error that occured when considering the input handling
-  const [error, setError] = useState<string>("");
-  const errorMsg = ["Cannot withdraw more than the current balance", "Cannot transfer more then the current balance", "Please enter an amount", "One or more check images have NOT been uploaded", "Please select a recieptient account", "Please input/select a value", "Amount cannot be $0.00", "Ammount limit exceeded"];
-
-  const AMOUNT_LIMIT = 2500;
-  const CHECK_LIMIT = 25000;
 
   // The logout redirect
   const navigate = useNavigate();
   const handleClick = () => {
     navigate('/AtmLogin');
   };
-
-  // HARDCODED DATA
-  // BACKEND: Import the list of transaction into an list
-  // Right now, when the first user uses the atm, the balance transaction list is empty
-  const [transaction, setTransactions] = useState<{ [key: string]: string[] }> ({
-    "Savings Account": [],
-    "Checking Account": [],
-  });
 
   const [user, setUser] = useState({
     firstName: "",
@@ -125,6 +96,33 @@ const AtmFeature = () => {
     fetchBalance();
   }, []);  
 
+  // HARDCODED DATA
+  // BACKEND: Fill this array from the data base based on what account the user has 
+  const accounts = ["Savings", "Checking"];
+
+  // HARDCODED DATA
+  // BACKEND: Fill this with the name associated with the account logged in
+  //const name = "John Doe";
+  
+
+ 
+  // HARDCODED DATA
+  // BACKEND: Import the list of transaction into an list
+  // Right now, when the first user uses the atm, the balance transaction list is empty
+  const [transaction, setTransactions] = useState<{ [key: string]: string[] }> ({
+    "Savings Account": [],
+    "Checking Account": [],
+  });
+  
+  // This is for the transfer fund portion of the ATM feature 
+  // Right now you can type whoever name you want to transfer and it will work
+  // Later I should add transfer balance between accounts
+  // When sending to another person, we need backend to confirm whoever email is typed is in the database
+  // Afterwards, we will get the full name of the account and confirm 
+  const [transferConfirmation, setTransferConfirmation] = useState<boolean>(false);
+  const [transferRecipient, setTransferRecipient] = useState<string>("");  
+  const [transferError, setTransferError] = useState<string>("");
+
 
   // Function to say if one of the feature buttons is clicked, therefore, display the popup window
   const handleActionClick = (action: string) => {
@@ -132,9 +130,7 @@ const AtmFeature = () => {
     setAmount("");
     setTransferConfirmation(false);
     setTransferRecipient("");
-    setError("");
     setTransferError("");
-    setImgError("");
   };
 
   // Input handling for the textbox
@@ -164,157 +160,49 @@ const AtmFeature = () => {
     const value = e.target.value;
     if (/^\d*\.?\d{0,2}$/.test(value) || value === '') {
       setAmount(value);
+      userAction.amount = value;
     }
   };
 
   
   //STORES USER ACTION, AMOUNT OF MONEY, AND WHICH ACCOUNT TO ALTER
-  // const [userAction, setUserAction] = useState ({
-  //   action: "",
-  //   amount: "",
-  //   accountType: "Checking"
-  // });
+  const [userAction, setUserAction] = useState ({
+    action: "",
+    amount: "",
+    accountType: "Checking"
+  });
 
-  // //WHEN CONFIRM IS PRESSED, UPDATES THE DATABASE BY SENDING THE USERACTION
-  // const handleConfirm =  async (e: { preventDefault: () => void; }) => {
-  //   try {
-  //     await axios.post("http://localhost:3000/balanceFeatures", userAction)
-  //     navigate("/")
-  //   }
-  //   catch(err) {
-  //       console.log(err);
-  //   }
-  // };
-
-  // // CASE STATEMENT AND SETS ACTION TYPE FOR BACKEND 
-  // useEffect(() => {
-  //   switch(activePopup){
-  //     case "Withdraw Cash": 
-  //       userAction.action = "withdraw";
-  //       setConfirmHover(false);
-  //       break;
-  //     case "Deposit Cash":
-  //     case "Deposit Check":
-  //       userAction.action = "deposit";
-  //       setConfirmHover(false);
-  //       break;
-  //     case "Fund Transfer":
-  //       setConfirmHover(false);
-  //       break;
-  //     default:
-  //     break;
-  //   }
-  // }, [activePopup]);
-
-  // BACKEND 
-  // When the confirmed button is pressed, it will update the following LOCAL variables: TRANSACTION LIST AND CURRENT BALANCE
-  // Each switch statement corresponds to the feature that is active at the moment
-  const handleConfirm = () => {
-    const amountNum = parseFloat(amount);
-    if (isNaN(amountNum)) return;
-
-    switch (activePopup) {
-
-      // WITHDRAW
-      case "Withdraw Cash":
-        if (amountNum === 0) {
-          setError(errorMsg[6]);
-        } else if (amountNum > AMOUNT_LIMIT) {
-          setError(errorMsg[7]);
-        } else if (amountNum <= balance[selectedAccount] && amountNum <= AMOUNT_LIMIT) {
-          setBalances(prev => ({
-            ...prev,
-            [selectedAccount]: prev[selectedAccount] - amountNum
-          }));
-          setTransactions(prev => ({
-            ...prev,
-            [selectedAccount]: [`Withdrawn $${amountNum.toFixed(2)}`, ...prev[selectedAccount]]
-          }));
-          setActivePopup(null);
-        } else {
-          setError(errorMsg[0]);
-        }
-        break;
-
-      case "Deposit Cash":
-        if(amountNum === 0) {
-          setError(errorMsg[6]);
-        } else if (amountNum > AMOUNT_LIMIT) {
-          setError(errorMsg[7]);
-        } else {
-          setBalances(prev => ({
-            ...prev,
-            [selectedAccount]: prev[selectedAccount] + amountNum
-          }));
-          setTransactions(prev => ({
-            ...prev,
-            [selectedAccount]: [`Deposited $${amountNum.toFixed(2)}`, ...prev[selectedAccount]]
-          }));
-          setActivePopup(null);
-        }
-        break;
-      case "Deposit Check":
-        if(amountNum === 0) {
-          setError(errorMsg[6]);
-        }  else if (amountNum > CHECK_LIMIT) {
-          setError(errorMsg[7]);
-        } else if (selectedFrontImg === undefined || selectedBackImg === undefined) {
-          setImgError(errorMsg[3]);
-        } else if (selectedFrontImg !== undefined && selectedBackImg !== undefined && amountNum <= CHECK_LIMIT) {
-          setBalances(prev => ({
-            ...prev,
-            [selectedAccount]: prev[selectedAccount] + amountNum
-          }));
-          setTransactions(prev => ({
-            ...prev,
-            [selectedAccount]: [`Check amount deposited $${amountNum.toFixed(2)}`, ...prev[selectedAccount]]
-          }));
-          setActivePopup(null);
-        }
-        break;
-      
-      // FUND TRANSFER
-      case "Fund Transfer":
-        if (!transferConfirmation) {
-          if (transferRecipient && amountNum === 0) {
-            setError(errorMsg[6]);
-          } else if (!transferRecipient){
-            setTransferError(errorMsg[4]);
-          } else if (amountNum > balance[selectedAccount]) {
-            setError(errorMsg[1]);
-          } else if (amountNum > AMOUNT_LIMIT) {
-            setError(errorMsg[7]);
-          } else if (transferRecipient && amountNum <= balance[selectedAccount] && amountNum <= AMOUNT_LIMIT) {
-            setTransferConfirmation(true);
-            setError("");
-            setTransferError("");
-          }
-        } else if (amountNum <= balance[selectedAccount] && amountNum <= AMOUNT_LIMIT) {
-          setBalances(prev => ({
-            ...prev,
-            [selectedAccount]: prev[selectedAccount] - amountNum,
-            [transferRecipient]: prev[transferRecipient] + amountNum
-          }));
-          setTransactions(prev => ({
-            ...prev,
-            [selectedAccount]: [`Transferred $${amountNum.toFixed(2)} to ${transferRecipient}`, ...prev[selectedAccount]],
-            [transferRecipient]: [`Received $${amountNum.toFixed(2)} from ${selectedAccount}`, ...prev[transferRecipient]]
-          }));
-          setActivePopup(null);
-        } 
-        break;
+  //WHEN CONFIRM IS PRESSED, UPDATES THE DATABASE BY SENDING THE USERACTION
+  const handleConfirm =  async (e: { preventDefault: () => void; }) => {
+    console.log("Click");
+    try {
+      await axios.post("http://localhost:3000/balanceFeatures", userAction)
+      navigate("/")
+    }
+    catch(err) {
+        console.log(err);
     }
   };
 
-  // This function is meant for the UI
+  // CASE STATEMENT AND SETS ACTION TYPE FOR BACKEND 
   useEffect(() => {
     switch(activePopup){
-      case "Withdraw Cash":
+      case "Withdraw Cash": 
+        userAction.action = "withdraw";
+        console.log(userAction.action)
+        setConfirmHover(false);
+        break;
       case "Deposit Cash":
       case "Deposit Check":
+        userAction.action = "deposit";
+        console.log(userAction.action)
+        setConfirmHover(false);
+        break;
       case "Fund Transfer":
         setConfirmHover(false);
         break;
+      default:
+      break;
     }
   }, [activePopup]);
 
@@ -326,33 +214,21 @@ const AtmFeature = () => {
     switch (activePopup) {
 
       // The popup for "Withdraw Cash" and "Deposit Cash" are the same
-      case "Withdraw Cash":
+      case "Withdraw Cash":  
       case "Deposit Cash":
         popupContent = (
           <>
-            <style>
-              {`
-                input::placeholder {
-                  color: #A9A9AC;
-                  font-size: 1.2rem;
-                  opacity: 0.7;
-                }
-              `}
-            </style>
-
             <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1rem' }}>{activePopup}</h2>
             
             {/* This is the textbox where we enter the amount */}
             <div style={{ marginBottom: '1rem' }}>
-
-              {error && (<p style={{color: 'red', fontSize: '15px'}}>{error}</p>)}
-
               <input
                 type="text"
                 value={amount}
-                onChange={(e) => {handleAmountChange(e); setError("")}}
-                placeholder="Max Limit $2500"
-                style={{width: '95%', height: '40px', padding: '0.5rem', textAlign: 'right', fontSize: '1.5rem', borderRadius: '0.375rem', borderWidth: '2px', borderStyle: 'solid', borderColor: 'black', backgroundColor: 'white', color: 'black', }}
+                onChange={handleAmountChange}
+                placeholder="0.00"
+                readOnly
+                style={{width: '95%', height: '40px', padding: '0.5rem', textAlign: 'right', fontSize: '1.5rem', borderRadius: '0.375rem', borderWidth: '2px', borderStyle: 'solid', borderColor: 'black', backgroundColor: 'white', color: 'black',}}
               />
             </div>
 
@@ -392,16 +268,6 @@ const AtmFeature = () => {
       case "Fund Transfer":
         popupContent = (
           <>
-            <style>
-              {`
-                input::placeholder {
-                  color: #A9A9AC;
-                  font-size: 1.2rem;
-                  opacity: 0.7;
-                }
-              `}
-            </style>
-
             <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1rem' }}>Fund Transfer</h2>
 
             {/* This boolean handles if the "Next" button has been clicked or not.
@@ -413,21 +279,18 @@ const AtmFeature = () => {
               <>
                 {/* This is the textbox where we enter the amount */}
                 <div style={{ marginBottom: '1rem' }}>
-                  {error && (<p style={{color: 'red', fontSize: '15px'}}>{error}</p>)}
-
                   <input
                     type="text"
                     value={amount}
-                    placeholder="Max Limit $2500"
-                    onChange={(e) => {handleAmountChange(e); setError("")}}
+                    placeholder="0.00"
+                    // readOnly
+                    onChange={handleAmountChange}
                     style={{width: '95%', height: '40px', padding: '0.5rem', textAlign: 'right', fontSize: '1.5rem', borderRadius: '0.375rem', borderWidth: '2px', borderStyle: 'solid', borderColor: 'black', backgroundColor: 'white', color: 'black',}}
                   />
                 </div>
 
                 {/* This is the selecting the recipient */}
                 <div style={{ marginTop: '1rem', marginBottom: '1rem' }}>
-                   {/* This says if there is no account selected, and the is some amount enter, prompt an error   */}
-                   {transferError && (<p style={{color: 'red', fontSize: '15px'}}>{transferError}</p>)}
                   <select
 
                     // This portion hold variables for the transfer reciepient (only between accounts)
@@ -437,7 +300,7 @@ const AtmFeature = () => {
                       setTransferRecipient(e.target.value);
                       setTransferError("");
                     }}
-                    style={{width: '100%', height: '50px', fontSize: '15px', paddingLeft: '10px',border: '1px solid #ccc',borderRadius: '0.375rem',backgroundColor: 'white',color: 'black',borderColor: transferError ? 'red' : 'gray', backgroundImage: 'linear-gradient(45deg, transparent 50%, gray 50%), linear-gradient(135deg, gray 50%, transparent 50%), linear-gradient(to right, #ccc, #ccc)',backgroundPosition: 'calc(100% - 20px) calc(1em + 8px), calc(100% - 15px) calc(1em + 8px), calc(100% - 2.5em) 0.8em', backgroundSize: '5px 5px, 5px 5px, 1px 1.5rem', backgroundRepeat: 'no-repeat', appearance: 'none',}}
+                    style={{width: '100%', height: '50px', fontSize: '15px', paddingLeft: '10px',border: '1px solid #ccc',borderRadius: '0.375rem',backgroundColor: 'white',color: 'black',borderColor: transferError ? 'red' : 'gray',}}
                   >
 
                     {/* Drop down box to select an account  */}
@@ -446,6 +309,9 @@ const AtmFeature = () => {
                       <option key={account} value={account}>{account}</option>
                     ))}
                   </select>
+
+                  {/* This says if there is no account selected, and the is some amount enter, prompt an error   */}
+                  {transferError && (<p style={{color: 'red', fontSize: '15px'}}>{transferError}</p>)}
                 </div>
 
                 {/* This is the numpad */}
@@ -468,7 +334,7 @@ const AtmFeature = () => {
 
                 {/* This is the next button  */}
                 <button
-                  onClick={() => {handleConfirm(); setConfirmHover(false)}}
+                  onClick={() => {setConfirmHover(false)}}
                   onMouseDown={() => setConfirmActive(true)}
                   onMouseUp={() => setConfirmActive(false)}
                   onMouseEnter={() => setConfirmHover(true)}
@@ -499,7 +365,7 @@ const AtmFeature = () => {
 
                   {/* The confirm button portion */}
                   <button
-                    onClick={() => {handleConfirm(); setFundConfirmHover(false)}}             
+                    onClick={() => {setFundConfirmHover(false)}}        
                     onMouseEnter={() => setFundConfirmHover(true)}
                     onMouseLeave={() => setFundConfirmHover(false)}
                     style={{marginTop: '1rem',width: '48%',height: '50px',padding: '0.5rem',backgroundColor: isFundConfirmHover ? '#00171F' : '#003459',color: 'white',borderRadius: '0.375rem',fontSize: '1.25rem',border: 'none',cursor: 'pointer',transition: 'background-color 0.5s',}}
@@ -517,22 +383,9 @@ const AtmFeature = () => {
       case "Deposit Check":
         popupContent = (
           <>
-            <style>
-              {`
-                input::placeholder {
-                  color: #A9A9AC;
-                  font-size: 0.9rem;
-                  opacity: 0.7;
-                }
-              `}
-            </style>
-
             <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1rem'}}>Deposit Check</h2>
             
             {/* Front of check image insert; having these pictures will do absolutely NOTHING*/}
-
-            {imgError && (<p style={{color: 'red', fontSize: '15px'}}>{imgError}</p>)}
-
             <h3 style={{ fontSize: '0.9rem', fontWeight: 'bold'}}>Upload Front of Check</h3>
             <div style={{ marginBottom: '1rem' }}>
               <input
@@ -541,7 +394,6 @@ const AtmFeature = () => {
                 onChange ={(e) => {
                   const file = e.target.files?.[0];
                   setSelectedFrontImg(file ? URL.createObjectURL(file) : undefined);
-                  setImgError("");
                 }}
                 style={{width: '95%',padding: '0.5rem',border: '1px solid #ccc',borderRadius: '0.375rem'
                 }}
@@ -566,7 +418,6 @@ const AtmFeature = () => {
                 onChange ={(e) => {
                   const file = e.target.files?.[0];
                   setSelectedBackImg(file ? URL.createObjectURL(file) : undefined);
-                  setImgError("");
                 }}
                 style={{width: '95%',padding: '0.5rem',border: '1px solid #ccc',borderRadius: '0.375rem'
                 }}
@@ -585,13 +436,11 @@ const AtmFeature = () => {
 
             {/* The input textbox */}
             <div style={{ marginBottom: '1rem' }}>
-              {error && (<p style={{color: 'red', fontSize: '15px'}}>{error}</p>)}
-
               <input
-                type="text"
+                type="number"
+                placeholder="Enter check amount"
                 value={amount}
-                placeholder="Max Limit $25000"
-                onChange={(e) => {handleAmountChange(e); setError("")}}
+                onChange={handleAmountChange}
                 style={{width: '95%',padding: '0.5rem',border: '1px solid #ccc',borderRadius: '0.375rem',height: '30px',fontSize: '0.9rem',borderStyle: 'solid',backgroundColor: 'white',color: 'black',}}
               />
             </div>
@@ -625,7 +474,6 @@ const AtmFeature = () => {
         );
         break;
     }
-
 
     // This portion is for the 'x' button to escape the popup; backend should NOT care about this part
     return (
@@ -676,7 +524,7 @@ const AtmFeature = () => {
 
       {/* The div below will describe the nav bar on the lefthand side
       That Nav bar will consist of selecting the account, the name of the person, selecting accounts, and a logout button */}
-      <div style={{ width: '160px', backgroundColor: '#003459', color: 'white', padding: '2rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', position: 'relative' }}>
+      <div style={{ width: '33%', backgroundColor: '#003459', color: 'white', padding: '2rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', position: 'relative' }}>
         <div>
 
           {/* There is a hardcoded name but later connect the backend to retrieve that data */}
@@ -727,7 +575,6 @@ const AtmFeature = () => {
           style={{ 
             display: 'flex', 
             alignItems: 'center', 
-            marginInline: 'auto',
             justifyContent: 'center', 
             color: isLogoutHovered ? '#003459' : 'white', 
             backgroundColor: isLogoutHovered ? "white" : "transparent",
@@ -743,84 +590,70 @@ const AtmFeature = () => {
             transform: isLogoutActive ? 'scale(0.9)' : 'scale(1)'
             }}>
 
-          <LogOut style={{ marginRight: '0.5rem' }} /> Logout
+          <CornerUpLeft style={{ marginRight: '0.5rem' }} /> Logout
         </button>
       </div>
 
-      {/* Checks if there is an existing account or not */}
-      {accounts.length === 0 && (
-        <>
-          <div>
-            <h1 style={{margin: '100px'}}> Welcome to Banks of Banks</h1>
-          </div>
-        </>
-      )}
+      {/* This div contains holding the button features*/}
+      <div style={{ padding: '2rem', width: '67%', overflowY: 'auto', marginRight: '1rem' }}>
 
-      {accounts.length !== 0 && (
-        <>
-          {/* This div contains holding the button features*/}
-          <div style={{margin: '1.1rem', width: '512px' }}>
+        {/* Header to display what accout is selected */}
+        <h2 style={{ fontSize: '1.5rem', marginBottom: '2rem' }}>{selectedAccount}</h2>
 
-            {/* Header to display what accout is selected */}
-            <h2 style={{ fontSize: '1.5rem', marginBottom: '2rem' }}>{selectedAccount}</h2>
+        {/* This is the div grid that allows the user to select which feature to choose from */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1.5rem' }}>
+          {actions.map((action, index) => (
+            <div
 
-            {/* This is the div grid that allows the user to select which feature to choose from */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1.5rem', width: 'fit-content' }}>
-              {actions.map((action, index) => (
-                <div
-                  onClick={() => handleActionClick(action)}
-                  key={action}
+              //onMouseDown={() => (document.activeElement as HTMLElement).blur()}
+              onClick={() => handleActionClick(action)}
+              key={action}
 
-                  onMouseEnter={() => setActionBtnHovered(index)}
-                  onMouseLeave={() => setActionBtnHovered(null)}
-                  onMouseDown={() => setActionBtnActive(index)}
-                  onMouseUp={() => setActionBtnActive(null)}
+              onMouseEnter={() => setActionBtnHovered(index)}
+              onMouseLeave={() => setActionBtnHovered(null)}
+              onMouseDown={() => setActionBtnActive(index)}
+              onMouseUp={() => setActionBtnActive(null)}
 
-                  style={{
-                    padding: '2vw',
-                    backgroundColor: 'white',
-                    borderRadius: '8px',
-                    maxWidth: '512px',
-                    minHeight: '60px',
-                    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-                    transition: isActionBtnHovered === index ? 'box-shadow 0.3s, transform 0.4s ease' : "none",
-                    transform: isActionBtnActive === index ? 'scale(0.95)' : 'scale(1)',
-                    cursor: 'pointer',
-                    gridColumn: action === 'View Transactions' ? 'span 2' : 'auto',
+              style={{
+                padding: '2vw',
+                backgroundColor: 'white',
+                borderRadius: '8px',
+                transition: isActionBtnHovered === index ? 'box-shadow 0.3s, transform 0.4s ease' : "none",
+                transform: isActionBtnActive === index ? 'scale(0.95)' : 'scale(1)',
+                cursor: 'pointer',
+                gridColumn: action === 'View Transactions' ? 'span 2' : 'auto',
+              }}>
+
+              <button 
+                style={{ 
+                  width: '100%', 
+                  height: '100%', 
+                  padding: '1.5rem', 
+                  background: 'none',
+                  color: 'black', 
+                  border: '1px solid #003459', 
+                  fontSize: 'calc(0.5rem + 0.5vw)', 
+                  cursor: 'pointer' 
                   }}>
+                {action}
+              </button>
 
-                  <button 
-                    style={{ 
-                      width: '100%', 
-                      height: '100%', 
-                      padding: '1.5rem', 
-                      background: 'none',
-                      color: 'black', 
-                      border: '1px solid #003459', 
-                      fontSize: 'calc(0.5rem + 0.5vw)', 
-                      cursor: 'pointer' 
-                      }}>
-                    {action}
-                  </button>
-
-                </div>
-              ))}
             </div>
-          </div>
+          ))}
+        </div>
+      </div>
 
-          {/* The div below is the ones that display the current balance of the account */}
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', backgroundColor: 'white', border: 'none', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', width: '400px', height: '300px', margin: 'auto', }}>
-            <h1 style={{ fontWeight: 'bold', fontSize: 'calc(1.5rem + 2vw)' }}>
-              Balance
-            </h1>
-            <h2 style={{ paddingTop: '2rem', fontSize: 'calc(1rem + 1vw)', fontWeight: 'bold' }}>
-            ${balance[selectedAccount].toFixed(2)}
-            </h2>
-          </div>
+      {/* The div below is the ones that display the current balance of the account */}
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', margin: '2rem ', backgroundColor: 'transparent' }}>
+        <h1 style={{ fontWeight: 'bold', paddingLeft: '2rem', paddingRight: '2rem', fontSize: 'calc(1.5rem + 2vw)' }}>
+          Balance
+        </h1>
+        <h2 style={{ paddingTop: '2rem', fontSize: 'calc(1rem + 1vw)', fontWeight: 'bold' }}>
+         ${balance[selectedAccount].toFixed(2)}
+        </h2>
+      </div>
 
-          {renderPopup()}
-        </>
-      )}
+      {renderPopup()}
     </div>
   );
 }
