@@ -293,7 +293,7 @@ router.post("/balanceFeatures", (req, res) => {
 })
 
 router.post("/transfer", (req, res) => {
-  const { sourceAccountType, destAccountType, amount } = req.body;
+  const { sourceAccountID, destAccountID, amount } = req.body;
   const userID = req.session.userID;
 
   if (!userID) {
@@ -301,54 +301,44 @@ router.post("/transfer", (req, res) => {
   }
 
   const floatAmount = parseFloat(amount);
-  if (isNaN(floatAmount) || floatAmount <= 0) {
-    return res.json({ success: false, message: 'Invalid transfer amount' });
-  }
+  
 
-  const findAccID = "SELECT accountID FROM bank.accounts WHERE userID = ? AND type = ?";
+  // VALIDATE OWNDERSHIP OF ACCOUNTS
+  const validateAccountsQry = `
+    SELECT accountID 
+    FROM bank.accounts 
+    WHERE userID = ? AND accountID IN (?, ?)
+  `;
 
-  // FIND SOURCEACCID
-  db.query(findAccID, [userID, sourceAccountType], (err, sourceData) => {
+  db.query(validateAccountsQry, [userID, sourceAccountID, destAccountID], (err, results) => {
     if (err) {
       return res.json({ success: false, message: 'Database error' });
     }
-    if (sourceData.length === 0) {
-      return res.json({ success: false, message: 'Source account not found' });
+
+    if (results.length < 2) {
+      return res.json({ success: false, message: 'Account error' });
     }
 
-    const sourceAccountID = sourceData[0].accountID;
-
-    // FIND DESTACCID
-    db.query(findAccID, [userID, destAccountType], (err, destData) => {
+    // DEDUCT FROM SOURCE ACCOUNT
+    const deductQry = "UPDATE bank.accounts SET balance = balance - ? WHERE accountID = ?";
+    db.query(deductQry, [floatAmount, sourceAccountID], (err) => {
       if (err) {
-        return res.json({ success: false, message: 'Database error' });
-      }
-      if (destData.length === 0) {
-        return res.json({ success: false, message: 'Destination account not found' });
+        return res.json({ success: false, message: 'Database error during deduction' });
       }
 
-      const destAccountID = destData[0].accountID;
-
-      // DEDUCT
-      const deductQry = "UPDATE bank.accounts SET balance = balance - ? WHERE accountID = ?";
-      db.query(deductQry, [floatAmount, sourceAccountID], (err, deductResult) => {
+      // ADD TO DEST ACCOUNT
+      const addQry = "UPDATE bank.accounts SET balance = balance + ? WHERE accountID = ?";
+      db.query(addQry, [floatAmount, destAccountID], (err) => {
         if (err) {
-          return res.json({ success: false, message: 'Database error' });
+          return res.json({ success: false, message: 'Database error during addition' });
         }
 
-        // ADD
-        const addQry = "UPDATE bank.accounts SET balance = balance + ? WHERE accountID = ?";
-        db.query(addQry, [floatAmount, destAccountID], (err, addResult) => {
-          if (err) {
-            return res.json({ success: false, message: 'Database error' });
-          }
-
-          return res.json({ success: true, message: 'Transfer successful' });
-        });
+        return res.json({ success: true, message: 'Transfer successful' });
       });
     });
   });
 });
+
 
 
 
