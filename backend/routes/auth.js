@@ -148,6 +148,28 @@ router.post("/adminlogin", (req, res) => {
   });
 });
 
+// get user first and last name
+router.get('/user/details', (req, res) => {
+  console.log("Session ID in /user/details:", req.sessionID);
+  console.log("Session Data in /user/details:", req.session);
+
+  if (!req.session.userID) {
+    return res.status(401).json({ success: false, message: 'User not logged in' });
+  }
+
+  const { userFname, userLname } = req.session;
+
+  if (!userFname || !userLname) {
+    return res.status(400).json({ success: false, message: 'User details missing in session' });
+  }
+
+  return res.json({
+    success: true,
+    firstName: userFname,
+    lastName: userLname
+  });
+});
+
 //GET BALANCE
 router.get('/balance/userBalance', (req, res) => {
   console.log("Session ID in /balance:", req.sessionID);
@@ -169,7 +191,6 @@ router.get('/balance/userBalance', (req, res) => {
           return res.json({ success: false, message: "User not found" });
       }
       console.log(data)
-
 
       return res.json({ 
           success: true, 

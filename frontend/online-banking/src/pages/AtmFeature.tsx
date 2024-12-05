@@ -65,16 +65,22 @@ const AtmFeature = () => {
 
   //GET BALANCE
   useEffect(() => {
+    const fetchUserDetails = async () => {
+      try {
+        const res = await axios.get("http://localhost:3001/auth/user/details", {
+          withCredentials: true, // Include session cookies in the request
+        });
+        const { firstName, lastName } = res.data;
+        setUser({ firstName, lastName });
+      } catch (err) {
+        console.error("Error fetching user details:", err);
+      }
+    };
     const fetchBalance = async () => {
         try {
             const res = await axios.get("http://localhost:3001/auth/balance/userBalance", {
               withCredentials: true, // Include session cookies in the request
             });
-            //const { balance } = res.data;
-            // setBalances({
-            //   "Checking": balance, // Example distribution logic
-            //   "Savings": balance   // Example distribution logic
-            // });
             const { balances } = res.data;
             setBalances({
               "Checking": balances.Checking || 0, 
@@ -86,7 +92,8 @@ const AtmFeature = () => {
             console.log(err)
         }
     }
-    fetchBalance()
+    fetchUserDetails();
+    fetchBalance();
   }, []);  
 
   // HARDCODED DATA
@@ -95,7 +102,9 @@ const AtmFeature = () => {
 
   // HARDCODED DATA
   // BACKEND: Fill this with the name associated with the account logged in
-  const name = "John Doe";
+  //const name = "John Doe";
+  
+
  
   // HARDCODED DATA
   // BACKEND: Import the list of transaction into an list
@@ -517,7 +526,7 @@ const AtmFeature = () => {
 
           {/* There is a hardcoded name but later connect the backend to retrieve that data */}
           <h1 style={{ fontSize: '2rem', fontWeight: 'bold', marginBottom: '1rem' }}>
-            Welcome, {name}
+            Welcome, {user.firstName} {user.lastName}{/*Welcome, {name}*/}
           </h1>
 
           {/* Nav bar portion  */}
