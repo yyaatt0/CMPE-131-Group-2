@@ -245,6 +245,7 @@ router.post("/balanceFeatures", (req, res) => {
 
   //NEEDED BECAUSE AMOUNT IS SENT AS STRING, NEED TO APPEND TO '-' IF SUBTRACTION
   var floatAmount = amount;
+  //ADDED TRACK FOR ACTION TYPE AND ACCOUNTID (0 IS DEPOSIT, 1 IS WITHDRAW)
   var actionType = 0;
   var accountID = 0;
 
@@ -261,7 +262,9 @@ router.post("/balanceFeatures", (req, res) => {
     }
   })
 
+  //STRING TO QUERY TRANSACTION TO UPDATE
   const transactQry = "INSERT INTO transactionhistory (accountID, transactionType, amount, tracker) VALUES (?, ?, ?, CURDATE())";
+  //STRING TO FIND ACCID
   const findAccID = "SELECT accountID FROM bank.accounts WHERE userID = ? AND type = ?";
   db.query(findAccID, [req.session.userID, accountType], (err, data) => {
     if (err) {
