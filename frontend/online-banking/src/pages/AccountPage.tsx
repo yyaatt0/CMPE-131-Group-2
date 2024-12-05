@@ -96,6 +96,10 @@ export default function Component() {
   const [accErrorMsg, setAccErrorMsg] = useState("");
 
   const [initialAmount, setInitialAmount] = useState("");
+
+  const [transferAmount, setTransferAmount] = useState<string>("");
+  const [transferAccountNumber, setTransferAccountNumber] = useState<string>("");
+  const [transferError, setTransferError] = useState<string>("");
   
   const handleSetting = (action: string) => {
     // This will be like a switch var to know when to popup which appropriate window
@@ -459,6 +463,40 @@ export default function Component() {
     }
   };
 
+  const handleTransfer = () => {
+    setTransferError("");
+    const amount = parseFloat(transferAmount);
+    if (isNaN(amount) || amount <= 0) {
+      setTransferError("Please enter a valid amount.");
+      return;
+    }
+    if (amount > accountBalance) {
+      setTransferError("Insufficient funds for this transfer.");
+      return;
+    }
+    if (transferAccountNumber.length !== 10) {
+      setTransferError("Please enter a valid 10-digit account number.");
+      return;
+    }
+    // Here you would typically call an API to process the transfer
+    // For this example, we'll just update the balance
+    updateAccountBalance(accountBalance - amount);
+    // Add a new transaction
+    const date = new Date();
+    const transferTransaction: transaction = {
+      id: transactions.length + 1,
+      amount: -amount,
+      type: "Transfer",
+      info: `Transfer to account ${transferAccountNumber}`,
+      date: `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`,
+    };
+    addNewTransaction(transferTransaction);
+    // Reset form
+    setTransferAmount("");
+    setTransferAccountNumber("");
+    setActiveTab("transactions");
+  };
+  
   return (
     <div className="app-container">
 
@@ -597,7 +635,24 @@ export default function Component() {
             {activeTab === "transfer" && (
               <div className="tab-content">
                 <h2>Transfer Funds</h2>
-                <p>Transfer functionality would be implemented here.</p>
+                <form className="transfer-form" onSubmit={(e) => { e.preventDefault(); handleTransfer(); }}>
+                  <input
+                    type="text"
+                    placeholder="Recipient's Account Number"
+                    value={transferAccountNumber}
+                    onChange={(e) => setTransferAccountNumber(e.target.value)}
+                    required
+                  />
+                  <input
+                    type="text"
+                    placeholder="Amount"
+                    value={transferAmount}
+                    onChange={(e) => handleNumInputChange(e, setTransferAmount)}
+                    required
+                  />
+                  {transferError && <p className="error-message">{transferError}</p>}
+                  <button type="submit">Transfer</button>
+                </form>
               </div>
             )}
             {activeTab === "pay" && (
