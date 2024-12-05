@@ -199,7 +199,6 @@ router.get('/balance/userBalance', (req, res) => {
               Savings: data[1]?.balance || 0   // Assuming the second entry is Savings
           } 
       });
-    
   });
 });
 
@@ -246,9 +245,12 @@ router.post("/balanceFeatures", (req, res) => {
 
   //NEEDED BECAUSE AMOUNT IS SENT AS STRING, NEED TO APPEND TO '-' IF SUBTRACTION
   var floatAmount = amount;
+  var actionType = 0;
+  var accountID = 0;
 
   if(action == "withdraw") {
     floatAmount = "-" + amount;
+    actionType = 1;
   }
 
   //UPDATE BALANCE
@@ -258,6 +260,28 @@ router.post("/balanceFeatures", (req, res) => {
       return res.json({ success: false, message: 'Database error' });
     }
   })
+
+  const transactQry = "INSERT INTO transactionhistory (accountID, transactionType, amount, tracker) VALUES (?, ?, ?, CURDATE())";
+  const findAccID = "SELECT accountID FROM bank.accounts WHERE userID = ? AND type = ?";
+  db.query(findAccID, [req.session.userID, accountType], (err, data) => {
+    if (err) {
+      return res.json({ success: false, message: 'Database error' });
+    }
+
+    accountID = data[0].accountID;
+    
+    console.log(accountID);
+    console.log(actionType);
+    
+    //CALL TRANSACT QUERY TO INPUT DATA
+    db.query(transactQry, [parseInt(accountID), parseInt(actionType), parseFloat(floatAmount)], (err, data) => {
+      if (err) {
+        console.log("FAILURE")
+      }
+    })
+    
+  })
+
   return res.json()
 })
 
