@@ -11,6 +11,78 @@ router.get("/users", (req, res) => {
     })
 })
 
+//REGRISTRATION FUNCTION
+router.post("/signup", (req,res) => {
+  const{fname, lname, email, username, password, pin} = req.body;
+
+  const qry = "INSERT INTO users (password, username, fname, lname, email) VALUES (?, ?, ?, ?, ?)";
+
+  //INSERTS INTO THE USERS DATABASE FIRST SINCE USERID NEEDS TO BE GENERATED
+  //SINCE THE PIN HAS TO BE STORED IN A DIFFERENT TABLE, THE DATABASE MUST BE CALLED 3 TIMES
+  //BEING CAREFUL OF TRANSACTIONS IS NOT REALLY REQUIRED
+  
+  //FILL UP ALL ROWS ON THE USER TABLE
+  db.query (qry, [password, username, fname, lname, email], (err, data) => {
+    if (err) {
+      return res.json ({ success: false, message: 'Database error 1' });
+    }
+    const qry1 = "SELECT UserID FROM users WHERE username = ?";
+    // GET NEWLY GENERATED USERID FOR THE RECENTLY INSERTED USER
+    db.query (qry1, [username], (err, data2) => {
+      if (err) {
+        return res.json ({ success: false, message: 'Database error 2' });
+      }
+      const id = data2[0].UserID;
+      const qry2 = "INSERT INTO userpins (UserID, pin) VALUES (?,?)";
+      //INSERT USERID AND PIN INTO USERPINS TABLE
+      db.query (qry2, [id, pin], (err, data3) => {
+        if (err) {
+          return res.json ({ success: false, message: 'Database error 3' });
+        }
+      });
+    });
+  });
+});
+//"CHECK IF USERNAME IS ALREADY IN DATA" FUNCTION (USED IN REGISTRATION PAGE)
+router.get("/checkuser", (req, res) =>{
+  const {username} = req.query;
+  if (!username) {
+    return res.json({ success: false, message: "Email is missing" });
+  }
+  const qry = "SELECT users.username FROM users WHERE users.username = ?";
+
+  db.query(qry, [username], (err, data) =>{
+    if(err){
+      return res.json({ success: false, message: 'Database error' });
+    }
+      if(data.length === 0){
+        return res.json({ success: true, message: "Username is not in the database"});
+      }
+        return res.json({ success: false, message: "Username already used"});
+  });
+
+});
+
+//"CHECK IF EMAIL IS ALREADY IN DATA" FUNCTION (USED IN REGISTRATION PAGE)
+router.get("/check", (req, res) =>{
+  const {email} = req.query;
+  console.log("Email from request body:", email);
+  if (!email) {
+    return res.json({ success: false, message: "Email is missing" });
+  }
+  const qry = "SELECT users.email FROM users WHERE users.email = ?";
+
+  db.query(qry, [email], (err, data) =>{
+    if(err){
+      return res.json({ success: false, message: 'Database error' });
+    }
+      if(data.length === 0){
+        return res.json({ success: true, message: "Email is not in the database"});
+      }
+        return res.json({ success: false, message: "Email already used"});
+  });
+
+});
 //USER LOGIN METHOD, REQUEST USERNAME & PASSWORD
 //SEND DATA TO DATABASE THROUGH POST METHOD
 router.post("/login", (req, res) => {
