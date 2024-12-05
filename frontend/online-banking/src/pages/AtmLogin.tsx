@@ -50,11 +50,15 @@ const AtmLogin = () => {
     e.preventDefault();
     if (username && password.length === 4) {
       try {
-        const response = await axios.post('http://localhost:3001/auth/atmlogin', {
-          username: username,
-          pin: password,
-          withCredentials: true, 
-        });
+        // const response = await axios.post('http://localhost:3001/auth/atmlogin', {
+        //   {username: username, pin: password},
+        //   {withCredentials: true}
+        // });
+        const response = await axios.post('http://localhost:3001/auth/atmlogin', 
+          { username: username, pin:password }, 
+          { withCredentials: true } // Required to include cookies
+        );
+        // const res = await axios({method: 'POST', url: 'http://localhost:3001/auth/atmlogin', data: {username: username, pin: password,}, withCredentials: true})
 
         if (response.data.success) {
           navigate('/AtmFeature');

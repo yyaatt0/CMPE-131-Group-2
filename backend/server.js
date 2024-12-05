@@ -18,15 +18,15 @@ app.use(session({
     secret: "secretKey",
     resave: false,
     saveUninitialized: false,
-    store
+    store,
     // cookie: { 
     //   maxAge: 60000 * 60},
-    // cookie: {
-    //   maxAge: 60000 * 60,  // 1 hour
-    //   httpOnly: true,      // Prevents client-side JS from accessing the cookie
-    //   secure: false,       // Set to true if using HTTPS
-    //   path: '/'            // Ensure the path is set to '/' to make the cookie accessible site-wide
-    // }
+    cookie: {
+      maxAge: 60000 * 60,  // 1 hour
+      httpOnly: true,      // Prevents client-side JS from accessing the cookie
+      secure: false,       // Set to true if using HTTPS
+      path: '/'            // Ensure the path is set to '/' to make the cookie accessible site-wide
+    }
   }))
   
 //ALLOWS ANY USE OF JSON SENT BY POST METHOD
