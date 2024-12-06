@@ -599,8 +599,8 @@ function AdminPortal() {
                                                                     <div className="list-card" key={acc.accountID}>
                                                                         <label className="list-content">ID: {acc.accountID}</label>
                                                                         <label className="list-content">Account Type: {acc.accountType}</label>
-                                                                        <label className="list-content">Transaction Type: {acc.transactionType}</label>
-                                                                        <label className="list-content">Amount: {acc.amount}</label>
+                                                                        <label className="list-content">Transaction Type: {acc.transactionType ? "Withdraw" : "Deposit"}</label>
+                                                                        <label className="list-content">Amount: ${acc.amount}</label>
                                                                     </div>
                                                                 ))}
                                                         </ScrollBox>
