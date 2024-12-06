@@ -240,6 +240,76 @@ router.post("/atmlogin", (req, res) => {
     return res.json({ success: true, message: 'ATM login successful' });
   });
 });
+
+function generateRandom9() {
+  console.log("Inside gen ran num");
+  const min = 100000000;
+  const max = 999999999;
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+//OPEN USER ACCOUNT OF TYPE
+router.post('/openAcc', (req, res) => {
+
+    const { accountType } = req.body;
+    const checkBankNum = "SELECT * FROM accounts WHERE bankingNum = ? ";
+    const checkRoutNum = "SELECT * FROM accounts WHERE routingNum = ? ";
+    const makeNewAcc = "insert into bank.accounts (userID, type, balance, bankingNum, routingNum) values (?, ?, ?, ?, ?)"
+    var randBankNum = generateRandom9();
+    var randRoutNum = generateRandom9();
+
+    db.query(makeNewAcc, [req.session.userID, accountType, 0, randBankNum, randRoutNum], (err, data3) => {
+      if (err) {
+        return res.json({ success: false, message: 'Database error' });
+      }
+      return res.json({message: "Account Made"});
+    })
+
+})
+
+//CLOSE USER ACCOUNT OF TYPE
+router.post('/closeAcc', (req, res) => {
+
+  const { accountType } = req.body;
+  const deleteAcc = "DELETE FROM accounts WHERE accountID = ?";
+  const checkBalance = "Select balance from accounts where userID = ? and type = ?";
+  const checkAccountID = "Select accountID from accounts where userID = ? and type = ?";
+  var currBalance = 0;
+  var accountID = 0;
+
+  db.query(checkBalance, [req.session.userID, accountType], (err, data1) => {
+    if (err) {
+      return res.json({ success: false, message: 'Database error 1' });
+    }
+    currBalance = data1[0].balance;
+    console.log("Balance  Found " + currBalance);
+
+    if(currBalance != 0) {
+      return res.json({message: "Make sure account balance is exactly 0 dollars, halting delete."});
+    }
+    else {
+      db.query(checkAccountID, [req.session.userID, accountType], (err, data2) => {
+        if (err) {
+          return res.json({ success: false, message: 'Database error 2' });
+        }
+  
+        accountID = data2[0].accountID;
+        console.log("Account  Found " + accountID);
+
+        db.query(deleteAcc, [parseInt(accountID)], (err, data3) => {
+          if (err) {
+            return res.json({ success: false, message: 'Database error 3' });
+          }
+          else {
+            return res.json({message: "Account Deleted"});
+          }
+        })
+      })
+    }
+  })
+
+  
+})
   
 //FOR BALANCE ACTIONS (WITHDRAW AND DEPOSIT)
 router.post("/balanceFeatures", (req, res) => {
@@ -340,6 +410,361 @@ router.post("/transfer", (req, res) => {
 });
 
 
+router.get('/admin/details', (req, res) => {
+  // console.log("Session ID in /admin/details:", req.sessionID);
+  // console.log("Session Data in /admin/details:", req.session);
+
+  if (!req.session.adminID) {
+    return res.status(401).json({ success: false, message: 'User not logged in' });
+  }
+
+  const { adminFname, adminNname } = req.session;
+
+  if (!adminFname || !adminNname) {
+    return res.status(400).json({ success: false, message: 'User details missing in session' });
+  }
+
+  return res.json({
+    success: true,
+    firstName: adminFname,
+    lastName: adminNname
+  });
+});
+
+// Fetch all users from the database
+router.get('/usersList', (req, res) => {
+  // console.log("Session ID in /usersList", req.sessionID);
+  // console.log("Session Data in /usersList", req.session);
+  // Ensure the admin is logged in
+  if (!req.session.adminID) {
+    return res.status(401).json({ success: false, message: 'User not logged in' });
+  }
+
+  // Query to fetch users from the database
+  const qry = "SELECT userID, username, fname, lname, email, username, password FROM users";
+  db.query(qry, (err, data) => {
+    //console.log(data);
+    if (err) {
+      console.log("Database error: ", err);
+      return res.status(500).json({ success: false, message: 'Database error' });
+    }
+    //console.log(data);
+    return res.json({ success: true, users: data });
+  });
+});
+
+// In your backend route (e.g., `userRoutes.js`)
+
+router.post('/user/create-account', (req, res) => {
+  const { accountType, initialAmount } = req.body;
+  const userID = req.session.userID; // Assuming the user is authenticated and their ID is in the session
+
+  if (!userID) {
+    return res.status(401).json({ success: false, message: 'User not logged in' });
+  }
+
+  if (!accountType || !initialAmount) {
+    return res.status(400).json({ success: false, message: 'Account type and initial deposit are required' });
+  }
+
+  const balance = initialAmount; // Initial balance is the amount the user enters
+  const bankingNum = Math.floor(Math.random() * 1000000000); // Random banking number (placeholder)
+  const routingNum = Math.floor(Math.random() * 1000000000); // Random routing number (placeholder)
+
+  // Insert the new account into the database
+  const query = `
+    INSERT INTO accounts (userID, type, balance, bankingNum, routingNum)
+    VALUES (?, ?, ?, ?, ?)
+  `;
+  
+  db.query(query, [userID, accountType, balance, bankingNum, routingNum], (err, results) => {
+    if (err) {
+      console.error('Error inserting account:', err);
+      return res.status(500).json({ success: false, message: 'Error creating account' });
+    }
+
+    res.json({ success: true, message: `${accountType} account created successfully!` });
+  });
+});
+
+
+router.put('/user/update-username', (req, res) => {
+  // Ensure the user is logged in (either admin or the user themselves)
+  if (!req.session.userID && !req.session.adminID) {
+    return res.status(401).json({ success: false, message: 'User not logged in' });
+  }
+
+  const { newUsername } = req.body; // Assuming the new username is passed in the request body
+
+  // Check if the new username is provided
+  if (!newUsername) {
+    return res.status(400).json({ success: false, message: 'New username is required' });
+  }
+
+  // Validate username format (optional, depending on your requirements)
+  const usernameRegex = /^[a-zA-Z0-9_]+$/; // Simple alphanumeric and underscore check
+  if (!usernameRegex.test(newUsername)) {
+    return res.status(400).json({ success: false, message: 'Username can only contain letters, numbers, and underscores' });
+  }
+
+  // Check if the new username already exists in the database
+  const checkUsernameQuery = "SELECT userID FROM users WHERE username = ?";
+  db.query(checkUsernameQuery, [newUsername], (err, results) => {
+    if (err) {
+      console.log('Database error: ', err);
+      return res.status(500).json({ success: false, message: 'Database error' });
+    }
+
+    if (results.length > 0) {
+      // Username already taken
+      return res.status(400).json({ success: false, message: 'Username already taken' });
+    }
+
+    // Update the username in the database
+    const updateUsernameQuery = "UPDATE users SET username = ? WHERE userID = ?";
+    const userID = req.session.userID || req.session.adminID; // Use the logged-in user's ID
+
+    db.query(updateUsernameQuery, [newUsername, userID], (err, updateResults) => {
+      if (err) {
+        console.log('Database error: ', err);
+        return res.status(500).json({ success: false, message: 'Database error' });
+      }
+
+      // Successfully updated the username
+      return res.json({ success: true, message: 'Username updated successfully' });
+    });
+  });
+});
+
+router.put('/user/change-password', (req, res) => {
+  // Ensure the user is logged in (either admin or the user themselves)
+  if (!req.session.userID && !req.session.adminID) {
+    return res.status(401).json({ success: false, message: 'User not logged in' });
+  }
+
+  const { oldPassword, newPassword, confirmPassword } = req.body; // Extract data from the request body
+
+  // Check if old password, new password, and confirm password are provided
+  if (!oldPassword || !newPassword || !confirmPassword) {
+    return res.status(400).json({ success: false, message: 'Old password, new password, and confirm password are required' });
+  }
+
+  // Check if new password and confirm password match
+  if (newPassword !== confirmPassword) {
+    return res.status(400).json({ success: false, message: 'New passwords do not match' });
+  }
+
+  // Fetch the user's current password from the database
+  const userID = req.session.userID || req.session.adminID; // Use the logged-in user's ID
+
+  const getUserQuery = "SELECT password FROM users WHERE userID = ?";
+  db.query(getUserQuery, [userID], (err, results) => {
+    if (err) {
+      console.log('Database error: ', err);
+      return res.status(500).json({ success: false, message: 'Database error' });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    const currentPassword = results[0].password; // Retrieve current password from the database
+
+    // Check if the old password matches the stored one
+    if (oldPassword !== currentPassword) {
+      return res.status(400).json({ success: false, message: 'Old password is incorrect' });
+    }
+
+    // Update the password in the database directly (without hashing)
+    const updatePasswordQuery = "UPDATE users SET password = ? WHERE userID = ?";
+    db.query(updatePasswordQuery, [newPassword, userID], (err, updateResults) => {
+      if (err) {
+        console.log('Database error: ', err);
+        return res.status(500).json({ success: false, message: 'Database error' });
+      }
+
+      // Successfully updated the password
+      return res.json({ success: true, message: 'Password updated successfully' });
+    });
+  });
+});
+
+router.put('/user/change-email', (req, res) => {
+  // Ensure the user is logged in
+  if (!req.session.userID && !req.session.adminID) {
+    return res.status(401).json({ success: false, message: 'User not logged in' });
+  }
+
+  const { newEmail } = req.body;
+
+  // Validate new email format
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  if (!emailRegex.test(newEmail)) {
+    return res.status(400).json({ success: false, message: 'Invalid email format' });
+  }
+
+  // Check if the new email already exists in the database
+  const checkEmailQuery = "SELECT userID FROM users WHERE email = ?";
+  db.query(checkEmailQuery, [newEmail], (err, results) => {
+    if (err) {
+      console.log('Database error: ', err);
+      return res.status(500).json({ success: false, message: 'Database error' });
+    }
+
+    if (results.length > 0) {
+      // Email already exists
+      return res.status(400).json({ success: false, message: 'Email already in use' });
+    }
+
+    // Update the email in the database
+    const userID = req.session.userID || req.session.adminID; // Use the logged-in user's ID
+
+    const updateEmailQuery = "UPDATE users SET email = ? WHERE userID = ?";
+    db.query(updateEmailQuery, [newEmail, userID], (err, updateResults) => {
+      if (err) {
+        console.log('Database error: ', err);
+        return res.status(500).json({ success: false, message: 'Database error' });
+      }
+
+      return res.json({ success: true, message: 'Email updated successfully' });
+    });
+  });
+});
+
+router.put('/user/change-pin', (req, res) => {
+  // Ensure the user is logged in
+  if (!req.session.userID && !req.session.adminID) {
+    return res.status(401).json({ success: false, message: 'User not logged in' });
+  }
+
+  const { currentPin, newPin } = req.body;
+
+  // Ensure both currentPin and newPin are provided
+  if (!currentPin || !newPin) {
+    return res.status(400).json({ success: false, message: 'Current and new PIN are required' });
+  }
+
+  // Validate that the new PIN is different from the current PIN
+  if (currentPin === newPin) {
+    return res.status(400).json({ success: false, message: 'New PIN cannot be the same as the current PIN' });
+  }
+
+  // Check the current PIN in the database (hash it if needed)
+  const checkPinQuery = "SELECT pin FROM userPins WHERE userID = ?";
+  db.query(checkPinQuery, [req.session.userID], (err, results) => {
+    if (err) {
+      console.log('Database error: ', err);
+      return res.status(500).json({ success: false, message: 'Database error' });
+    }
+
+    if (results.length === 0 || results[0].pin !== currentPin) {
+      // Current PIN is incorrect
+      return res.status(400).json({ success: false, message: 'Incorrect current PIN' });
+    }
+
+    // Update the PIN in the database (hash the new PIN if necessary)
+    const updatePinQuery = "UPDATE userPins SET pin = ? WHERE userID = ?";
+    db.query(updatePinQuery, [newPin, req.session.userID], (err, updateResults) => {
+      if (err) {
+        console.log('Database error: ', err);
+        return res.status(500).json({ success: false, message: 'Database error' });
+      }
+
+      return res.json({ success: true, message: 'PIN updated successfully' });
+    });
+  });
+});
+
+
+// Fetch all users from the database
+router.get('/accountsList', (req, res) => {
+  // Ensure the user is logged in
+  if (!req.session.userID) {
+    return res.status(401).json({ success: false, message: 'User not logged in' });
+  }
+
+  // Get user ID from the session
+  const userID = req.session.userID;
+
+  // Query to fetch accounts for the logged-in user only
+  const qry = "SELECT accountID, type, balance FROM accounts WHERE userID = ?";
+  
+  db.query(qry, [userID], (err, data) => {
+    if (err) {
+      console.log("Database error: ", err);
+      return res.status(500).json({ success: false, message: 'Database error' });
+    }
+    return res.json({ success: true, accounts: data });
+  });
+});
+
+
+// get user first and last name
+router.get('/user/details', (req, res) => {
+  // console.log("Session ID in /user/details:", req.sessionID);
+  // console.log("Session Data in /user/details:", req.session);
+
+  if (!req.session.userID) {
+    return res.status(401).json({ success: false, message: 'User not logged in' });
+  }
+
+  const { userFname, userLname } = req.session;
+
+  if (!userFname || !userLname) {
+    return res.status(400).json({ success: false, message: 'User details missing in session' });
+  }
+
+  return res.json({
+    success: true,
+    firstName: userFname,
+    lastName: userLname
+  });
+});
+
+router.post('/admin/employee', async (req, res) => {
+  // Destructure the request body to extract the data
+  const { firstName, lastName, email, username, password } = req.body;
+
+  // Validate the fields
+  if (!firstName || !lastName || !email || !username || !password) {
+    return res.status(400).json({ success: false, message: 'All fields are required' });
+  }
+
+  // Insert the new employee into the database (assuming you have a `employees` table)
+  const query = `
+    INSERT INTO bank.admin (username, password, fname, lname, email)
+    VALUES (?, ?, ?, ?, ?)
+  `;
+
+  db.query(query, [username, password, firstName, lastName, email], (err, result) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ success: false, message: 'Error adding new employee' });
+    }
+
+    // Respond with success
+    return res.json({ success: true, message: 'Employee added successfully' });
+  });
+});
+
+
+router.get('/admin/cemployees', (req, res) => {
+  // Query that now includes 'adminID' as 'id'
+  console.log("Session ID in /admin/cemployeess:", req.sessionID);
+  console.log("Session Data in /admin/cemployees:", req.session);
+
+  const qry = `SELECT * FROM admin`;
+
+  db.query(qry, (err, data) => {
+    console.log(data);
+    if (err) {
+      console.log("Database error: ", err);
+      return res.status(500).json({ success: false, message: 'Database error' });
+    }
+    return res.json({ success: true, employees: data });
+  });
+
+});
 
 
 export default router;

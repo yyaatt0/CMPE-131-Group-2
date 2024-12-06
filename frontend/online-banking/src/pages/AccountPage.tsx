@@ -18,6 +18,7 @@ import { useEffect } from "react"; // Add this line for useEffect import
 import "./AccountPage.css"; 
 import PopupBox from "../components/PopupBox";
 import { isSet } from "util/types";
+import axios from "axios";
 
 // Constants
 const MIN_BALANCE: number = 0;
@@ -51,7 +52,7 @@ const accounts: string[] = ["Savings Account", "Checking Account"];
   // BACKEND: Fill this with the name associated with the account logged in
   const name = "John Doe";
 
-const AccountPage = () => { 
+export default function Component() {
   const [activeTab, setActiveTab] = useState("transactions");
   const [activeNavTab, setActiveNavTab] = useState("accounts");
 
@@ -92,16 +93,13 @@ const AccountPage = () => {
   const [showPassPin, setShowPassPin] = useState(false);
 
   const [newAccData, setNewAccData] = useState("");
+  const [currentPassword, setCurrentPassword] = useState("");
   const [confirmAccData, setConfirmAccData] = useState("");
   const [accErrorMsg, setAccErrorMsg] = useState("");
-
+  const [currentPin, setCurrentPin] = useState("");
   const [initialAmount, setInitialAmount] = useState("");
-
-  const [transferAmount, setTransferAmount] = useState<string>(""); //setting up variables
-  const [sourceAccountID, setSourceAccountID] = useState<string>("");
-  const [destAccountID, setDestAccountID] = useState<string>("");
-  const [transferError, setTransferError] = useState<string>("");
-  const [transferSuccess, setTransferSuccess] = useState("");
+  // const [ssn, setSsn] = useState(""); // SSN for validation
+  // const [birthdate, setBirthdate] = useState(""); // Birthdate for validation
 
   
   const handleSetting = (action: string) => {
@@ -132,19 +130,26 @@ const AccountPage = () => {
         I also did not include any input handling on the SSN or Birthday when creating an account; 
           it also does not check if the type of account exist or not
   */
-  const handleConfirmSetting = () => {
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailRegex.test(email);
+  };
+  const handleConfirmSetting = async () => {
     switch (settingBtn) {
       case "Checking Account": {
 
-          // Checks if there is an actual input or not
-          if(initialAmount === "") {
-            setAccErrorMsg("Please enter some amount (minimum is $0.00)")
+          // Validate initial deposit
+          if (initialAmount === "" || isNaN(Number(initialAmount)) || Number(initialAmount) <= 0) {
+            setAccErrorMsg("Please enter a valid amount for the initial deposit (minimum $0.01).");
+            return;
           }
-          else {
-            setAccErrorMsg("");
-            setInitialAmount("");
-            setSettingBtn(null);
-          }
+
+          // Reset error message and other states
+          setAccErrorMsg("");
+          const accountType = "Checking";
+
+          // Call the backend to create the Checking Account
+          await createAccount(accountType);
 
           /* TODO */
 
@@ -152,91 +157,199 @@ const AccountPage = () => {
       }
       case "Savings Account": {
 
-        // Checks if there is an actual input or not
-        if(initialAmount === "") {
-          setAccErrorMsg("Please enter some amount (minimum is $0.00)")
+        // // Checks if there is an actual input or not
+        // if(initialAmount === "") {
+        //   setAccErrorMsg("Please enter some amount (minimum is $0.00)")
+        // }
+        // else {
+        //   setAccErrorMsg("");
+        //   setInitialAmount("");
+        //   setSettingBtn(null);
+        // }
+        if (initialAmount === "" || isNaN(Number(initialAmount)) || Number(initialAmount) <= 0) {
+          setAccErrorMsg("Please enter a valid amount for the initial deposit (minimum $0.01).");
+          return;
         }
-        else {
-          setAccErrorMsg("");
-          setInitialAmount("");
-          setSettingBtn(null);
-        }
+  
+        // Reset error message and other states
+        setAccErrorMsg("");
+        const accountType = "Savings";
+  
+        // Call the backend to create the Savings Account
+        await createAccount(accountType);
 
         /* TODO */
 
         break;
       }
       case "Change Username": {
-
-        // Portion for the matching new data input handling
-        if(newAccData !== confirmAccData) {
-          setAccErrorMsg("The existing username does not match or new usernames does not match");
-        }
-        else {
-          setConfirmAccData("");
-          setNewAccData("");
+        if (newAccData !== confirmAccData) {
+          setAccErrorMsg("The new usernames do not match.");
+        } else if (newAccData === "") {
+          setAccErrorMsg("Please enter a new username.");
+        } else {
+          // Reset error message
           setAccErrorMsg("");
-          setSettingBtn(null);
+        
+          try {
+            const response = await axios.put(
+                "http://localhost:3001/auth/user/update-username",
+                { newUsername: newAccData }, // Data payload
+                { withCredentials: true }    // Config object
+            );
+            console.log(response.data.message);
+            console.log(newAccData);
+            
+            if (response.data.success) {
+              // If the username change is successful, reset the form and show success message
+              alert("Username updated successfully!");
+              setNewAccData("");
+              setConfirmAccData("");
+              setSettingBtn(null);
+            } else {
+              setAccErrorMsg("Error updating username.");
+            }
+          } catch (error) {
+            console.error("Error updating username:", error);
+            setAccErrorMsg("Error updating username. Please try again.");
+          }
         }
-
-        /* TODO */
-
       break;
       }
       case "Change Password": {
 
-        // Portion for the matching new data input handling
-        if(newAccData !== confirmAccData) {
-          setAccErrorMsg("The existing password does not match or new passwords does not match");
-        }
-        else {
-          setConfirmAccData("");
-          setNewAccData("");
+        // Portion for matching new data input handling
+        if (newAccData !== confirmAccData) {
+          setAccErrorMsg("The new passwords do not match.");
+        } else if (newAccData === "" || currentPassword === "") {
+          setAccErrorMsg("Please fill in all fields.");
+        } else {
+          // Reset error message
           setAccErrorMsg("");
-          setSettingBtn(null);
+        
+          try {
+            const response = await axios.put(
+              "http://localhost:3001/auth/user/change-password",
+              {
+                oldPassword: currentPassword,   // Sending the current password
+                newPassword: newAccData,   // Sending the new password
+                confirmPassword: confirmAccData   // Sending the confirm password
+              },
+              { withCredentials: true }  // Ensure credentials are sent for session
+            );
+            
+      
+            if (response.data.success) {
+              alert("Password updated successfully!");
+              setNewAccData("");
+              setConfirmAccData("");
+              setCurrentPassword("");
+              setSettingBtn(null);
+            } else {
+              setAccErrorMsg(response.data.message || "Error updating password.");
+            }
+          } catch (error) {
+            console.error("Error updating password:", error);
+            setAccErrorMsg("Error updating password. Please try again.");
+          }
         }
-
-          /* TODO */
 
         break;
       }
       case "Change Email": {
 
-        // Portion for the matching new data input handling
-        if(newAccData !== confirmAccData) {
-          setAccErrorMsg("The existing email does not match or new emails does not match");
-        }
-        else {
-          setConfirmAccData("");
-          setNewAccData("");
-          setAccErrorMsg("");
-          setSettingBtn(null);
-        }
+            // Check if the new email and confirmation email match
+      if (newAccData !== confirmAccData) {
+        setAccErrorMsg("The new emails do not match.");
+      } else if (newAccData === "") {
+        setAccErrorMsg("Please enter a new email.");
+      } else if (!validateEmail(newAccData)) {
+        setAccErrorMsg("Please enter a valid email address.");
+      } else {
+        setAccErrorMsg(""); // Reset error message
 
-        /* TODO */
+    try {
+        const response = await axios.put(
+          "http://localhost:3001/auth/user/change-email", // Backend endpoint
+          { newEmail: newAccData }, // Send new email
+          { withCredentials: true }  // Ensure credentials (session cookies) are sent
+        );
+
+        if (response.data.success) {
+          alert("Email updated successfully!");
+          setNewAccData("");
+          setConfirmAccData("");
+          setSettingBtn(null);
+        } else {
+          setAccErrorMsg(response.data.message || "Error updating email.");
+        }
+      } catch (error) {
+        console.error("Error updating email:", error);
+        setAccErrorMsg("Error updating email. Please try again.");
+      }
+    }
 
         break;
       }
       case "Change Pin": {
 
-        // Portion for the matching new data input handling
-        if(newAccData !== confirmAccData) {
-          setAccErrorMsg("The existing pin does not match or new pins does not match");
-        }
-        else {
-          setConfirmAccData("");
-          setNewAccData("");
-          setAccErrorMsg("");
-          setSettingBtn(null);
-        }
+        // Check if the new PIN and confirmation PIN match
+        if (newAccData !== confirmAccData) {
+          setAccErrorMsg("The new PINs do not match.");
+        } else if (newAccData === "") {
+          setAccErrorMsg("Please enter a new PIN.");
+        } else if (newAccData === currentPin) {
+          setAccErrorMsg("New PIN cannot be the same as the current PIN.");
+        } else {
+          setAccErrorMsg(""); // Reset error message
 
-        /* TODO */
+          try {
+            const response = await axios.put(
+              "http://localhost:3001/auth/user/change-pin", // Backend endpoint
+              { currentPin: currentPin, newPin: newAccData }, // Send current PIN and new PIN
+              { withCredentials: true }  // Ensure credentials (session cookies) are sent
+            );
+
+            if (response.data.success) {
+              alert("PIN updated successfully!");
+              setCurrentPin("");
+              setNewAccData("");
+              setConfirmAccData("");
+              setSettingBtn(null);
+            } else {
+              setAccErrorMsg(response.data.message || "Error updating PIN.");
+            }
+          } catch (error) {
+            console.error("Error updating PIN:", error);
+            setAccErrorMsg("Error updating PIN. Please try again.");
+          }
+        }
 
         break;
       }
     }
   }
 
+  const createAccount = async (accountType: string) => {
+    try {
+      const response = await axios.post('http://localhost:3001/auth/user/create-account', {
+        accountType,
+        initialAmount: Number(initialAmount),
+      }, { withCredentials: true });
+  
+      if (response.data.success) {
+        alert(`${accountType} account created successfully!`);
+        // Reset states
+        setSettingBtn(null);
+        setInitialAmount("");
+      } else {
+        setAccErrorMsg(response.data.message || 'Failed to create account.');
+      }
+    } catch (error) {
+      console.error('Error creating account:', error);
+      setAccErrorMsg("An error occurred while creating the account. Please try again.");
+    }
+  };
 
 
   const handlePhoneNumber = (num: Value | undefined) => {
@@ -466,67 +579,6 @@ const AccountPage = () => {
     }
   };
 
-  const handleTransfer = () => { //parsing values that are entered
-    setTransferError("");
-    const amount = parseFloat(transferAmount);
-    if (isNaN(amount) || amount <= 0) {
-      setTransferError("Please enter a valid amount.");
-      return;
-    }
-    if (amount > accountBalance) {
-      setTransferError("Insufficient funds for this transfer.");
-      return;
-    }
-    if (sourceAccountID.length !== 10) {
-      setTransferError("Please enter a valid 10-digit account number.");
-      return;
-    }
-    
-    
-    fetch("http://localhost:3001/auth/transfer", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        sourceAccountID: sourceAccountID,  // Source account ID
-        destAccountID: destAccountID,    // Destination account ID
-        amount: transferAmount,
-      }),
-      credentials: "include", // To send the session cookie for user identification
-    })
-    .then((response) => response.json())
-    .then((result) => {
-      if (!result.success) {
-        setTransferError(result.message || "An error occurred during the transfer.");
-        return;
-      }
-  
-      // If the transfer is successful, update the local balance and transaction
-      updateAccountBalance(accountBalance - amount);
-  
-      // Add a new transaction
-      const date = new Date();
-      const transferTransaction: transaction = {
-        id: transactions.length + 1,
-        amount: -amount,
-        type: "Transfer",
-        info: `Transfer to account ${destAccountID}`, // Destination account
-        date: `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`,
-      };
-      addNewTransaction(transferTransaction);
-  
-      // Reset form
-      setTransferAmount("");
-      setSourceAccountID(""); // Reset source account number
-      setDestAccountID(""); // Reset destination account number
-      setActiveTab("transactions");
-    })
-    .catch((error) => {
-      console.error("Error during transfer:", error);
-      setTransferError("An error occurred while communicating with the server.");
-    });
-  }
   return (
     <div className="app-container">
 
@@ -665,31 +717,7 @@ const AccountPage = () => {
             {activeTab === "transfer" && (
               <div className="tab-content">
                 <h2>Transfer Funds</h2>
-                <form className="transfer-form" onSubmit={(e) => { e.preventDefault(); handleTransfer(); }}>
-                <input
-                    type="text"
-                    placeholder="Source's Account Number"
-                    value={sourceAccountID}
-                    onChange={(e) => setSourceAccountID(e.target.value)}
-                    required
-                  />
-                  <input
-                    type="text"
-                    placeholder="Recipient's Account Number"
-                    value={destAccountID}
-                    onChange={(e) => setDestAccountID(e.target.value)}
-                    required
-                  />
-                  <input
-                    type="text"
-                    placeholder="Amount"
-                    value={transferAmount}
-                    onChange={(e) => handleNumInputChange(e, setTransferAmount)}
-                    required
-                  />
-                  {transferError && <p className="error-message">{transferError}</p>}
-                  <button type="submit">Transfer</button>
-                </form>
+                <p>Transfer functionality would be implemented here.</p>
               </div>
             )}
             {activeTab === "pay" && (
@@ -871,10 +899,10 @@ const AccountPage = () => {
                   <div className="acc-body">
                     <p>Enter the following information below</p>
                     <div className="input-wrapper">
-                      <div className="input-row">
+                      {/* <div className="input-row">
                         <input type="text" placeholder="SSN"/>
                         <input type="text" placeholder="Birthdate" onFocus={(e) => e.target.type = 'date'} onBlur={(e) => e.target.type = 'text'}/>  
-                      </div>
+                      </div> */}
                       <div className="input-row">
                         <input type="text" placeholder="Initial Deposit" value={initialAmount} onChange={(e) => {handleNumInputChange(e, setInitialAmount); setAccErrorMsg("")}}/>
                       </div>
@@ -895,10 +923,10 @@ const AccountPage = () => {
                   <div className="acc-body">
                     <p>Enter the following information below</p>
                     <div className="input-wrapper">
-                      <div className="input-row">
+                      {/* <div className="input-row">
                         <input type="text" placeholder="SSN"/>
                         <input type="text" placeholder="Birthdate" onFocus={(e) => e.target.type = 'date'} onBlur={(e) => e.target.type = 'text'}/>  
-                      </div>
+                      </div> */}
                       <div className="input-row">
                         <input type="text" placeholder="Initial Deposit" value={initialAmount} onChange={(e) => {handleNumInputChange(e, setInitialAmount); setAccErrorMsg("")}}/>
                       </div>
@@ -918,9 +946,9 @@ const AccountPage = () => {
                   {accErrorMsg && <p style={{color: 'red', fontSize: '14px'}}>{accErrorMsg}</p>}
                   <div className="acc-body">
                     <p>Enter the following information below</p>
-                    <div className="input-row">
+                    {/* <div className="input-row">
                       <input type="text" placeholder="Current Username"/>
-                    </div>
+                    </div> */}
                     <div className="input-row">
                       <input type="text" placeholder="New Username" value={newAccData} onChange={(e) => {setNewAccData(e.target.value); setAccErrorMsg("")}}/>
                     </div>
@@ -936,14 +964,22 @@ const AccountPage = () => {
               <>
                 <PopupBox>
                   <div className="acc-setting-header">
-                    <h2>Change Pin</h2>
-                    <button className="x-btn" onClick={() => {setSettingBtn(null); setShowPassPin(false); setNewAccData(""); setConfirmAccData("");}}>X</button>
+                    <h2>Change Password</h2>
+                    <button className="x-btn" onClick={() => {setSettingBtn(null); setCurrentPassword(""); setShowPassPin(false); setNewAccData(""); setConfirmAccData("");}}>X</button>
                   </div>
                   {accErrorMsg && <p style={{color: 'red', fontSize: '14px'}}>{accErrorMsg}</p>}
                   <div className="acc-body">
                     <p>Enter the following information below</p>
-                    <div className="input-row">
+                    {/* <div className="input-row">
                       <input type={showPassPin ? "text" : "password"} placeholder="Current Password"/>
+                    </div> */}
+                    {/* Input for the current password */}
+                    <div className="input-row">
+                      <input type={showPassPin ? "text" : "password"} placeholder="Current Password" value={currentPassword} onChange={(e) => {
+                          setCurrentPassword(e.target.value);
+                          setAccErrorMsg(""); // Clear error message
+                        }}
+                      />
                     </div>
                     <div className="input-row">
                       <input type={showPassPin ? "text" : "password"} placeholder="New Password" value={newAccData} onChange={(e) => {setNewAccData(e.target.value); setAccErrorMsg("")}}/>
@@ -970,9 +1006,9 @@ const AccountPage = () => {
                   {accErrorMsg && <p style={{color: 'red', fontSize: '14px'}}>{accErrorMsg}</p>}
                   <div className="acc-body">
                     <p>Enter the following information below</p>
-                    <div className="input-row">
+                    {/* <div className="input-row">
                       <input type="text" placeholder="Current Email"/>
-                    </div>
+                    </div> */}
                     <div className="input-row">
                       <input type="text" placeholder="New Email" value={newAccData} onChange={(e) => {setNewAccData(e.target.value); setAccErrorMsg("")}}/>
                     </div>
@@ -989,13 +1025,17 @@ const AccountPage = () => {
                 <PopupBox>
                   <div className="acc-setting-header">
                     <h2>Change Pin</h2>
-                    <button className="x-btn" onClick={() => {setSettingBtn(null); setShowPassPin(false); setNewAccData(""); setConfirmAccData("");}}>X</button>
+                    <button className="x-btn" onClick={() => {setSettingBtn(null); setCurrentPassword(""); setShowPassPin(false); setNewAccData(""); setConfirmAccData("");}}>X</button>
                   </div>
                   {accErrorMsg && <p style={{color: 'red', fontSize: '14px'}}>{accErrorMsg}</p>}
                   <div className="acc-body">
                     <p>Enter the following information below</p>
                     <div className="input-row">
-                      <input type={showPassPin ? "text" : "password"} placeholder="Current Pin"/>
+                      <input type={showPassPin ? "text" : "password"} placeholder="Current Pin" value={currentPin} onChange={(e) => {
+                          setCurrentPin(e.target.value);
+                          setAccErrorMsg(""); // Clear error message
+                        }}
+                      />
                     </div>
                     <div className="input-row">
                       <input type={showPassPin ? "text" : "password"} placeholder="New Pin" value={newAccData} onChange={(e) => {setNewAccData(e.target.value); setAccErrorMsg("")}}/>
@@ -1017,7 +1057,4 @@ const AccountPage = () => {
       </div>
     </div>
   );
-  
-};
-
-export default AccountPage;
+}
