@@ -121,8 +121,8 @@ router.post("/login", (req, res) => {
     req.session.userID = id; 
     req.session.userFname = fname; 
     req.session.userLname = lname; 
-    console.log(req.session);
-    console.log(req.session.userID);
+    //console.log(req.session);
+    //console.log(req.session.userID);
     return res.json({ success: true, message: 'Login successful' });
   });
 });
@@ -434,7 +434,7 @@ router.put('/user/change-pin', (req, res) => {
 // Fetch all users from the database
 router.get('/accountsList', (req, res) => {
   // Ensure the user is logged in
-  if (!req.session.userID) {
+  if (!req.session.adminID) {
     return res.status(401).json({ success: false, message: 'User not logged in' });
   }
 
@@ -442,7 +442,7 @@ router.get('/accountsList', (req, res) => {
   const userID = req.session.userID;
 
   // Query to fetch accounts for the logged-in user only
-  const qry = "SELECT accountID, type, balance FROM accounts WHERE userID = ?";
+  const qry = "SELECT * FROM accounts";
   
   db.query(qry, [userID], (err, data) => {
     if (err) {
@@ -450,6 +450,34 @@ router.get('/accountsList', (req, res) => {
       return res.status(500).json({ success: false, message: 'Database error' });
     }
     return res.json({ success: true, accounts: data });
+  });
+});
+
+router.get('/transactionList', (req, res) => {
+  // Ensure the user is logged in
+  if (!req.session.adminID) {
+    return res.status(401).json({ success: false, message: 'User not logged in' });
+  }
+
+  // Get user ID from the session
+  const userID = req.session.userID;
+  console.log("transactionList", userID);
+
+  // Query to fetch accounts for the logged-in user only
+  //const qry = "select * FROM transactionhistory INNER JOIN accounts GROUP BY userID WHERE userID = ? ORDER BY trasactionID DESC";
+  const qry = 'SELECT * FROM transactionhistory INNER JOIN accounts ON transactionhistory.accountID = accounts.accountID GROUP BY transactionID';
+
+  db.query(qry, [userID], (err, data) => {
+    console.log(data);
+    if (err) {
+      console.log("Database error: ", err);
+      return res.status(500).json({ success: false, message: 'Database error' });
+    }
+    //  // If no transactions are found, return an empty array
+    // if (!data || data.length === 0) {
+    //   return res.json({ success: true, transactions: [] });
+    // } 
+    return res.json({ success: true, transactions: data });
   });
 });
 
@@ -511,7 +539,7 @@ router.get('/admin/cemployees', (req, res) => {
   const qry = `SELECT * FROM admin`;
 
   db.query(qry, (err, data) => {
-    console.log(data);
+    //console.log(data);
     if (err) {
       console.log("Database error: ", err);
       return res.status(500).json({ success: false, message: 'Database error' });

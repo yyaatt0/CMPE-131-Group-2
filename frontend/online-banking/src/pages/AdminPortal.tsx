@@ -28,41 +28,10 @@ type employee = {
     admin: boolean;
 };
 
-// Temp employee list
-//let employeeCount = 50;
-//let employees: employee[] = [];
-// for(var i = 0; i < employeeCount; i++){
-//     // if(i % 3 === 0){    // Give every third employee admin access as a temp demonstration
-//     //     employees.push(
-//     //         {info: {id: i + 10000, firstName: 'Jane', lastName: 'Doe', email: "d", username: "d", pwd: "d"}, admin: true}
-//     //     )
-//     // }
-//     // else{
-//     //     employees.push(
-//     //         {info: {id: i + 10000, firstName: 'John', lastName: 'Doe', email: "d", username: "d", pwd: "d"}, admin: false}
-//     //     )
-//     // }
-// }
 
 // Basic account type definition.
 type account = {userID: number, id: number, name: string, balance: number};
-
-// Temp account list
-//let accountCount = 12;
-//let accounts: account[] = [];
-// for(var i = 0; i < accountCount; i++){
-//     if(i % 3 === 0){
-//         accounts.push(
-//             {id: i, name: 'Checkings', balance: 999999}
-//         )
-//     }
-//     else{
-//         accounts.push(
-//             {id: i, name: 'Savings', balance: 5}
-//         )
-//     }
-// }
-
+type transaction = {userID: number, accountID: number, accountType: string, transactionType: boolean, amount: number, timeCreate: string};
 
 function AdminPortal() {
 
@@ -98,7 +67,10 @@ function AdminPortal() {
 
     const [userList, setUserList] = useState<user[]>([]);
     const [accountsList, setAccountsList] = useState<account[]>([]);
+    const [transactionsList, setTransactionsList] = useState<transaction[]>([]);
     const [employeeList, setEmployeeList] = useState<employee[]>([]);
+
+    
 
     useEffect(() => {
         // Fetch employee list from the backend
@@ -149,6 +121,34 @@ function AdminPortal() {
         fetchUserDetails();
     }, []);  
 
+    useEffect(() => {
+        // Fetch users from the backend
+        const fetchAccounts= async () => {
+            try {
+                const res = await axios.get("http://localhost:3001/auth/accountsList", {
+                    withCredentials: true,
+                }); // Adjust this URL to your backend route
+
+                if (res.data && Array.isArray(res.data.accounts)) {
+                    const fetchedAccounts: account[] = res.data.accounts.map((accountData: {userID: number, accountID: number, type: string, balance: number,}) => ({ // Include transaction of format of type list
+                        userID: accountData.userID,
+                        id: accountData.accountID,
+                        name: accountData.type,
+                        balance: accountData.balance,
+                    }));
+                    setAccountsList(fetchedAccounts); // Update the state with the fetched users
+
+                    // add fetchTransaction 
+                } else {
+                    throw new Error("Failed to fetch Accounts. Data format is incorrect.");
+                }
+            } catch (err) {
+                console.error("Error fetching accounts:", err);
+            }
+        };
+
+        fetchAccounts();
+    }, []);
 
     useEffect(() => {
         // Fetch users from the backend
@@ -180,22 +180,29 @@ function AdminPortal() {
         fetchUsers();
     }, []); // Empty
 
+
+    //type transaction = {userID: number, admin id: number, name: string, transactionType: boolean, amount: number, timeCreate: string};
+    //const [transactionsList, setTransactionsList] = useState<transaction[]>([]);
+    // type transaction = {userID: number, accountID: number, accountType: string, transactionType: boolean, amount: number, timeCreate: string};
+
     useEffect(() => {
         // Fetch users from the backend
         const fetchAccounts= async () => {
             try {
-                const res = await axios.get("http://localhost:3001/auth/accountsList", {
+                const res = await axios.get("http://localhost:3001/auth/transactionList", {
                     withCredentials: true,
                 }); // Adjust this URL to your backend route
 
-                if (res.data && Array.isArray(res.data.accounts)) {
-                    const fetchedAccounts: account[] = res.data.accounts.map((accountData: {userID: number, accountID: number, type: string, balance: number}) => ({
+                if (res.data && Array.isArray(res.data.transactions)) {
+                    const fetchedAccounts: transaction[] = res.data.transactions.map((accountData: {userID: number, accountID: number, transactionType: number, amount: number, timeCreate: string, type: string}) => ({
                         userID: accountData.userID,
-                        id: accountData.accountID,
-                        name: accountData.type,
-                        balance: accountData.balance,
+                        accountID: accountData.accountID,
+                        accountType: accountData.type,
+                        transactionType: accountData.transactionType,
+                        amount: accountData.amount,
                     }));
-                    setAccountsList(fetchedAccounts); // Update the state with the fetched users
+                    console.log(res.data.transactions)
+                    setTransactionsList(fetchedAccounts); // Update the state with the fetched users
                 } else {
                     throw new Error("Failed to fetch Accounts. Data format is incorrect.");
                 }
@@ -548,7 +555,7 @@ function AdminPortal() {
                                             </div>
                                         ) : (<>
                                             {/* Show user details and accounts if a user is selected */}
-                                            {/* {selectedUser !== null && (
+                                            {selectedUser !== null && (
                                                 <div className='info-area'>
                                                     <h2>ID: {filterUser[selectedUser + listStartIndex].id}</h2>
                                                     <h2>Name: {filterUser[selectedUser + listStartIndex].lastName}, {filterUser[selectedUser + listStartIndex].firstName}</h2>
@@ -572,33 +579,9 @@ function AdminPortal() {
                                                     </ScrollBox>
                                                     </div>
                                                 </div>
-                                            )} */}
-                                            {/* Show user details and accounts if a user is selected */}
-                                            {selectedUser !== null && selectedUser < filterUser.length && (
-                                                <div className='info-area'>
-                                                    <h2>ID: {filterUser[selectedUser].id}</h2>
-                                                    <h2>Name: {filterUser[selectedUser].lastName}, {filterUser[selectedUser].firstName}</h2>
-                                                    <h2>Email: {filterUser[selectedUser].email}</h2>
-                                                    <h2>Username: {filterUser[selectedUser].username}</h2>
-                                                    <h2>Password: {filterUser[selectedUser].pwd}</h2>
-
-                                                    <h3 className='section-subheader'>Accounts</h3>
-                                                    <div className='info-list-area'>
-                                                        <ScrollBox className='list-container'>
-                                                            {accountsList
-                                                                .filter((account) => account.userID === filterUser[selectedUser].id) // Filter accounts by userID
-                                                                .map((acc) => (
-                                                                    <div className='list-card' key={acc.id}>
-                                                                        <label className="list-content">ID: {acc.id}</label>
-                                                                        <label className="list-content">Name: {acc.name}</label>
-                                                                        <label className="list-content">Balance: ${acc.balance.toFixed(2)}</label>
-                                                                    </div>
-                                                                ))
-                                                            }
-                                                        </ScrollBox>
-                                                    </div>
-                                                </div>
                                             )}
+                                            {/* Show user details and accounts if a user is selected */}
+                                            
                                         </>)}
                                 </div>
                                 {/* Places page buttons below user list that will update which portion of the whole employee list will be displayed. */}
