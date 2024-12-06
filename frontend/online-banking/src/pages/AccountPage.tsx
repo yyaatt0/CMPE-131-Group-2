@@ -51,7 +51,7 @@ const accounts: string[] = ["Savings Account", "Checking Account"];
   // BACKEND: Fill this with the name associated with the account logged in
   const name = "John Doe";
 
-export default function Component() {
+const AccountPage = () => { 
   const [activeTab, setActiveTab] = useState("transactions");
   const [activeNavTab, setActiveNavTab] = useState("accounts");
 
@@ -526,7 +526,7 @@ export default function Component() {
       console.error("Error during transfer:", error);
       setTransferError("An error occurred while communicating with the server.");
     });
-  
+  }
   return (
     <div className="app-container">
 
@@ -1017,5 +1017,7 @@ export default function Component() {
       </div>
     </div>
   );
-}
-}
+  
+};
+
+export default AccountPage;
