@@ -483,7 +483,7 @@ export default function Component() {
     }
     
     
-    fetch("http://localhost:3001/transfer", {
+    fetch("http://localhost:3001/auth/transfer", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -666,11 +666,18 @@ export default function Component() {
               <div className="tab-content">
                 <h2>Transfer Funds</h2>
                 <form className="transfer-form" onSubmit={(e) => { e.preventDefault(); handleTransfer(); }}>
+                <input
+                    type="text"
+                    placeholder="Source's Account Number"
+                    value={sourceAccountID}
+                    onChange={(e) => setSourceAccountID(e.target.value)}
+                    required
+                  />
                   <input
                     type="text"
                     placeholder="Recipient's Account Number"
-                    value={transferAccountNumber}
-                    onChange={(e) => setTransferAccountNumber(e.target.value)}
+                    value={destAccountID}
+                    onChange={(e) => setDestAccountID(e.target.value)}
                     required
                   />
                   <input
