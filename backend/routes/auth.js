@@ -650,6 +650,74 @@ router.post("/atmlogin", (req, res) => {
   });
 });
   
+function generateRandom9() {
+  console.log("Inside gen ran num");
+  const min = 100000000;
+  const max = 999999999;
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+//OPEN USER ACCOUNT OF TYPE
+router.post('/openAcc', (req, res) => {
+
+    const { accountType } = req.body;
+    const checkBankNum = "SELECT * FROM accounts WHERE bankingNum = ? ";
+    const checkRoutNum = "SELECT * FROM accounts WHERE routingNum = ? ";
+    const makeNewAcc = "insert into bank.accounts (userID, type, balance, bankingNum, routingNum) values (?, ?, ?, ?, ?)"
+    var randBankNum = generateRandom9();
+    var randRoutNum = generateRandom9();
+
+    db.query(makeNewAcc, [req.session.userID, accountType, 0, randBankNum, randRoutNum], (err, data3) => {
+      if (err) {
+        return res.json({ success: false, message: 'Database error' });
+      }
+      return res.json({message: "Account Made"});
+    })
+
+})
+
+//CLOSE USER ACCOUNT OF TYPE
+router.post('/closeAcc', (req, res) => {
+
+  const { accountType } = req.body;
+  const deleteAcc = "DELETE FROM accounts WHERE accountID = ?";
+  const checkBalance = "Select balance from accounts where userID = ? and type = ?";
+  const checkAccountID = "Select accountID from accounts where userID = ? and type = ?";
+  var currBalance = 0;
+  var accountID = 0;
+
+  db.query(checkBalance, [req.session.userID, accountType], (err, data1) => {
+    if (err) {
+      return res.json({ success: false, message: 'Database error 1' });
+    }
+    currBalance = data1[0].balance;
+    console.log("Balance  Found " + currBalance);
+
+    if(currBalance != 0) {
+      return res.json({message: "Make sure account balance is exactly 0 dollars, halting delete."});
+    }
+    else {
+      db.query(checkAccountID, [req.session.userID, accountType], (err, data2) => {
+        if (err) {
+          return res.json({ success: false, message: 'Database error 2' });
+        }
+  
+        accountID = data2[0].accountID;
+        console.log("Account  Found " + accountID);
+
+        db.query(deleteAcc, [parseInt(accountID)], (err, data3) => {
+          if (err) {
+            return res.json({ success: false, message: 'Database error 3' });
+          }
+          else {
+            return res.json({message: "Account Deleted"});
+          }
+        })
+      })
+    }
+  })
+})
+
 //FOR BALANCE ACTIONS (WITHDRAW AND DEPOSIT)
 router.post("/balanceFeatures", (req, res) => {
   const { action, amount, accountType } = req.body;
