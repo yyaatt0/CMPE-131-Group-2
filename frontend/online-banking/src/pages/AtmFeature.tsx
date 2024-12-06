@@ -13,6 +13,7 @@ interface AccountBalance {
 
 const AtmFeature = () => {
   // For the side Nav bar to select accounts
+  const [accounts, setAccounts] = useState<Array<{ id: number, type: string, balance: number }>>([]);
   const [selectedAccount, setSelectedAccount] = useState<string>("Checking"); // BACKEND: Change to whatever first account pops up
   const [hoveredAccount, setHoveredAccount] = useState<string | null>(null);
   
@@ -92,18 +93,36 @@ const AtmFeature = () => {
             console.log(err)
         }
     }
+    const fetchAccounts = async () => {
+      try {
+        const res = await axios.get("http://localhost:3001/auth/accountsList", {
+          withCredentials: true, // Ensure that session cookies are sent with the request
+        });
+        
+        if (res.data.success) {
+          const accounts = res.data.accounts; // Extract accounts from the response
+          setAccounts(accounts);
+          
+          // Set the first account as the default if no account is selected
+          if (accounts.length > 0 && !selectedAccount) {
+            setSelectedAccount(accounts[0].type);
+          }
+        } else {
+          console.error("Error fetching accounts:", res.data.message);
+        }
+      } catch (err) {
+        console.error("Error fetching accounts:", err);
+      }
+    };
+    fetchAccounts();
     fetchUserDetails();
     fetchBalance();
   }, []);  
 
   // HARDCODED DATA
   // BACKEND: Fill this array from the data base based on what account the user has 
-  const accounts = ["Savings", "Checking"];
+  //const accounts = ["Savings", "Checking"];
 
-  // HARDCODED DATA
-  // BACKEND: Fill this with the name associated with the account logged in
-  //const name = "John Doe";
-  
 
  
   // HARDCODED DATA
@@ -305,9 +324,9 @@ const AtmFeature = () => {
 
                     {/* Drop down box to select an account  */}
                     <option value="">Select recipient account</option>
-                    {accounts.filter(account => account !== selectedAccount).map(account => (
+                    {/* {accounts.filter(account => account !== selectedAccount).map(account => (
                       <option key={account} value={account}>{account}</option>
-                    ))}
+                    ))} */}
                   </select>
 
                   {/* This says if there is no account selected, and the is some amount enter, prompt an error   */}
@@ -536,14 +555,14 @@ const AtmFeature = () => {
           <nav style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             {accounts.map((account) => (
               <button
-                key={account}
-                onClick={() => setSelectedAccount(account)}
-                onMouseEnter={() => setHoveredAccount(account)}
+                key={account.type}
+                onClick={() => setSelectedAccount(account.type)}
+                onMouseEnter={() => setHoveredAccount(account.type)}
                 onMouseLeave={() => setHoveredAccount(null)}
                 style={{
                   background: 'transparent',
                   border: 'none',
-                  color: selectedAccount === account ? '#003459' : 'white',
+                  color: selectedAccount === account.type ? '#003459' : 'white',
                   textAlign: 'left',
                   padding: '1rem',
                   fontSize: '1.2rem',
@@ -551,13 +570,13 @@ const AtmFeature = () => {
                   borderRadius: '5px',
                   transition: 'background-color 0.4s ease, color 0.4s ease',
                   backgroundColor:
-                    selectedAccount === account
+                    selectedAccount === account.type
                       ? 'white'
-                      : hoveredAccount === account
+                      : hoveredAccount === account.type
                       ? '#809AAC' 
                       : 'transparent',             
                 }}>
-                {account}
+                {account.type}
               </button>
             ))}
           </nav>

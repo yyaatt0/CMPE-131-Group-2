@@ -15,10 +15,10 @@ const AdminLogin = () => {
     e.preventDefault();
     try {
             // Send HTTP POST request to backend to authenticate login information
-      const response = await axios.post('http://localhost:3001/auth/adminlogin', {
-        userid: username,  // Username is sent in the body of the request
-        password: password, // password is sent in the body of the request
-      });
+      const response = await axios.post('http://localhost:3001/auth/adminlogin', 
+        { username: username, password:password },   
+        { withCredentials: true } // Required to include cookies
+      );
 
       // If authentication is successful, navigate to the admin page  
       if (response.data.success) {

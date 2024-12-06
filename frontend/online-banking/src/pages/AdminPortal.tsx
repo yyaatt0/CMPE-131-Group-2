@@ -9,68 +9,59 @@ import ScrollBox from '../components/ScrollBox';
 import PageButtons from '../components/PageButtons';
 import { setTextRange } from 'typescript';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 // Basic user type definition. Will add more fields later (contact info, ssn, etc.)
-type user = {id: number, firstName: string, lastName: string};
-
-// Temp registered user list
-let userCount = 100;
-let users: user[] = []
-for(var i = 0; i < userCount; i++){
-    if(i % 5 === 0 && i % 3 !== 0){
-        users.push(
-            {id: i + 100000, firstName: 'Barry', lastName: 'Allen'}
-        )
-    }
-    else if(i % 5 !== 0 && i % 3 === 0){
-        users.push(
-            {id: i + 100000, firstName: 'Peter', lastName: 'Griffin'}
-        )
-    }
-    else{
-        users.push(
-            {id: i + 100000, firstName: 'John', lastName: 'Doe'}
-        )
-    }
-}
+type user = {id: number, firstName: string, lastName: string, email: string, username: string, pwd: string};
 
 // Basic employee type definition.
-type employee = {info: user, admin: boolean};
+//type employee = {info: user, admin: boolean};
+type employee = {
+    info: {
+        id: number,
+        username: string;
+        firstName: string;
+        lastName: string;
+        password: string;
+        email: string;
+    };
+    admin: boolean;
+};
 
 // Temp employee list
-let employeeCount = 50;
-let employees: employee[] = [];
-for(var i = 0; i < employeeCount; i++){
-    if(i % 3 === 0){    // Give every third employee admin access as a temp demonstration
-        employees.push(
-            {info: {id: i + 10000, firstName: 'Jane', lastName: 'Doe'}, admin: true}
-        )
-    }
-    else{
-        employees.push(
-            {info: {id: i + 10000, firstName: 'John', lastName: 'Doe'}, admin: false}
-        )
-    }
-}
+//let employeeCount = 50;
+//let employees: employee[] = [];
+// for(var i = 0; i < employeeCount; i++){
+//     // if(i % 3 === 0){    // Give every third employee admin access as a temp demonstration
+//     //     employees.push(
+//     //         {info: {id: i + 10000, firstName: 'Jane', lastName: 'Doe', email: "d", username: "d", pwd: "d"}, admin: true}
+//     //     )
+//     // }
+//     // else{
+//     //     employees.push(
+//     //         {info: {id: i + 10000, firstName: 'John', lastName: 'Doe', email: "d", username: "d", pwd: "d"}, admin: false}
+//     //     )
+//     // }
+// }
 
 // Basic account type definition.
-type account = {id: number, name: string, balance: number};
+type account = {userID: number, id: number, name: string, balance: number};
 
 // Temp account list
-let accountCount = 12;
-let accounts: account[] = [];
-for(var i = 0; i < accountCount; i++){
-    if(i % 3 === 0){
-        accounts.push(
-            {id: i, name: 'Checkings', balance: 999999}
-        )
-    }
-    else{
-        accounts.push(
-            {id: i, name: 'Savings', balance: 5}
-        )
-    }
-}
+//let accountCount = 12;
+//let accounts: account[] = [];
+// for(var i = 0; i < accountCount; i++){
+//     if(i % 3 === 0){
+//         accounts.push(
+//             {id: i, name: 'Checkings', balance: 999999}
+//         )
+//     }
+//     else{
+//         accounts.push(
+//             {id: i, name: 'Savings', balance: 5}
+//         )
+//     }
+// }
 
 
 function AdminPortal() {
@@ -83,8 +74,12 @@ function AdminPortal() {
 
     // HARDCODED DATA
     // BACKEND WILL IMPORT THIS
-    const adminName = "John Doe";
-
+    //const adminName = "John Doe"; 
+    const [admin, setUser] = useState({
+        firstName: "",
+        lastName: "",
+    })
+    
     const navigate = useNavigate();
     const handleClick = () => {
         navigate('/Homepage');
@@ -101,25 +96,170 @@ function AdminPortal() {
         updateUnderlinePosition();
     }, [activeTab]);
 
+    const [userList, setUserList] = useState<user[]>([]);
+    const [accountsList, setAccountsList] = useState<account[]>([]);
+    const [employeeList, setEmployeeList] = useState<employee[]>([]);
+
+    useEffect(() => {
+        // Fetch employee list from the backend
+        const fetchEmployeeList = async () => {
+            try {
+                const response = await axios.get('http://localhost:3001/auth/admin/cemployees', {
+                    withCredentials: true, // Include session cookies if necessary
+                });
+
+                if (response.data && Array.isArray(response.data.employees)) {
+                    const fetchedUsers: employee[] = response.data.employees.map((userData: { adminID: number, fname: string, lname: string, email: string, username: string, password: string }) => ({
+                            info: {
+                                id: userData.adminID,
+                                username: userData.username,
+                                firstName: userData.fname,
+                                lastName: userData.lname,
+                                password: userData.password,
+                                email: userData.email,
+                            },
+                            admin: true,  // Assuming default value of false; change if needed
+                        }));
+                    console.log(fetchedUsers)
+                    setEmployeeList(fetchedUsers); // Update the state with the fetched users
+                } else {
+                    throw new Error("Failed to fetch users. Data format is incorrect.");
+                }
+            } catch (err) {
+                console.error('Error fetching employee list:', err);
+            }
+        };
+
+        fetchEmployeeList();
+    }, []);
+
+    
+    useEffect(() => {
+        const fetchUserDetails = async () => {
+        try {
+            const res = await axios.get("http://localhost:3001/auth/admin/details", {
+            withCredentials: true, // Include session cookies in the request
+            });
+            const { firstName, lastName } = res.data;
+            setUser({ firstName, lastName });
+        } catch (err) {
+            console.error("Error fetching user details:", err);
+        }
+        };
+        fetchUserDetails();
+    }, []);  
+
+
+    useEffect(() => {
+        // Fetch users from the backend
+        const fetchUsers = async () => {
+            try {
+                const res = await axios.get("http://localhost:3001/auth/usersList", {
+                    withCredentials: true,
+                }); // Adjust this URL to your backend route
+
+                if (res.data && Array.isArray(res.data.users)) {
+                    const fetchedUsers: user[] = res.data.users.map((userData: { userID: number, fname: string, lname: string, email: string, username: string, password: string}) => ({
+                        id: userData.userID,
+                        firstName: userData.fname,
+                        lastName: userData.lname,
+                        email: userData.email,
+                        username: userData.username,
+                        pwd: userData.password,
+                    }));
+
+                    setUserList(fetchedUsers); // Update the state with the fetched users
+                } else {
+                    throw new Error("Failed to fetch users. Data format is incorrect.");
+                }
+            } catch (err) {
+                console.error("Error fetching users:", err);
+            }
+        };
+
+        fetchUsers();
+    }, []); // Empty
+
+    useEffect(() => {
+        // Fetch users from the backend
+        const fetchAccounts= async () => {
+            try {
+                const res = await axios.get("http://localhost:3001/auth/accountsList", {
+                    withCredentials: true,
+                }); // Adjust this URL to your backend route
+
+                if (res.data && Array.isArray(res.data.accounts)) {
+                    const fetchedAccounts: account[] = res.data.accounts.map((accountData: {userID: number, accountID: number, type: string, balance: number}) => ({
+                        userID: accountData.userID,
+                        id: accountData.accountID,
+                        name: accountData.type,
+                        balance: accountData.balance,
+                    }));
+                    setAccountsList(fetchedAccounts); // Update the state with the fetched users
+                } else {
+                    throw new Error("Failed to fetch Accounts. Data format is incorrect.");
+                }
+            } catch (err) {
+                console.error("Error fetching accounts:", err);
+            }
+        };
+
+        fetchAccounts();
+    }, []);
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+    
+        const newEmployeeData = {
+            firstName: newEmpFirst,
+            lastName: newEmpLast,
+            email: newEmpEmail,
+            username: newEmpUsername,
+            password: newEmpPassword,
+        };
+    
+        try {
+            const response = await axios.post("http://localhost:3001/auth/admin/employee", newEmployeeData, {
+                withCredentials: true, // Include session cookies if necessary
+            });
+            
+            if (response.data.success) {
+                alert("New employee added successfully!");
+            } else {
+                alert("Failed to add employee.");
+            }
+        } catch (error) {
+            console.error("Error adding employee:", error);
+            alert("There was an error adding the employee.");
+        }
+    };
+    
 
     // Used to display both user and employee lists
-    const [maxListItems, setMaxListItems] = useState(20);
-    const [listStartIndex, setListStartIndex] = useState(0);
-    const shownUserList = users.slice(listStartIndex, listStartIndex + maxListItems);   // Only show [maxListItems] number of users per page
-    const shownEmployeeList = employees.slice(listStartIndex, listStartIndex + maxListItems); // Only show [maxListItems] number of employees per page
+    //const [maxListItems, setMaxListItems] = useState(20);
+    //const [listStartIndex, setListStartIndex] = useState(0);
+    //const shownUserList = users.slice(listStartIndex, listStartIndex + maxListItems);   // Only show [maxListItems] number of users per page
+    //const shownEmployeeList = employees.slice(listStartIndex, listStartIndex + maxListItems); // Only show [maxListItems] number of employees per page
 
-    const [selectedUser, setSelectedUser] = useState(0);
+    //const [selectedUser, setSelectedUser] = useState(0);
 
     const handleUserSelect = (index: number) => {
         setSelectedUser(index);
     }
 
-    const [filterUser, setFilterUser] = useState(users);
-    const [filterEmployee, setFilterEmployee] = useState(employees);
+    const [filterEmployee, setFilterEmployee] = useState<employee[]>([]);
+
 
     const [filterUserEmpty, setFilterUserEmpty] = useState(false);
     const [filterEmployeeEmpty, setFilterEmployeeEmpty] = useState(false);
 
+    const [maxListItems, setMaxListItems] = useState(20);
+
+    const [filterUser, setFilterUser] = useState<user[]>([]); // Initialize as an empty array
+    // const [selectedUser, setSelectedUser] = useState(0);
+    // const [listStartIndex, setListStartIndex] = useState(0);
+    const [selectedUser, setSelectedUser] = useState<number>(0); // Index of selected user
+    const [listStartIndex, setListStartIndex] = useState<number>(0);
     /*
 
     Need to add new user verification & new bank account verification
@@ -127,14 +267,20 @@ function AdminPortal() {
     */
 
     // Data value declarations for new employee creation
-    const newEmpId = employees.length;
+    // const newEmpId = employees.length;
+    // const [newEmpFirst, setNewEmpFirst] = useState("");
+    // const [newEmpLast, setNewEmpLast] = useState("");
+    // const [newEmpCPhone, setNewEmpCPhone] = useState("");
+    // const [newEmpHPhone, setNewEmpHPhone] = useState("");
+    // const [newEmpEmail, setNewEmpEmail] = useState("");
+    // const [newEmpBdate, setNewEmpBdate] = useState("");
+    // const [newEmpSSN, setNewEmpSSN] = useState("");
+
+    const [newEmpUsername, setNewEmpUsername] = useState("");
+    const [newEmpPassword, setNewEmpPassword] = useState("");
     const [newEmpFirst, setNewEmpFirst] = useState("");
     const [newEmpLast, setNewEmpLast] = useState("");
-    const [newEmpCPhone, setNewEmpCPhone] = useState("");
-    const [newEmpHPhone, setNewEmpHPhone] = useState("");
     const [newEmpEmail, setNewEmpEmail] = useState("");
-    const [newEmpBdate, setNewEmpBdate] = useState("");
-    const [newEmpSSN, setNewEmpSSN] = useState("");
     
 
     // Admin access management
@@ -144,35 +290,69 @@ function AdminPortal() {
         console.log("Admin status toggled.");
     }
 
+    // Sync filterUser with userList when userList changes
+    useEffect(() => {
+        setFilterUser(userList);
+    }, [userList]);
+
+    useEffect(() => {
+        setFilterEmployee(employeeList);
+    }, [employeeList]);
+
+    // Handle search term change
+    const onSearchChanged = (searchTerm: string) => {
+        const filteredUsers = userList.filter(user =>
+            `${user.firstName} ${user.lastName}`.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        setFilterUser(filteredUsers); 
+        //setSelectedUser(0); // Reset selected user when search changes
+        if (filteredUsers.length === 0) {
+            setSelectedUser(0); // No users, reset selection
+        } else {
+            // If the selected user is out of bounds, reset it to 0
+            setSelectedUser(prevSelectedUser => 
+                prevSelectedUser >= filteredUsers.length ? 0 : prevSelectedUser
+            );
+        }
+    };
     const onSearchChange = (value: string) => {
-        switch(activeTab) {
+        switch (activeTab) {
             case 2: {
-                // do something
-                const newData = employees.filter( (emp)=>
-                    emp.info.firstName.toLocaleLowerCase().includes(value.toLowerCase()) || 
-                    emp.info.lastName.toLocaleLowerCase().includes(value.toLowerCase()) || 
-                    emp.info.id.toString().includes(value)
-                    );
-                setFilterEmployee(newData);
-                break;
-            }
-            default: {
-                // do something
-                const newData = users.filter( (user)=>
-                    user.firstName.toLocaleLowerCase().includes(value.toLowerCase()) || 
-                    user.lastName.toLocaleLowerCase().includes(value.toLowerCase()) ||
-                    user.id.toString().includes(value)
+                // Perform the search on employee data
+                const filteredData = employeeList.filter((emp) =>
+                    emp.info.firstName.toLowerCase().includes(value.toLowerCase()) || 
+                    emp.info.lastName.toLowerCase().includes(value.toLowerCase()) || 
+                    emp.info.id.toString().includes(value) // Search by employee ID
                 );
-                setFilterUser(newData);
+                setFilterEmployee(filteredData);  // Update the filtered employee list
                 break;
             }
+            // Handle other cases if necessary
+            default:
+                break;
         }
     };
 
+    // const onSearchChange = (value: string) => {
+    //     switch(activeTab) {
+    //         case 2: {
+    //             // do something
+    //             const newData = employees.filter( (emp)=>
+    //                 emp.info.firstName.toLocaleLowerCase().includes(value.toLowerCase()) || 
+    //                 emp.info.lastName.toLocaleLowerCase().includes(value.toLowerCase()) || 
+    //                 emp.info.id.toString().includes(value)
+    //                 );
+    //             setFilterEmployee(newData);
+    //             break;
+    //         }
+    //     }
+    // };
+   console.log(accountsList[0]);
+    
     return(
         <>
             <div className='header-wrapper'>
-                <h1 className='section-header'>Admin Portal | Welcome, {adminName}</h1> {/* Will need to get name of current admin */}
+                <h1 className='section-header'>Admin Portal | Welcome, {admin.firstName} {admin.lastName}</h1> {/* Will need to get name of current admin */}
                 <button className='logout-button' onClick={handleClick}>
                     <LogOut/> Logout
                 </button>
@@ -228,7 +408,7 @@ function AdminPortal() {
                         return(
                             <>
                                 <h3 className='section-subheader'>New Employee</h3>
-                                <form className='form-container'>
+                                <form className='form-container' onSubmit={handleSubmit}>
                                     <label className="form-label">*Name</label>
                                     <div className='input-line'>
                                         {/* ReqTxtInput Component requrires setParam, which takes a handler function that sets a given value. */}
@@ -238,7 +418,13 @@ function AdminPortal() {
                                     </div>
                                     <label className="form-label">*Email</label>
                                     <ReqTextInput value={newEmpEmail} setParam={setNewEmpEmail}/>
-                                    <label className="form-label">*Phone</label>
+                                    <label className="form-label">*Username</label>
+                                    <ReqTextInput value={newEmpUsername} setParam={setNewEmpUsername}/>
+                                    
+                                    <label className="form-label">*Password</label>
+                                    <ReqTextInput type="password" value={newEmpPassword} setParam={setNewEmpPassword}/>
+                
+                                    {/* <label className="form-label">*Phone</label>
                                     <div className='input-line'>
                                         <ReqTextInput text="Cell" value={newEmpCPhone} setParam={setNewEmpCPhone}/>
                                         <TextInput text="Home (Optional)" value={newEmpHPhone} setParam={setNewEmpHPhone}/>
@@ -246,7 +432,7 @@ function AdminPortal() {
                                     <div className='input-line'>
                                         <ReqTextInput label="*Birthdate" type="date" value={newEmpBdate} setParam={setNewEmpBdate}/>
                                         <ReqTextInput label="*SSN" value={newEmpSSN} setParam={setNewEmpSSN}/>
-                                    </div>
+                                    </div> */}
                                     <button type='submit'>Submit</button>
                                 </form>
                             </>
@@ -269,15 +455,38 @@ function AdminPortal() {
                                                     onChange={(e) => onSearchChange(e.target.value)}
                                                 />
                                             </div>    
-                                            {filterEmployee.map((emp, index) => (
+                                            {/* {filterEmployee.length > 0 ? (
+                                                filterEmployee.map((employee, index) => (
+                                                    <ListCard
+                                                        key={employee.info.id}  // Ensure each ListCard has a unique key for better rendering performance
+                                                        className={selectedUser === index ? 'selected' : ''}
+                                                        onClick={() => handleUserSelect(index)}  // Function to handle user selection
+                                                    >
+                                                        <label className='list-content'> ID: {employee.info.id} </label>
+                                                        <label className='list-content'>
+                                                            Name: {employee.info.lastName}, {employee.info.firstName}
+                                                        </label>
+                                                    </ListCard>
+                                                ))
+                                            ) : (
+                                                <p>No employees found matching your search criteria.</p>  // Message when no employees are found
+                                            )} */}
+                                            {employeeList.map((employee, index) => (
+                                                // User info display
+                                                <ListCard className={selectedUser === index ? 'selected' : ''} onClick={() => handleUserSelect(index)}>
+                                                    <label className='list-content'> ID: {employee.info.id} </label>
+                                                    <label className='list-content'> Name: {employee.info.lastName}, {employee.info.firstName} </label>
+                                                </ListCard>
+                                            ))}
+                                            {/* {filterEmployee.map((emp, index) => (
                                                 <>
                                                     {/* Employee info display */}
-                                                    <ListCard className={selectedUser === index ? 'selected': ''} onClick={() => handleUserSelect(index)}>
+                                                    {/* <ListCard className={selectedUser === index ? 'selected': ''} onClick={() => handleUserSelect(index)}>
                                                         <label className='list-content'> ID: {emp.info.id} </label>
                                                         <label className='list-content'> Name: {emp.info.lastName}, {emp.info.firstName} </label>
                                                     </ListCard>
                                                 </>
-                                            ))}
+                                            ))} */} 
                                         </ScrollBox>
                                     </div>
                                     {filterEmployee.length === 0 ? 
@@ -286,17 +495,18 @@ function AdminPortal() {
                                         <h2>No results!</h2>
                                     </div>
                                     </>) : (<>
+                                    {selectedUser !== null && selectedUser < filterEmployee.length && (
                                     <div className='info-area'>
                                         <h2>ID: {filterEmployee[selectedUser].info.id}</h2>
                                         <h2>Name: {filterEmployee[selectedUser].info.lastName}, {filterEmployee[selectedUser].info.firstName}</h2>
-                                        <h2>Phone: </h2>
-                                        <h2>Email: </h2>
-                                        <h2>Username: </h2>
-                                        <h2>Password: </h2>
+                                        <h2>Email: {filterEmployee[selectedUser].info.email}</h2>
+                                        <h2>Username: {filterEmployee[selectedUser].info.username}</h2>
+                                        <h2>Password: {filterEmployee[selectedUser].info.password}</h2>
                                         <label className='section-subheader'> Admin? </label>
                                         {/* Employees with admin perms will have their checkbox marked. Functionality to modify perms needs to be added. */}
                                         <input type="checkbox" checked={filterEmployee[selectedUser].admin}/>
                                     </div>
+                                    )}
                                     </>)}
                                 </div>
                                 {/* Places page buttons below employee list that will update which portion of the whole employee list will be displayed. */}
@@ -318,45 +528,78 @@ function AdminPortal() {
                                                 className='search-bar'
                                                 type="search"
                                                 placeholder="Search for name"
-                                                onChange={(e) => onSearchChange(e.target.value)}
+                                                onChange={(e) => onSearchChanged(e.target.value)}
                                             />
                                         </div>       
-                                            {filterUser.map((user, index) => (
+                                            {userList.map((user, index) => (
                                                 // User info display
                                                 <ListCard className={selectedUser === index ? 'selected' : ''} onClick={() => handleUserSelect(index)}>
                                                     <label className='list-content'> ID: {user.id} </label>
                                                     <label className='list-content'> Name: {user.lastName}, {user.firstName} </label>
                                                 </ListCard>
                                             ))}
+                                            
                                         </ScrollBox>
                                     </div>
-
-                                    {filterUser.length === 0 ? (<>
-                                        <div className='info-area'>
-                                            <h2>No results!</h2>
-                                        </div>
-                                    </>) : (<>
-                                        <div className='info-area'>
-                                            <h2>ID: {filterUser[selectedUser + listStartIndex].id}</h2>
-                                            <h2>Name: {filterUser[selectedUser + listStartIndex].lastName}, {filterUser[selectedUser + listStartIndex].firstName}</h2>
-                                            <h2>Phone: </h2>
-                                            <h2>Email: </h2>
-                                            <h2>Username: </h2>
-                                            <h2>Password: </h2>
-                                            <h3 className='section-subheader'>Accounts</h3>
-                                            <div className='info-list-area'>
-                                                <ScrollBox className='list-container'>
-                                                    {accounts.map((acc) => (
-                                                        <div className='list-card'>
-                                                            <label className="list-content">ID: {acc.id} </label>
-                                                            <label className="list-content">Name: {acc.name} </label>
-                                                            <label className="list-content">Balance: {acc.balance} </label>
-                                                        </div>
-                                                    ))}
-                                                </ScrollBox>
+                                    
+                                        {filterUser.length === 0 ? (
+                                            <div className='info-area'>
+                                                <h2>No results!</h2>
                                             </div>
-                                        </div>
-                                    </>)}
+                                        ) : (<>
+                                            {/* Show user details and accounts if a user is selected */}
+                                            {/* {selectedUser !== null && (
+                                                <div className='info-area'>
+                                                    <h2>ID: {filterUser[selectedUser + listStartIndex].id}</h2>
+                                                    <h2>Name: {filterUser[selectedUser + listStartIndex].lastName}, {filterUser[selectedUser + listStartIndex].firstName}</h2>
+                                                    <h2>Email: {filterUser[selectedUser + listStartIndex].email}</h2>
+                                                    <h2>Username: {filterUser[selectedUser + listStartIndex].username}</h2>
+                                                    <h2>Password: {filterUser[selectedUser + listStartIndex].pwd}</h2>
+
+                                                    <h3 className='section-subheader'>Accounts</h3>
+                                                    <div className='info-list-area'>
+                                                    <ScrollBox className='list-container'>
+                                                        {accountsList
+                                                            .filter((account) => account.userID === filterUser[selectedUser + listStartIndex].id) // Filter accounts by userID
+                                                            .map((acc) => (
+                                                                <div className='list-card' key={acc.id}>
+                                                                    <label className="list-content">ID: {acc.id}</label>
+                                                                    <label className="list-content">Name: {acc.name}</label>
+                                                                    <label className="list-content">Balance: ${acc.balance.toFixed(2)}</label>
+                                                                </div>
+                                                            ))
+                                                        }
+                                                    </ScrollBox>
+                                                    </div>
+                                                </div>
+                                            )} */}
+                                            {/* Show user details and accounts if a user is selected */}
+                                            {selectedUser !== null && selectedUser < filterUser.length && (
+                                                <div className='info-area'>
+                                                    <h2>ID: {filterUser[selectedUser].id}</h2>
+                                                    <h2>Name: {filterUser[selectedUser].lastName}, {filterUser[selectedUser].firstName}</h2>
+                                                    <h2>Email: {filterUser[selectedUser].email}</h2>
+                                                    <h2>Username: {filterUser[selectedUser].username}</h2>
+                                                    <h2>Password: {filterUser[selectedUser].pwd}</h2>
+
+                                                    <h3 className='section-subheader'>Accounts</h3>
+                                                    <div className='info-list-area'>
+                                                        <ScrollBox className='list-container'>
+                                                            {accountsList
+                                                                .filter((account) => account.userID === filterUser[selectedUser].id) // Filter accounts by userID
+                                                                .map((acc) => (
+                                                                    <div className='list-card' key={acc.id}>
+                                                                        <label className="list-content">ID: {acc.id}</label>
+                                                                        <label className="list-content">Name: {acc.name}</label>
+                                                                        <label className="list-content">Balance: ${acc.balance.toFixed(2)}</label>
+                                                                    </div>
+                                                                ))
+                                                            }
+                                                        </ScrollBox>
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </>)}
                                 </div>
                                 {/* Places page buttons below user list that will update which portion of the whole employee list will be displayed. */}
                                 {/* <PageButtons className='page-num-center' array={users} max={maxListItems} handleClick={setListStartIndex}/> */}

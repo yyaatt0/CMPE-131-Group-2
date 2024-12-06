@@ -30,10 +30,20 @@ const UserLogin = () => {
     
     try {
       // Send HTTP POST request to backend to authenticate login information
-      const response = await axios.post('http://localhost:3001/auth/login', {
-        username: login.username, // Use login.username
-        password: login.password,     // Use login.password
-      }); 
+      // const response = await axios.post('http://localhost:3001/auth/login', {
+      //   username: login.username, // Use login.username
+      //   password: login.password,     // Use login.password
+      // }); 
+      const response = await axios.post(
+        'http://localhost:3001/auth/login',
+        {
+            username: login.username, // Use login.username
+            password: login.password, // Use login.password
+        },
+        {
+            withCredentials: true, // Include credentials
+        }
+    );
 
       // If authentication is successful, navigate to the user page  
       if (response.data.success) {
