@@ -555,7 +555,7 @@ function AdminPortal() {
                                             </div>
                                         ) : (<>
                                             {/* Show user details and accounts if a user is selected */}
-                                            {selectedUser !== null && (
+                                            {/* {selectedUser !== null && (
                                                 <div className='info-area'>
                                                     <h2>ID: {filterUser[selectedUser + listStartIndex].id}</h2>
                                                     <h2>Name: {filterUser[selectedUser + listStartIndex].lastName}, {filterUser[selectedUser + listStartIndex].firstName}</h2>
@@ -579,9 +579,35 @@ function AdminPortal() {
                                                     </ScrollBox>
                                                     </div>
                                                 </div>
-                                            )}
+                                            )} */}
                                             {/* Show user details and accounts if a user is selected */}
-                                            
+                                            {selectedUser !== null && selectedUser < filterUser.length && (
+                                                <div className="info-area">
+                                                    <h2>ID: {filterUser[selectedUser].id}</h2>
+                                                    <h2>Name: {filterUser[selectedUser].lastName}, {filterUser[selectedUser].firstName}</h2>
+                                                    <h2>Email: {filterUser[selectedUser].email}</h2>
+                                                    <h2>Username: {filterUser[selectedUser].username}</h2>
+                                                    <h2>Password: {filterUser[selectedUser].pwd}</h2>
+
+                                                    <h3 className="section-subheader">Transactions</h3>
+                                                    <div className="info-list-area">
+                                                        <ScrollBox className="list-container">
+                                                            {transactionsList
+                                                                .filter((transaction) => transaction.userID === filterUser[selectedUser + listStartIndex].id) // Filter accounts by userID
+                                                                .map((acc) => (
+                                                                    // console.log(filterUser[selectedUser].id);
+                                                                    <div className="list-card" key={acc.accountID}>
+                                                                        <label className="list-content">ID: {acc.accountID}</label>
+                                                                        <label className="list-content">Account Type: {acc.accountType}</label>
+                                                                        <label className="list-content">Transaction Type: {acc.transactionType}</label>
+                                                                        <label className="list-content">Amount: {acc.amount}</label>
+                                                                    </div>
+                                                                ))}
+                                                        </ScrollBox>
+                                                    </div>
+                                                </div>
+                                            )}
+
                                         </>)}
                                 </div>
                                 {/* Places page buttons below user list that will update which portion of the whole employee list will be displayed. */}
